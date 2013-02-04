@@ -29,7 +29,21 @@ import org.apache.commons.codec.binary.Base64;
 public class TeleSignRequest {
 	
 	
-	
+	/**
+	 * The TeleSignRequest is the base for which all the TeleSign API requests.
+	 * This class handles both GET and POST requests and the different signing
+	 * methods for each. If specialized access or parameters are needed for the 
+	 * API over the defaults given in the @see PhoneId class or @see Verify class 
+	 * a custom request can be made using this class.
+	 * 
+	 * @param base the base url of the request. This does not include parameters or the method
+	 *             of the call. Usually this is https://rest.telesign.com
+	 * @param resource the resource called off the base url. This is the extension off the base
+	 *                 of the url. Example "/v1/phoneid/standard/1234567890"
+	 * @param method the method of the request. one of GET or POST
+	 * @param customer_id the TeleSign provided customer_id
+	 * @param secret_key the TeleSign provided secret_key
+	 */
 	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key) {
 		
 		this.base = base;
@@ -45,6 +59,16 @@ public class TeleSignRequest {
 	}
 	
 	
+	/**
+	 * Add a header to this TeleSign Request. If the header starts with
+	 * X-TS- it is added to a special list of TeleSign headers. This
+	 * also checks for the presence of X-TS-Date to correctly set the
+	 * date for the request whether the Specialize TeleSign Date header
+	 * is set or if it should be generated at request time
+	 * 
+	 * @param key the name of the header
+	 * @param value the value to set for the heaader.
+	 */
 	public void addHeader(String key, String value) {
 		if((key.length() > 4) && (key.toLowerCase().substring(0, 5).equals("x-ts-"))) {
 			
@@ -57,19 +81,41 @@ public class TeleSignRequest {
 		headers.put(key, value);
 	}
 	
+	/**
+	 * Add a parameter to the query String. Holds the parameters in a map
+	 * until it is time to sign them 
+	 * 
+	 * @param key the name of the parameter
+	 * @param value the value of the parameter
+	 */
 	public void addParam(String key, String value) {
 		params.put(key, value);
 	}
 	
 	
+	/**
+	 * Set the body of the request for POST requests
+	 * 
+	 * @param post_body
+	 */
 	public void setPostBody(String post_body) {
 		body = post_body;
 	}
 	
+	/**
+	 * Get the POST body for this request
+	 * 
+	 * @return the string value of the POST request
+	 */
 	public String getPostBody() {
 		return body;
 	}
 	
+	/**
+	 * Return a sorted list of all the headers. 
+	 * 
+	 * @return a sorted map of all the headers for this request
+	 */
 	public Map<String, String> getAllHeaders() {
 		TreeMap<String, String> tmp = new TreeMap<String, String>();
 		tmp.putAll(headers);
@@ -77,30 +123,47 @@ public class TeleSignRequest {
 		return tmp;
 	}
 	
+	/**
+	 * Return the TeleSign specific Headers set for this request
+	 * 
+	 * @return the map of the TeleSign specific headers. This map returns a sorted order
+	 */
 	public Map<String, String> getTsHeaders() {
 		return ts_headers;
 	}
 	
+	/**
+	 * Return all the Query parameters set on this request. 
+	 * 
+	 * @return a map containing all the query parameters set for this request
+	 */
 	public Map<String, String> getAllParams() {
 		return params;
 	}
 	
-	//	Authorization = "TSA" + " " + Customer ID + ":" + Signature
-	//
-	//			Signature = Base64( HMAC-SHA1( YourTeleSignAPIKey, UTF-8-Encoding-Of( StringToSign ) ) )
-	//
-	//			StringToSign = HTTP-method + "\n" +
-	//			   Content-Type + "\n" +
-	//			   Date + "\n" +
-	//			   CanonicalizedTsHeaders +
-	//			   CanonicalizedPOSTVariables +
-	//			   CanonicalizedResource
-	//
-	//			CanonicalizedTsHeaders = <see description>
-	//
-	//			CanonicalizedPOSTVariables = <see description>
-	//
-	//			CanonicalizedResource = <HTTP-Request-URI>
+	/**
+	 * Sign and make the TeleSign Request to the url that was set on this request.
+	 * The signature is then calculated based on the headers, post parameters and 
+	 * resource as described below.
+	 * 
+	 *	Authorization = "TSA" + " " + Customer ID + ":" + Signature
+	 *
+	 *	Signature = Base64( HMAC-SHA1( YourTeleSignAPIKey, UTF-8-Encoding-Of( StringToSign ) ) )
+	 *
+	 *	StringToSign = HTTP-method + "\n" +
+	 *	   Content-Type + "\n" +
+	 *	   Date + "\n" +
+	 *	   CanonicalizedTsHeaders +
+	 *	   CanonicalizedPOSTVariables +
+	 *	   CanonicalizedResource
+	 *
+	 *
+	 * <p>
+	 * <a href="https://portal.telesign.com/docs/content/rest-auth.html">https://portal.telesign.com/docs/content/rest-auth.html</a>
+	 * 
+	 * @return A string containing the JSON string response that was returned from the html request
+	 * @throws IOException
+	 */
 	public String executeRequest() throws IOException {
 		String signingString = getSigningString(customer_id); 
 		String signature;
@@ -181,7 +244,7 @@ public class TeleSignRequest {
 	 * Only run when the request is executed
 	 * 
 	 * @param customer_id
-	 * @return
+	 * @return the string to sign for the request
 	 */
 	private String getSigningString(String customer_id) {
 		String stringToSign = post ? "POST\n": "GET\n";
@@ -218,6 +281,13 @@ public class TeleSignRequest {
 		return stringToSign;
 	}
 	
+	/**
+	 * Perform a hmac sha1 hash of the passed string using the passed salt
+	 * @param data The information to hash
+	 * @param key the salt of the hash
+	 * @return a hashed and base64 encoded representation of the data and the salt
+	 * @throws java.security.SignatureException
+	 */
 	private String hmacsha1(String data, String key)  throws java.security.SignatureException {
 		String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 		String result;

@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 
 
 /**
+ * Google GSON mapped class to represent a TeleSign JSON response to a 
+ * PhoneId.contact() request
+ * 
  *	Copyright (c) TeleSign Corporation 2012.
  *	License: MIT
  *	Support email address "support@telesign.com"
