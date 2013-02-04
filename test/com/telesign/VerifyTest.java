@@ -17,15 +17,15 @@ import com.telesign.verify.response.VerifyResponse;
  */
 public class VerifyTest {
 
-	public final String CUSTOMER_ID = "";
-	public final String SECRET_KEY = "";
-	public final String PHONE_NUMBER = "";
+	public final String CUSTOMER_ID = "440813A2-1F7E-11E1-B760-000000000000";
+	public final String SECRET_KEY = "eiWUKl5jc3wfwI5w3xFma5kp8MrYArj66Z4+JkvhgUubhRCuymfEOWrKLQZXFoiG+3GXYzLJP5s5IGyXpIeP1w==";
+	public final String PHONE_NUMBER = "8582259543";
 	
 	
 	@Test
 	public void verifyError() {
 		Verify ver = new Verify("Junk" , "Fake");
-		VerifyResponse ret = ver.requestCall("13102224444");
+		VerifyResponse ret = ver.call("13102224444");
 		assertNotNull(ret);
 		assertTrue(ret.errors[0].code == -30000);
 	}
@@ -37,7 +37,7 @@ public class VerifyTest {
 		}
 		
 		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		VerifyResponse ret = ver.requestCall(PHONE_NUMBER);
+		VerifyResponse ret = ver.call(PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}
@@ -49,7 +49,7 @@ public class VerifyTest {
 		}
 		
 		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		VerifyResponse ret = ver.requestSMS(PHONE_NUMBER);
+		VerifyResponse ret = ver.sms(PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		
@@ -62,13 +62,13 @@ public class VerifyTest {
 		}
 		
 		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		VerifyResponse ret = ver.requestCall(PHONE_NUMBER);
+		VerifyResponse ret = ver.call(PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		
 		String reference_id = ret.reference_id;
 		
-		VerifyResponse ret2 = ver.getCallResults(reference_id);
+		VerifyResponse ret2 = ver.status(reference_id);
 		assertNotNull(ret2);
 		assertTrue(ret2.errors.length == 0);
 		
@@ -81,13 +81,13 @@ public class VerifyTest {
 		}
 		
 		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		VerifyResponse ret = ver.requestSMS(PHONE_NUMBER);
+		VerifyResponse ret = ver.sms(PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		
 		String reference_id = ret.reference_id;
 		
-		VerifyResponse ret2 = ver.getSMSResults(reference_id);
+		VerifyResponse ret2 = ver.status(reference_id);
 		assertNotNull(ret2);
 		assertTrue(ret2.errors.length == 0);
 	}

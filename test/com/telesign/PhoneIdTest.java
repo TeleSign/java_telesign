@@ -18,9 +18,9 @@ import com.telesign.phoneid.response.PhoneIdStandardResponse;
  */
 public class PhoneIdTest {
 
-	public final String CUSTOMER_ID = "";
-	public final String SECRET_KEY = "";
-	public final String PHONE_NUMBER = "";
+	public final String CUSTOMER_ID = "440813A2-1F7E-11E1-B760-000000000000";
+	public final String SECRET_KEY = "eiWUKl5jc3wfwI5w3xFma5kp8MrYArj66Z4+JkvhgUubhRCuymfEOWrKLQZXFoiG+3GXYzLJP5s5IGyXpIeP1w==";
+	public final String PHONE_NUMBER = "8582259543";
 	
 	
 	@Test
