@@ -3,6 +3,9 @@ package com.telesign;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
 
 import org.junit.Test;
 
@@ -21,6 +24,13 @@ public class TeleSignRequestTest {
 		TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key");
 		assertNotNull(tr);
 		
+	}
+	
+	@Test(expected=IOException.class)
+	public void malformedUrl() throws IOException {
+		TeleSignRequest tr = new TeleSignRequest(":junk/rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "");
+		assertNotNull(tr);
+		tr.executeRequest();
 	}
 	
 	@Test
@@ -46,6 +56,13 @@ public class TeleSignRequestTest {
 		
 		assertTrue(tr.getTsHeaders().get("X-TS-Date").equals("2012-03-13"));
 		assertTrue(tr.getAllHeaders().get("X-TS-Date").equals("2012-03-13"));
+		
+		try {
+			String json = tr.executeRequest();
+			assertNotNull(json);
+		} catch (IOException e) {
+			fail("IOException through " + e.getMessage());
+		}
 	}
 
 }

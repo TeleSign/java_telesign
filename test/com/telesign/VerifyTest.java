@@ -43,6 +43,30 @@ public class VerifyTest {
 	}
 	
 	@Test
+	public void verifyRequestCallWithLanguage() {
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		
+		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US");
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+	}
+	
+	@Test
+	public void verifyRequestCallWithAllParams() {
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		
+		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true);
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+	}
+	
+	@Test
 	public void verifyRequestSMS() {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
@@ -50,6 +74,31 @@ public class VerifyTest {
 		
 		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
 		VerifyResponse ret = ver.sms(PHONE_NUMBER);
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+		
+	}
+	
+	@Test
+	public void verifyRequestSMSWithLanguage() {
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		
+		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		VerifyResponse ret = ver.sms(PHONE_NUMBER, "en-US");
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+		
+	}
+	@Test
+	public void verifyRequestSMSAllParams() {
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		
+		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		VerifyResponse ret = ver.sms(PHONE_NUMBER, "en-US", "12345", "Thanks! Custom code template pass! Code: $$CODE$$");
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		

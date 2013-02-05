@@ -5,6 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.google.gson.Gson;
+import com.telesign.phoneid.response.PhoneIdContactResponse;
+import com.telesign.phoneid.response.PhoneIdLiveResponse;
+import com.telesign.phoneid.response.PhoneIdScoreResponse;
 import com.telesign.phoneid.response.PhoneIdStandardResponse;
 
 /**
@@ -42,6 +45,40 @@ public class ResponseTest {
 		
 		assertTrue(invalid_response.errors[0].description.equals("Invalid Signature."));
 		
+	}
+	
+	@Test
+	public void StanardResponseTest() {
+		String valid_json = "{\"reference_id\":\"013CA90BA4E5030BE4D449F000000C80\",\"sub_resource\":\"standard\",\"errors\":[],\"phone_type\":{\"code\":2,\"description\":\"MOBILE\"},\"status\":{\"updated_on\":\"2013-02-05T06:29:38.311333Z\",\"code\":300,\"description\":\"Transaction successfully completed\"},\"numbering\":{\"original\":{\"phone_number\":\"8582259543\",\"complete_phone_number\":\"18582259543\",\"country_code\":\"1\"},\"cleansing\":{\"sms\":{\"phone_number\":\"8582259543\",\"country_code\":\"1\",\"min_length\":10,\"max_length\":10,\"cleansed_code\":100},\"call\":{\"phone_number\":\"8582259543\",\"country_code\":\"1\",\"min_length\":10,\"max_length\":10,\"cleansed_code\":100}}},\"location\":{\"county\":\"San Diego\",\"city\":\"San Diego\",\"state\":\"CA\",\"zip\":\"92126\",\"country\":{\"iso2\":\"US\",\"iso3\":\"USA\",\"name\":\"United States\"},\"time_zone\":{\"utc_offset_min\":\"-8\",\"name\":\"America/Los_Angeles\",\"utc_offset_max\":\"-8\"},\"coordinates\":{\"latitude\":32.91585,\"longitude\":-117.13308},\"metro_code\":\"7320\"}}";
+		Gson gson = new Gson();
+		PhoneIdStandardResponse valid_response = gson.fromJson(valid_json, PhoneIdStandardResponse.class);
+		assertTrue(valid_response.reference_id.equals("013CA90BA4E5030BE4D449F000000C80"));
+		assertTrue(valid_response.toString().equals(valid_json));
+		
+	}
+	@Test
+	public void ContactResponseTest() {
+		String valid_json = "{\"reference_id\":\"013CA90BA5DF030BE4D449F000000C81\",\"sub_resource\":\"contact\",\"errors\":[{\"code\":-60001,\"description\":\"PhoneID Contact Data Not Found\"}],\"phone_type\":{\"code\":2,\"description\":\"MOBILE\"},\"status\":{\"updated_on\":\"2013-02-05T06:29:41.604126Z\",\"code\":301,\"description\":\"Transaction partially completed\"},\"numbering\":{\"original\":{\"phone_number\":\"8582259543\",\"complete_phone_number\":\"18582259543\",\"country_code\":\"1\"},\"cleansing\":{\"sms\":{\"phone_number\":\"8582259543\",\"country_code\":\"1\",\"min_length\":10,\"max_length\":10,\"cleansed_code\":100},\"call\":{\"phone_number\":\"8582259543\",\"country_code\":\"1\",\"min_length\":10,\"max_length\":10,\"cleansed_code\":100}}},\"location\":{\"county\":\"San Diego\",\"city\":\"San Diego\",\"state\":\"CA\",\"zip\":\"92126\",\"country\":{\"iso2\":\"US\",\"iso3\":\"USA\",\"name\":\"United States\"},\"time_zone\":{\"utc_offset_min\":\"-8\",\"name\":\"America/Los_Angeles\",\"utc_offset_max\":\"-8\"},\"coordinates\":{\"latitude\":32.91585,\"longitude\":-117.13308},\"metro_code\":\"7320\"}}";
+		Gson gson = new Gson();
+		PhoneIdContactResponse valid_response = gson.fromJson(valid_json, PhoneIdContactResponse.class);
+		assertTrue(valid_response.reference_id.equals("013CA90BA5DF030BE4D449F000000C81"));
+		assertTrue(valid_response.toString().equals(valid_json));
+	}
+	@Test
+	public void ScoreResponseTest() {
+		String valid_json = "{\"reference_id\":\"013CA90BB661030BE4D449F000000C82\",\"sub_resource\":\"score\",\"errors\":[],\"status\":{\"updated_on\":\"2013-02-05T06:29:42.801614Z\",\"code\":300,\"description\":\"Transaction successfully completed\"},\"numbering\":{\"original\":{\"phone_number\":\"8582259543\",\"complete_phone_number\":\"18582259543\",\"country_code\":\"1\"},\"cleansing\":{\"sms\":{\"phone_number\":\"8582259543\",\"country_code\":\"1\",\"min_length\":10,\"max_length\":10,\"cleansed_code\":100},\"call\":{\"phone_number\":\"8582259543\",\"country_code\":\"1\",\"min_length\":10,\"max_length\":10,\"cleansed_code\":100}}},\"risk\":{\"level\":\"medium-low\",\"score\":300,\"recommendation\":\"allow\"}}";
+		Gson gson = new Gson();
+		PhoneIdScoreResponse valid_response = gson.fromJson(valid_json, PhoneIdScoreResponse.class);
+		assertTrue(valid_response.reference_id.equals("013CA90BB661030BE4D449F000000C82"));
+		assertTrue(valid_response.toString().equals(valid_json));
+	}
+	@Test
+	public void LiveResponseTest() {
+		String valid_json = "{\"reference_id\":\"013CA90BB7CF030BE4D449F000000C83\",\"sub_resource\":\"live\",\"errors\":[],\"phone_type\":{\"code\":2,\"description\":\"MOBILE\"},\"status\":{\"updated_on\":\"2013-02-05T06:29:43.932432Z\",\"code\":300,\"description\":\"Transaction successfully completed\"},\"numbering\":{\"original\":{\"phone_number\":\"8582259543\",\"complete_phone_number\":\"18582259543\",\"country_code\":\"1\"},\"cleansing\":{\"sms\":{\"phone_number\":\"8582259543\",\"country_code\":\"1\",\"min_length\":10,\"max_length\":10,\"cleansed_code\":100},\"call\":{\"phone_number\":\"8582259543\",\"country_code\":\"1\",\"min_length\":10,\"max_length\":10,\"cleansed_code\":100}}},\"location\":{\"county\":\"San Diego\",\"city\":\"San Diego\",\"state\":\"CA\",\"zip\":\"92126\",\"country\":{\"iso2\":\"US\",\"iso3\":\"USA\",\"name\":\"United States\"},\"time_zone\":{\"utc_offset_min\":\"-8\",\"name\":\"America/Los_Angeles\",\"utc_offset_max\":\"-8\"},\"coordinates\":{\"latitude\":32.91585,\"longitude\":-117.13308},\"metro_code\":\"7320\"},\"live\":{\"subscriber_status\":\"ACTIVE\",\"device_status\":\"UNAVAILABLE\",\"roaming\":\"UNAVAILABLE\"}}";
+		Gson gson = new Gson();
+		PhoneIdLiveResponse valid_response = gson.fromJson(valid_json, PhoneIdLiveResponse.class);
+		assertTrue(valid_response.reference_id.equals("013CA90BB7CF030BE4D449F000000C83"));
+		assertTrue(valid_response.toString().equals(valid_json));
 	}
 
 }
