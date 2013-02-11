@@ -35,7 +35,7 @@ The Java Classes
 With just two classes, **telesign.api** abstracts much of the complexity of the TeleSign REST API.
 
 +------------------------------+--------------------------------------------------------------------------+ 
-| Java Class                 | Description                                                              | 
+| Java Class                   | Description                                                              | 
 +==============================+==========================================================================+ 
 | com.telesign.phoneid.PhoneId | The **PhoneId** class exposes three services that each provide           | 
 |                              | information about a specified phone number.                              | 
