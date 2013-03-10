@@ -76,6 +76,7 @@ public class TeleSignRequest {
 			if(key.toLowerCase().equals("x-ts-date")) {
 				ts_date = true;
 			}
+
 			ts_headers.put(key, value);
 		}
 		headers.put(key, value);
@@ -189,7 +190,7 @@ public class TeleSignRequest {
 		
 		
 		try {
-			signature = hmacsha1(signingString, secret_key);
+			signature = encode(signingString, secret_key);
 		} catch (SignatureException e) {
 			System.err.println("Error signing request " + e.getMessage());
 			return null;
@@ -241,6 +242,28 @@ public class TeleSignRequest {
 	}
 	
 	/**
+	 * Set the signing method of this request. Current values are enumerated
+	 * in the AuthMethod enum. 
+	 * 
+	 * @param auth
+	 */
+	public void setSigningMethod(AuthMethod auth) {
+		addHeader("x-ts-auth-method", auth.tsValue());
+		this.auth = auth;
+	}
+	
+	/**
+	 * Set a nonce to use for this request. If this is used, it needs
+	 * to be set before each request execution. This is a convenience method
+	 * this can also be set using the addHeader option
+	 * 
+	 * @param nonce
+	 */
+	public void setNonce(String nonce) {
+		addHeader("x-ts-nonce", nonce);
+	}
+	
+	/**
 	 * Only run when the request is executed
 	 * 
 	 * @param customer_id
@@ -288,18 +311,17 @@ public class TeleSignRequest {
 	 * @return a hashed and base64 encoded representation of the data and the salt
 	 * @throws java.security.SignatureException
 	 */
-	private String hmacsha1(String data, String key)  throws java.security.SignatureException {
-		String HMAC_SHA1_ALGORITHM = "HmacSHA1";
+	private String encode(String data, String key)  throws java.security.SignatureException {
 		String result;
 		
 		byte[] decoded_key = Base64.decodeBase64(key);
 		
 		try {
-			// get an hmac_sha1 key from the raw key bytes
-			SecretKeySpec signingKey = new SecretKeySpec(decoded_key, HMAC_SHA1_ALGORITHM);
+			// get an hmac_sha key from the raw key bytes
+			SecretKeySpec signingKey = new SecretKeySpec(decoded_key, auth.value());
 			
-			// get an hmac_sha1 Mac instance and initialize with the signing key
-			Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
+			// get an hmac_sha Mac instance and initialize with the signing key
+			Mac mac = Mac.getInstance(auth.value());
 			mac.init(signingKey);
 			
 			// compute the hmac on input data bytes
@@ -324,6 +346,8 @@ public class TeleSignRequest {
 	private HttpURLConnection connection;
 	private boolean post;
 	private String body = "";
+	
+	private AuthMethod auth = AuthMethod.SHA1;
 	
 	private final String base;
 	private final String resource;
