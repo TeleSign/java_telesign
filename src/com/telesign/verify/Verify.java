@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 
 import com.google.gson.Gson;
-import com.telesign.util.PhoneUtil;
 import com.telesign.util.TeleSignRequest;
 import com.telesign.verify.response.VerifyResponse;
 
@@ -36,24 +35,24 @@ public class Verify {
 	/**
 	 * Convenience method an overload of {@link com.telesign.verify.Verify#sms(String, String, String, String)}
 	 * 
-	 * @param identifier the phone number to send the sms message
+	 * @param phone_number the phone number to send the sms message
 	 * @return {@link com.telesign.verify.response.VerifyResponse VerifyResponse} The fully formed
 	 *         response object repersentation of the JSON reply
 	 */
-	public VerifyResponse sms(String identifier) {
-		return sms(identifier, null, null, null);
+	public VerifyResponse sms(String phone_number) {
+		return sms(phone_number, null, null, null);
 	}
 	
 	/**
 	 * Convenience method an overload of {@link com.telesign.verify.Verify#sms(String, String, String, String)}
 	 * 
-	 * @param identifier the phone number to send the sms message
+	 * @param phone_number the phone number to send the sms message
 	 * @param language The String representation of the language to send the sms message
 	 * @return {@link com.telesign.verify.response.VerifyResponse VerifyResponse} The fully formed
 	 *         response object repersentation of the JSON reply
 	 */
-	public VerifyResponse sms(String identifier, String language) {
-		return sms(identifier, language, null, null);
+	public VerifyResponse sms(String phone_number, String language) {
+		return sms(phone_number, language, null, null);
 	}
 	
 	/**
@@ -63,20 +62,19 @@ public class Verify {
 	 * <p>
 	 * <a href="https://portal.telesign.com/docs/content/verify-sms.html">https://portal.telesign.com/docs/content/verify-sms.html</a>
 	 * 
-	 * @param identifier the phone number to send the sms message
+	 * @param phone_number the phone number to send the sms message
 	 * @param language The String representation of the language to send the sms message
 	 * @param verify_code The code to send via sms. Set to null to let Telesign generate the code
 	 * @param template The template of the message that is being sent. Set to null for default, otherwise must include $$CODE$$ as a variable placeholder
 	 * @return {@link com.telesign.verify.response.VerifyResponse VerifyResponse} The fully formed
 	 *         response object repersentation of the JSON reply
 	 */
-	public VerifyResponse sms(String identifier, String language, String verify_code, String template) {
+	public VerifyResponse sms(String phone_number, String language, String verify_code, String template) {
 		String result = null;
 		try {
-			String clean_phone = PhoneUtil.formatTo11Digits(identifier);
 			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/sms", "POST", customer_id, secret_key);
 			
-			String body = "phone_number=" + URLEncoder.encode(clean_phone, "UTF-8");;
+			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");;
 			
 			if(language != null) {
 				body += "&language=" + URLEncoder.encode(language, "UTF-8");;
@@ -107,36 +105,36 @@ public class Verify {
 	/**
 	 * Convenience method for {@link com.telesign.verify.Verify#call(String, String, String, String, int, String, boolean)}
 	 * 
-	 * @param identifier Required, the phone number of the person to dial
+	 * @param phone_number Required, the phone number of the person to dial
 	 * @return {@link com.telesign.verify.response.VerifyResponse VerifyResponse} The fully formed
 	 *         response object repersentation of the JSON reply
 	 */
-	public VerifyResponse call(String identifier) {
-		return call(identifier, null, null, null, 0, null, true);
+	public VerifyResponse call(String phone_number) {
+		return call(phone_number, null, null, null, 0, null, true);
 	}
 	
 	/**
 	 * Convenience method for {@link com.telesign.verify.Verify#call(String, String, String, String, int, String, boolean)}
 	 * 
-	 * @param identifier Required, th phone number of the person to dial
+	 * @param phone_number Required, th phone number of the person to dial
 	 * @param language optional can be null. The language code of the call 
 	 * @return {@link com.telesign.verify.response.VerifyResponse VerifyResponse} The fully formed
 	 *         response object repersentation of the JSON reply
 	 */
-	public VerifyResponse call(String identifier, String language) {
-		return call(identifier, language, null, null, 0, null, true);
+	public VerifyResponse call(String phone_number, String language) {
+		return call(phone_number, language, null, null, 0, null, true);
 	}
 	
 	/**
 	 * Make a Verify API call to TeleSigns phone service. Calling this method 
-	 * results in an automated phone call made to the given identifier. The language
+	 * results in an automated phone call made to the given phone_number. The language
 	 * is specified as a string. Extensions and delays are programmable using the
 	 * extension_type and extension template. 
 	 * 
 	 * <p>
 	 * <a href="https://portal.telesign.com/docs/content/verify-call.html">https://portal.telesign.com/docs/content/verify-call.html</a>
 	 * 
-	 * @param identifier Required, the phone number of the person to dial
+	 * @param phone_number Required, the phone number of the person to dial
 	 * @param language optional can be null. The language code of the call 
 	 * @param verify_code optional. if null, verify code will be generated by telesign
 	 * @param verify_method optional. Only available option is currently null (dictated code) or "keypress"
@@ -148,14 +146,13 @@ public class Verify {
 	 *         
 	 * 
 	 */
-	public VerifyResponse call(String identifier , String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial) {
+	public VerifyResponse call(String phone_number , String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial) {
 		
 		String result = null;
 		try {
-			String clean_phone = PhoneUtil.formatTo11Digits(identifier);
 			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/call", "POST", customer_id, secret_key);
 			
-			String body = "phone_number=" + URLEncoder.encode(clean_phone, "UTF-8");;
+			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");;
 			
 			if(language != null) {
 				body += "&language=" + URLEncoder.encode(language, "UTF-8");;

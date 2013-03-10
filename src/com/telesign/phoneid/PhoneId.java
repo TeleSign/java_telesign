@@ -7,7 +7,6 @@ import com.telesign.phoneid.response.PhoneIdContactResponse;
 import com.telesign.phoneid.response.PhoneIdLiveResponse;
 import com.telesign.phoneid.response.PhoneIdScoreResponse;
 import com.telesign.phoneid.response.PhoneIdStandardResponse;
-import com.telesign.util.PhoneUtil;
 import com.telesign.util.TeleSignRequest;
 
 
@@ -43,15 +42,14 @@ public class PhoneId {
 	 * <p>
 	 * <a href="https://portal.telesign.com/docs/content/phoneid-standard.html">https://portal.telesign.com/docs/content/phoneid-live.html</a>
 	 * 
-	 * @param identifier a US phone number to make the standard request against.
+	 * @param phone_number a US phone number to make the standard request against.
 	 * @return {@link com.telesign.phoneid.response.PhoneIdStandardResponse PhoneIdStandardResponse} The fully formed response object. If an error occured, the 
 	 *         error array of the response will be set
 	 */
-	public PhoneIdStandardResponse standard(String identifier) {
+	public PhoneIdStandardResponse standard(String phone_number) {
 		String result = null;
 		try {
-			String clean_phone = PhoneUtil.formatTo11Digits(identifier);
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + clean_phone, "GET", customer_id, secret_key);
+			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + phone_number, "GET", customer_id, secret_key);
 			result = tr.executeRequest();
 		} catch (IOException e) {
 			System.err.println("IOException while executing phoneid API: " + e.getMessage());
@@ -74,16 +72,15 @@ public class PhoneId {
 	 * <p>
 	 * <a href="https://portal.telesign.com/docs/content/xt/xt-use-case-codes.html#xref-use-case-codes>https://portal.telesign.com/docs/content/xt/xt-use-case-codes.html#xref-use-case-codes</a>
 	 * 
-	 * @param identifier a US phone number to make the standard request against.
+	 * @param phone_number a US phone number to make the standard request against.
 	 * @param ucid a TeleSign Use Case Code 
 	 * @return {@link com.telesign.phoneid.response.PhoneIdScoreResponse PhoneIdScoreResponse} The fully formed response object. If an error occured, the 
 	 *                                 error array of the response will be set
 	 */
-	public PhoneIdScoreResponse score(String identifier, String ucid) {
+	public PhoneIdScoreResponse score(String phone_number, String ucid) {
 		String result = null;
 		try {
-			String clean_phone = PhoneUtil.formatTo11Digits(identifier);
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/score/" + clean_phone, "GET", customer_id, secret_key);
+			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/score/" + phone_number, "GET", customer_id, secret_key);
 			tr.addParam("ucid", ucid);	
 			result = tr.executeRequest();
 		} catch (IOException e) {
@@ -107,16 +104,15 @@ public class PhoneId {
 	 * <p>
 	 * <a href="https://portal.telesign.com/docs/content/xt/xt-use-case-codes.html#xref-use-case-codes>https://portal.telesign.com/docs/content/xt/xt-use-case-codes.html#xref-use-case-codes</a>
 	 * 
-	 * @param identifier a US phone number to make the standard request against.
+	 * @param phone_number a US phone number to make the standard request against.
 	 * @param ucid a TeleSign Use Case Code 
 	 * @return {@link com.telesign.phoneid.response.PhoneIdContactResponse PhoneIdContactResponse} The fully formed response object. If an error occured, the 
 	 *                                 error array of the response will be set
 	 */
-	public PhoneIdContactResponse contact(String identifier, String ucid) {
+	public PhoneIdContactResponse contact(String phone_number, String ucid) {
 		String result = null;
 		try {
-			String clean_phone = PhoneUtil.formatTo11Digits(identifier);
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/contact/" + clean_phone, "GET", customer_id, secret_key);
+			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/contact/" + phone_number, "GET", customer_id, secret_key);
 			tr.addParam("ucid", ucid);	
 			result = tr.executeRequest();
 		} catch (IOException e) {
@@ -140,16 +136,15 @@ public class PhoneId {
 	 * <p>
 	 * <a href="https://portal.telesign.com/docs/content/xt/xt-use-case-codes.html#xref-use-case-codes>https://portal.telesign.com/docs/content/xt/xt-use-case-codes.html#xref-use-case-codes</a>
 	 * 
-	 * @param identifier a US phone number to make the standard request against.
+	 * @param phone_number a US phone number to make the standard request against.
 	 * @param ucid a TeleSign Use Case Code 
 	 * @return {@link com.telesign.phoneid.response.PhoneIdLiveResponse PhoneIdLiveResponse} The fully formed response object. If an error occured, the 
 	 *                                 error array of the response will be set
 	 */
-	public PhoneIdLiveResponse live(String identifier, String ucid) {
+	public PhoneIdLiveResponse live(String phone_number, String ucid) {
 		String result = null;
 		try {
-			String clean_phone = PhoneUtil.formatTo11Digits(identifier);
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/live/" + clean_phone, "GET", customer_id, secret_key);
+			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/live/" + phone_number, "GET", customer_id, secret_key);
 			tr.addParam("ucid", ucid);	
 			result = tr.executeRequest();
 		} catch (IOException e) {

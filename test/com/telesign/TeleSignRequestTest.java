@@ -9,6 +9,9 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.google.gson.Gson;
+import com.telesign.phoneid.response.PhoneIdStandardResponse;
+import com.telesign.util.AuthMethod;
 import com.telesign.util.TeleSignRequest;
 
 /**
@@ -18,6 +21,10 @@ import com.telesign.util.TeleSignRequest;
  *	Author: jweatherford
  */
 public class TeleSignRequestTest {
+	
+	public final String CUSTOMER_ID = "440813A2-1F7E-11E1-B760-000000000000";
+	public final String SECRET_KEY = "eiWUKl5jc3wfwI5w3xFma5kp8MrYArj66Z4+JkvhgUubhRCuymfEOWrKLQZXFoiG+3GXYzLJP5s5IGyXpIeP1w==";
+	public final String PHONE_NUMBER = "3105551234";
 
 	@Test
 	public void requestCreation() {
@@ -63,6 +70,51 @@ public class TeleSignRequestTest {
 		} catch (IOException e) {
 			fail("IOException through " + e.getMessage());
 		}
+	}
+	
+	@Test
+	public void shaMethodTest() throws IOException {
+		String result = null;
+		TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY);
+		tr.setSigningMethod(AuthMethod.SHA256);
+		
+		assertNotNull(tr);
+		
+		result = tr.executeRequest();
+		
+		assertNotNull(result);
+	
+		Gson gson = new Gson();
+		PhoneIdStandardResponse response = gson.fromJson(result, PhoneIdStandardResponse.class);
+		
+		assertTrue(response.errors.length == 0);
+	}
+	
+	@Test
+	public void nonceTest() throws IOException {
+		String nonce = "myUniqueNonce" + System.currentTimeMillis();
+		String result = null;
+		TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY);
+		tr.setNonce(nonce);
+		
+		assertNotNull(tr);
+		
+		result = tr.executeRequest();
+		
+		assertNotNull(result);
+	
+		Gson gson = new Gson();
+		PhoneIdStandardResponse response = gson.fromJson(result, PhoneIdStandardResponse.class);
+		
+		assertTrue(response.errors.length == 0);
+		
+		result = tr.executeRequest();
+		
+		assertNotNull(result);
+	
+		response = gson.fromJson(result, PhoneIdStandardResponse.class);
+		
+		assertTrue(response.errors[0].code == -30012);
 	}
 
 }
