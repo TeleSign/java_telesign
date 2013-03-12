@@ -5,8 +5,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Properties;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -21,10 +25,46 @@ import com.telesign.util.TeleSignRequest;
  *	Author: jweatherford
  */
 public class TeleSignRequestTest {
+	public static String CUSTOMER_ID;
+	public static String SECRET_KEY;
+	public static String PHONE_NUMBER;
 	
-	public final String CUSTOMER_ID = "440813A2-1F7E-11E1-B760-000000000000";
-	public final String SECRET_KEY = "eiWUKl5jc3wfwI5w3xFma5kp8MrYArj66Z4+JkvhgUubhRCuymfEOWrKLQZXFoiG+3GXYzLJP5s5IGyXpIeP1w==";
-	public final String PHONE_NUMBER = "3105551234";
+	
+	@BeforeClass
+    public static void setUp() throws IOException {
+		Properties props = new Properties();
+		try {
+		props.load(new FileInputStream("test.properties"));
+		} catch (FileNotFoundException fne) {
+			fail("Please create a \"test.properties\" file at the root project directory " +
+					"and include your telesign customerid, secretkey and your phone number. " +
+					"If you need assistance, please contact telesign support at support@telesign.com");
+		}
+		
+		CUSTOMER_ID = props.getProperty("test.customerid");
+		SECRET_KEY =  props.getProperty("test.secretkey");
+		PHONE_NUMBER = props.getProperty("test.phonenumber");
+		
+		boolean pass = true; 
+		
+		if(CUSTOMER_ID == null || CUSTOMER_ID.isEmpty()) {
+			System.out.println("CUSTOMER_ID is not set. Please set the \"test.customerid\" property in the properties file");
+			pass = false;
+		}
+		
+		if(SECRET_KEY == null || SECRET_KEY.isEmpty()) {
+			System.out.println("SECRET_KEY is not set. Please set the \"test.secretkey\" property in the properties file");
+			pass = false;
+		}
+		if(PHONE_NUMBER == null || PHONE_NUMBER.isEmpty()) {
+			System.out.println("PHONE_NUMBER is not set. Please set the \"test.phonenumber\" property in the properties file");
+			pass = false;
+		}
+		
+		if(!pass) {
+			fail("Configuration file not setup correctly!");
+		}
+	}
 
 	@Test
 	public void requestCreation() {
