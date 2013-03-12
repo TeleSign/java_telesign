@@ -1,3 +1,6 @@
+#don't commit the properties file for tests
+test.properties
+
 *.class
 
 # Package Files #
