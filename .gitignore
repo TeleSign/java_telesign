@@ -13,3 +13,6 @@ doc/
 # Experimental Bits
 # The output from an XML Doclet.
 jel/
+
+# Properties File for Tests
+test.properties
