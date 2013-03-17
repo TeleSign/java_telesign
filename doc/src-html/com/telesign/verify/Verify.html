@@ -1,0 +1,302 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * @version             1.0<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * @copyright           Copyright © 2013, TeleSign Corporation.<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * @license             http://opensource.org/licenses/mit-license.php The MIT License (MIT).<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * @author              J. Weatherford<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * @maintainer          Humberto Morales<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * @repository          https://github.com/TeleSign/java_telesign<a name="line.7"></a>
+<span class="sourceLineNo">008</span> * @support             support@telesign.com<a name="line.8"></a>
+<span class="sourceLineNo">009</span> */<a name="line.9"></a>
+<span class="sourceLineNo">010</span>package com.telesign.verify;<a name="line.10"></a>
+<span class="sourceLineNo">011</span><a name="line.11"></a>
+<span class="sourceLineNo">012</span>import com.google.gson.Gson;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import com.telesign.util.PhoneUtil;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import com.telesign.util.TeleSignRequest;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>import com.telesign.verify.response.VerifyResponse;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import java.io.IOException;<a name="line.16"></a>
+<span class="sourceLineNo">017</span>import java.net.URLEncoder;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>/**<a name="line.19"></a>
+<span class="sourceLineNo">020</span> *  The Verify class abstracts your interactions with the &lt;em&gt;TeleSign Verify web service&lt;/em&gt;.<a name="line.20"></a>
+<span class="sourceLineNo">021</span> *  A Verify object encapsulates your credentials (your TeleSign &lt;em&gt;Customer ID&lt;/em&gt; and &lt;em&gt;Secret Key&lt;/em&gt;).<a name="line.21"></a>
+<span class="sourceLineNo">022</span> */<a name="line.22"></a>
+<span class="sourceLineNo">023</span>public class Verify<a name="line.23"></a>
+<span class="sourceLineNo">024</span>{<a name="line.24"></a>
+<span class="sourceLineNo">025</span>        /**<a name="line.25"></a>
+<span class="sourceLineNo">026</span>         * The Verify class constructor.<a name="line.26"></a>
+<span class="sourceLineNo">027</span>         * Once you instantiate a Verify object, you can use it to make instance calls to &lt;em&gt;Verify SMS&lt;/em&gt; and &lt;em&gt;Verify Call&lt;/em&gt;.<a name="line.27"></a>
+<span class="sourceLineNo">028</span>         * @param customer_id   [Required]      A string representing your TeleSign Customer ID (your TeleSign account number).<a name="line.28"></a>
+<span class="sourceLineNo">029</span>         * @param secret_key    [Required]      A string representing your TeleSign Secret Key (a bese64-encoded string valu, available from the TeleSign Client Portal).<a name="line.29"></a>
+<span class="sourceLineNo">030</span>         */<a name="line.30"></a>
+<span class="sourceLineNo">031</span>        public Verify(String customer_id, String secret_key)<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        {<a name="line.32"></a>
+<span class="sourceLineNo">033</span>                this.customer_id = customer_id;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>                this.secret_key = secret_key;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>        }<a name="line.35"></a>
+<span class="sourceLineNo">036</span>        <a name="line.36"></a>
+<span class="sourceLineNo">037</span>        /**<a name="line.37"></a>
+<span class="sourceLineNo">038</span>         * Delivers a verification code to the end user by sending it in a text message.<a name="line.38"></a>
+<span class="sourceLineNo">039</span>         * This is the simplest of the three overloads of this method. This overload takes the only required paramter—the end user's phone number. <a name="line.39"></a>
+<span class="sourceLineNo">040</span>         * @param identifier    [Required]      A string representing the user’s phone number.<a name="line.40"></a>
+<span class="sourceLineNo">041</span>         * @return                              A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.<a name="line.41"></a>
+<span class="sourceLineNo">042</span>         */<a name="line.42"></a>
+<span class="sourceLineNo">043</span>        public VerifyResponse sms(String identifier)<a name="line.43"></a>
+<span class="sourceLineNo">044</span>        {<a name="line.44"></a>
+<span class="sourceLineNo">045</span>                return sms(identifier, null, null, null);<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        }<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        <a name="line.47"></a>
+<span class="sourceLineNo">048</span>        /**<a name="line.48"></a>
+<span class="sourceLineNo">049</span>         *  Delivers a verification code to the end user by sending it in a text message.<a name="line.49"></a>
+<span class="sourceLineNo">050</span>         *  Use this overload when the end user's written language isn't the default language (English).<a name="line.50"></a>
+<span class="sourceLineNo">051</span>         * @param identifier    [Required]      A string representing the user’s phone number.<a name="line.51"></a>
+<span class="sourceLineNo">052</span>         * @param language      [Optional]      A string representing the IETF language tag used in applying predefined templates. For example, "fr-CA". Set this value to null for English (the default).<a name="line.52"></a>
+<span class="sourceLineNo">053</span>         * @return                              A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.<a name="line.53"></a>
+<span class="sourceLineNo">054</span>         */<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        public VerifyResponse sms(String identifier, String language)<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        {<a name="line.56"></a>
+<span class="sourceLineNo">057</span>                return sms(identifier, language, null, null);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        }<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        <a name="line.59"></a>
+<span class="sourceLineNo">060</span>        /**<a name="line.60"></a>
+<span class="sourceLineNo">061</span>         * Delivers a verification code to the end user by sending it in a text message.<a name="line.61"></a>
+<span class="sourceLineNo">062</span>         * Use this overload when the end user's written language isn't the default language (English), or when you want to send them a verification code that you create, or when you want to apply a custom text message template.  <a name="line.62"></a>
+<span class="sourceLineNo">063</span>         * @param identifier            [Required]      A string representing the user’s phone number.<a name="line.63"></a>
+<span class="sourceLineNo">064</span>         * @param language              [Optional]      A string representing the IETF language tag used in applying predefined templates. For example, "fr-CA". Set this value to null for English (the default).<a name="line.64"></a>
+<span class="sourceLineNo">065</span>         * @param verify_code   [Optional]      A string representing the verification code that you want to send to the end user. TeleSign will automatically generate a verification code for you if to set this value to null.<a name="line.65"></a>
+<span class="sourceLineNo">066</span>         * @param template              [Optional]      A string representing a text message to override the predefined text message template. Your text message must incorporate a $$CODE$$ placeholder to integrate the verify_code field. Set this value to null (the default) to use the predefined template.<a name="line.66"></a>
+<span class="sourceLineNo">067</span>         * @return                                      A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.<a name="line.67"></a>
+<span class="sourceLineNo">068</span>         */<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        public VerifyResponse sms(String identifier, String language, String verify_code, String template)<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        {<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                String result = null;<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                <a name="line.72"></a>
+<span class="sourceLineNo">073</span>                try<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                {<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                        String clean_phone = PhoneUtil.formatTo11Digits(identifier);<a name="line.75"></a>
+<span class="sourceLineNo">076</span>                        TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/sms", "POST", customer_id, secret_key);                       <a name="line.76"></a>
+<span class="sourceLineNo">077</span>                        String body = "phone_number=" + URLEncoder.encode(clean_phone, "UTF-8");<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                        <a name="line.78"></a>
+<span class="sourceLineNo">079</span>                        if(language != null)<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                        {<a name="line.80"></a>
+<span class="sourceLineNo">081</span>                                body += "&amp;language=" + URLEncoder.encode(language, "UTF-8");<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                        }<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                        <a name="line.83"></a>
+<span class="sourceLineNo">084</span>                        if(verify_code != null)<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                        {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                                body += "&amp;verify_code=" + URLEncoder.encode(verify_code, "UTF-8");<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                        }<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                        <a name="line.88"></a>
+<span class="sourceLineNo">089</span>                        if(template != null)<a name="line.89"></a>
+<span class="sourceLineNo">090</span>                        {<a name="line.90"></a>
+<span class="sourceLineNo">091</span>                                body += "&amp;template=" + URLEncoder.encode(template, "UTF-8");<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                        }<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                        <a name="line.93"></a>
+<span class="sourceLineNo">094</span>                        tr.setPostBody(body);<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                        <a name="line.95"></a>
+<span class="sourceLineNo">096</span>                        result = tr.executeRequest();<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                        <a name="line.97"></a>
+<span class="sourceLineNo">098</span>                }<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                catch (IOException e)<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                {<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                        System.err.println("IOException while executing phoneid API: " + e.getMessage());<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                }<a name="line.102"></a>
+<span class="sourceLineNo">103</span>                <a name="line.103"></a>
+<span class="sourceLineNo">104</span>                Gson gson = new Gson();<a name="line.104"></a>
+<span class="sourceLineNo">105</span>                VerifyResponse response = gson.fromJson(result, VerifyResponse.class);<a name="line.105"></a>
+<span class="sourceLineNo">106</span>                <a name="line.106"></a>
+<span class="sourceLineNo">107</span>                return response;                <a name="line.107"></a>
+<span class="sourceLineNo">108</span>        }<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        <a name="line.109"></a>
+<span class="sourceLineNo">110</span>        /**<a name="line.110"></a>
+<span class="sourceLineNo">111</span>         * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.<a name="line.111"></a>
+<span class="sourceLineNo">112</span>         * This is the simplest of the three overloads of this method. This overload takes the only required paramter—the end user's phone number.<a name="line.112"></a>
+<span class="sourceLineNo">113</span>         * @param phone_number  [Required]      A string representing the user’s phone number.<a name="line.113"></a>
+<span class="sourceLineNo">114</span>         * @return                                      A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.<a name="line.114"></a>
+<span class="sourceLineNo">115</span>         */<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        public VerifyResponse call(String phone_number)<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        {<a name="line.117"></a>
+<span class="sourceLineNo">118</span>                return call(phone_number, null, null, null, 0, null, true);<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        }<a name="line.119"></a>
+<span class="sourceLineNo">120</span>        <a name="line.120"></a>
+<span class="sourceLineNo">121</span>        /**<a name="line.121"></a>
+<span class="sourceLineNo">122</span>         * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.<a name="line.122"></a>
+<span class="sourceLineNo">123</span>         * Use this overload when the end user's spoken language isn't the default language (English).<a name="line.123"></a>
+<span class="sourceLineNo">124</span>         * @param phone_number  [Required] A string representing the user’s phone number.<a name="line.124"></a>
+<span class="sourceLineNo">125</span>         * @param language              [Required] A string representing the IETF language tag used in applying predefined templates. For example, "fr-CA". Set this value to null for English (the default). <a name="line.125"></a>
+<span class="sourceLineNo">126</span>         * @return                      A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.<a name="line.126"></a>
+<span class="sourceLineNo">127</span>         */<a name="line.127"></a>
+<span class="sourceLineNo">128</span>        public VerifyResponse call(String phone_number, String language)<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        {<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                return call(phone_number, language, null, null, 0, null, true);<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        }<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        <a name="line.132"></a>
+<span class="sourceLineNo">133</span>        /**<a name="line.133"></a>
+<span class="sourceLineNo">134</span>         * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.<a name="line.134"></a>
+<span class="sourceLineNo">135</span>         * Use this overload when the end user's written language isn't the default language (English), or when you want to send them a verification code that you create, or when you need to specify a method for handling automated interactions with a PBX .<a name="line.135"></a>
+<span class="sourceLineNo">136</span>         * @param phone_number          [Required]      A string representing the user’s phone number.<a name="line.136"></a>
+<span class="sourceLineNo">137</span>         * @param language                      [Required] A string representing the IETF language tag used in applying predefined templates. For example, "fr-CA". Set this value to null for English (the default).<a name="line.137"></a>
+<span class="sourceLineNo">138</span>         * @param verify_code           [Optional]      A string representing the verification code that you want to send to the end user. TeleSign will automatically generate a verification code for you if to set this value to null.<a name="line.138"></a>
+<span class="sourceLineNo">139</span>         * @param verify_method         [Optional]      A string representing the input method you want the end user to use when returning the verification code. Use a value of "keypress" when you want the user to use their phone to dial the code. Set this value to null when you want the user to enter the code into your web aplication (the default). <a name="line.139"></a>
+<span class="sourceLineNo">140</span>         * @param extension_type                [Optional]      An Integer value representing the type of response to use when dialing into a Private Branch Exchange (PBX). Use a value of 1 to have TeleSign use Dual-Tone Multi-Frequency (DTMF) tones to dail the user's extension. Use a value of 2 to have TeleSign use voice automation to request the user's extension. Use a value of 0 (the default) when the user isn't behind a PBX. <a name="line.140"></a>
+<span class="sourceLineNo">141</span>         * @param extension_template    [Optional]      A numerical string specifying the user's PBX extension number. Since this value is used in the callstring, you can include one second pauses by adding commas before the extension number.  Set this value to null (the default) if not used. <a name="line.141"></a>
+<span class="sourceLineNo">142</span>         * @param redial                        [Optional]      A boolean value that enables/disables redialing. Set this value to "true" (the default) when you want TeleSign to reattempt the call after a failed attempt. Set this value to "false" when you don't.<a name="line.142"></a>
+<span class="sourceLineNo">143</span>         * @return                                              A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.<a name="line.143"></a>
+<span class="sourceLineNo">144</span>         */<a name="line.144"></a>
+<span class="sourceLineNo">145</span>        public VerifyResponse call(String phone_number, String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial)<a name="line.145"></a>
+<span class="sourceLineNo">146</span>        {<a name="line.146"></a>
+<span class="sourceLineNo">147</span>                String result = null;<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                <a name="line.148"></a>
+<span class="sourceLineNo">149</span>                try<a name="line.149"></a>
+<span class="sourceLineNo">150</span>                {<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                        String clean_phone = PhoneUtil.formatTo11Digits(phone_number);<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                        TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/call", "POST", customer_id, secret_key);                      <a name="line.152"></a>
+<span class="sourceLineNo">153</span>                        String body = "phone_number=" + URLEncoder.encode(clean_phone, "UTF-8");<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                        <a name="line.154"></a>
+<span class="sourceLineNo">155</span>                        if(language != null)<a name="line.155"></a>
+<span class="sourceLineNo">156</span>                        {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                                body += "&amp;language=" + URLEncoder.encode(language, "UTF-8");<a name="line.157"></a>
+<span class="sourceLineNo">158</span>                        }<a name="line.158"></a>
+<span class="sourceLineNo">159</span>                        <a name="line.159"></a>
+<span class="sourceLineNo">160</span>                        if(verify_code != null)<a name="line.160"></a>
+<span class="sourceLineNo">161</span>                        {<a name="line.161"></a>
+<span class="sourceLineNo">162</span>                                body += "&amp;verify_code=" + URLEncoder.encode(verify_code, "UTF-8");<a name="line.162"></a>
+<span class="sourceLineNo">163</span>                        }<a name="line.163"></a>
+<span class="sourceLineNo">164</span>                        <a name="line.164"></a>
+<span class="sourceLineNo">165</span>                        if(verify_method != null &amp;&amp; verify_method.equalsIgnoreCase("keypress"))<a name="line.165"></a>
+<span class="sourceLineNo">166</span>                        {<a name="line.166"></a>
+<span class="sourceLineNo">167</span>                                body += "&amp;verify_method=" + URLEncoder.encode(verify_method, "UTF-8");<a name="line.167"></a>
+<span class="sourceLineNo">168</span>                        }<a name="line.168"></a>
+<span class="sourceLineNo">169</span>                        <a name="line.169"></a>
+<span class="sourceLineNo">170</span>                        if(extension_type &gt; 0 &amp;&amp; extension_type &lt; 3)<a name="line.170"></a>
+<span class="sourceLineNo">171</span>                        {<a name="line.171"></a>
+<span class="sourceLineNo">172</span>                                body += "&amp;extension_type=" + URLEncoder.encode(Integer.toString(extension_type), "UTF-8");<a name="line.172"></a>
+<span class="sourceLineNo">173</span>                        }<a name="line.173"></a>
+<span class="sourceLineNo">174</span>                        <a name="line.174"></a>
+<span class="sourceLineNo">175</span>                        if(extension_template != null)<a name="line.175"></a>
+<span class="sourceLineNo">176</span>                        {<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                                body += "&amp;extension_template=" + URLEncoder.encode(extension_template, "UTF-8");<a name="line.177"></a>
+<span class="sourceLineNo">178</span>                        }<a name="line.178"></a>
+<span class="sourceLineNo">179</span>                        <a name="line.179"></a>
+<span class="sourceLineNo">180</span>                        if(!redial)     // Set this only if it is false.<a name="line.180"></a>
+<span class="sourceLineNo">181</span>                        {<a name="line.181"></a>
+<span class="sourceLineNo">182</span>                                body += "&amp;redial=" + URLEncoder.encode(Boolean.toString(redial), "UTF-8");<a name="line.182"></a>
+<span class="sourceLineNo">183</span>                        }                       <a name="line.183"></a>
+<span class="sourceLineNo">184</span>                        <a name="line.184"></a>
+<span class="sourceLineNo">185</span>                        tr.setPostBody(body);<a name="line.185"></a>
+<span class="sourceLineNo">186</span>                        <a name="line.186"></a>
+<span class="sourceLineNo">187</span>                        result = tr.executeRequest();<a name="line.187"></a>
+<span class="sourceLineNo">188</span>                        <a name="line.188"></a>
+<span class="sourceLineNo">189</span>                } <a name="line.189"></a>
+<span class="sourceLineNo">190</span>                catch (IOException e)<a name="line.190"></a>
+<span class="sourceLineNo">191</span>                {<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                        System.err.println("IOException while executing phoneid API: " + e.getMessage());<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                }<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                <a name="line.194"></a>
+<span class="sourceLineNo">195</span>                Gson gson = new Gson();<a name="line.195"></a>
+<span class="sourceLineNo">196</span>                VerifyResponse response = gson.fromJson(result, VerifyResponse.class);<a name="line.196"></a>
+<span class="sourceLineNo">197</span>                <a name="line.197"></a>
+<span class="sourceLineNo">198</span>                return response;<a name="line.198"></a>
+<span class="sourceLineNo">199</span>        }<a name="line.199"></a>
+<span class="sourceLineNo">200</span>        <a name="line.200"></a>
+<span class="sourceLineNo">201</span>        /**<a name="line.201"></a>
+<span class="sourceLineNo">202</span>         * Retrieves the status of a phone verification (for either SMS or Call).<a name="line.202"></a>
+<span class="sourceLineNo">203</span>         * Call this method as a follow-up, after sending a verification code to an end user.<a name="line.203"></a>
+<span class="sourceLineNo">204</span>         * This method takes only one paramter—the reference identifier that you received from TeleSign after calling either {@link com.telesign.verify#sms()} or {@link com.telesign.verify#call()}.   <a name="line.204"></a>
+<span class="sourceLineNo">205</span>         * @param resource_id   [Required]      The string value that uniquely identifies a Phone Verify service transaction. Each time you make a Phone Verify call, the TeleSign server responds with this auto-generated value.<a name="line.205"></a>
+<span class="sourceLineNo">206</span>         * @return                                      A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.<a name="line.206"></a>
+<span class="sourceLineNo">207</span>         */<a name="line.207"></a>
+<span class="sourceLineNo">208</span>        public VerifyResponse status(String resource_id)<a name="line.208"></a>
+<span class="sourceLineNo">209</span>        {<a name="line.209"></a>
+<span class="sourceLineNo">210</span>                String result = null;<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                <a name="line.211"></a>
+<span class="sourceLineNo">212</span>                try<a name="line.212"></a>
+<span class="sourceLineNo">213</span>                {<a name="line.213"></a>
+<span class="sourceLineNo">214</span>                        TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/" + resource_id, "GET", customer_id, secret_key);<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                        result = tr.executeRequest();<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                }<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                catch (IOException e)<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                {<a name="line.218"></a>
+<span class="sourceLineNo">219</span>                        System.err.println("IOException while executing phoneid API: " + e.getMessage());<a name="line.219"></a>
+<span class="sourceLineNo">220</span>                }<a name="line.220"></a>
+<span class="sourceLineNo">221</span>                <a name="line.221"></a>
+<span class="sourceLineNo">222</span>                Gson gson = new Gson();<a name="line.222"></a>
+<span class="sourceLineNo">223</span>                VerifyResponse response = gson.fromJson(result, VerifyResponse.class);<a name="line.223"></a>
+<span class="sourceLineNo">224</span>                <a name="line.224"></a>
+<span class="sourceLineNo">225</span>                return response;<a name="line.225"></a>
+<span class="sourceLineNo">226</span>        }       <a name="line.226"></a>
+<span class="sourceLineNo">227</span>        <a name="line.227"></a>
+<span class="sourceLineNo">228</span>        private final String customer_id;<a name="line.228"></a>
+<span class="sourceLineNo">229</span>        private final String secret_key;<a name="line.229"></a>
+<span class="sourceLineNo">230</span>}<a name="line.230"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

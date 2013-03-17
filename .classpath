@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="libs/commons-codec-1.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://commons.apache.org/codec/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="libs/gson-2.2.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
