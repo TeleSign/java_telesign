@@ -3,6 +3,7 @@
 	<name>java_telesign</name>
 	<comment></comment>
 	<projects>
+		<project>python_rest_api</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

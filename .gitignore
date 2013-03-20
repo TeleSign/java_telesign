@@ -16,3 +16,4 @@ jel/
 
 # Properties File for Tests
 test.properties
+/javadoc.xml

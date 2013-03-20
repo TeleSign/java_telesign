@@ -50,7 +50,7 @@ public class VerifyResponse {
 		/**  One of the<emphasis> Transaction Status Codes</emphasis>. */
 		public int code;
 		
-		/** A descriptionm of the transaction status. */
+		/** A description of the transaction status. */
 		public String description;
 	}
 
