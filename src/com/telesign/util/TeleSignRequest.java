@@ -323,11 +323,11 @@ public class TeleSignRequest {
 	}
 
 	/**
-	 * Sets the level of encryption to use when signing this request.
-	 * Current values are SHA-1 and SHA-256, and represented in 
-	 * the AuthMethod enumeration.
+	 * Sets the cryptographic strength used when signing this request.
+	 * The set of valid values come from  
+	 * the {@link com.telesign.util.AuthMethod} enumeration.
 	 * 
-	 * @param auth	[Required] One of the AuthMethod enumeration values.
+	 * @param auth	[Required] One of the {@link com.telesign.util.AuthMethod} enumeration values.
 	 */
 	public void setSigningMethod(AuthMethod auth) {
 	
