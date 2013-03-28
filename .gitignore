@@ -1,6 +1,5 @@
 # Build & Release Folders.
 bin/
-doc/
 
 # Package Files
 .war
