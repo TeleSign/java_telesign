@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="TeleSign Java SDK" default="HTML Docs" basedir=".">
-	<property name="javadoc.header" value="&lt;strong&gt;TeleSign Java SDK&lt;/strong&gt;&#09;v1.0" />
-	<property name="javadoc.footer" value="&lt;strong&gt;DocBuild:&lt;/strong&gt;&#09;&lt;script&gt; var tStamp=new Date(); document.write(tStamp.toUTCString()); &lt;/script&gt;" />
-	<property name="javadoc.bottom" value='Copyright &amp;copy; 2012 - &lt;script&gt; var currYear=new Date(); document.write(currYear.getFullYear()); &lt;/script&gt;, TeleSign Corp., All rights reserved.' />
-    <target name="HTML Docs">
+	<target name="init" description="--> Setup environment variables for building this project.">
+		<property name="${eclipse.home}" location="/home/eclipse" />
+	</target>
+    <target name="HTML Docs" depends="init" description="--> Compile the HTML version of the doc set.">
+        <property name="javadoc.header" value="&lt;strong&gt;TeleSign Java SDK&lt;/strong&gt;&#09;v1.0" />
+		<property name="javadoc.footer" value="&lt;strong&gt;DocBuild:&lt;/strong&gt;&#09;&lt;script&gt; var tStamp=new Date(); document.write(tStamp.toUTCString()); &lt;/script&gt;" />
+		<property name="javadoc.bottom" value='Copyright &amp;copy; 2012 - &lt;script&gt; var currYear=new Date(); document.write(currYear.getFullYear()); &lt;/script&gt;, TeleSign Corp., All rights reserved.' />
         <javadoc access="private" 
         		additionalparam=" -noqualifier java.lang:java.io " 
         		author="true" 
-        		classpath="libs/org.apache.commons.codec/commons-codec-1.7.jar;libs/com.google.gson/gson-2.2.2.jar" 
+        		classpath="${basedir}/libs/org.apache.commons.codec/commons-codec-1.7.jar;${basedir}/libs/com.google.gson/gson-2.2.2.jar" 
         		destdir="${basedir}/doc" 
         		doctitle="TeleSign Java SDK Documentation" 
         		nodeprecated="true" 
@@ -15,14 +18,13 @@
         		noindex="false" 
         		nonavbar="false" 
         		notree="false" 
-        		overview="C:\Users\Chris\src\java_telesign\overview.html" 
+        		overview="${basedir}/overview.html" 
         		packagenames="com.telesign.verify,com.telesign.util,com.telesign.verify.response,com.telesign.phoneid,com.telesign.phoneid.response" 
         		source="1.7.0" 
         		sourcepath="${basedir}/src" 
         		splitindex="true" 
         		use="true" 
         		version="true">
-            <link href="file:/C:/Users/Chris/src/java_telesign/doc/"/>
             <link href="http://download.oracle.com/javase/7/docs/api/"/>
 		<header><![CDATA[${javadoc.header}]]></header>
 		<footer><![CDATA[${javadoc.footer}]]></footer>
