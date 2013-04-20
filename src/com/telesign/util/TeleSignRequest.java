@@ -283,7 +283,7 @@ public class TeleSignRequest {
 			
 			Date now = new Date();
 			//Tue, 10 Jan 2012 19:36:42 +0000
-			SimpleDateFormat rfc2616 = new SimpleDateFormat("EEE, dd MMM YYYY HH:mm:ss ZZZZ");
+			SimpleDateFormat rfc2616 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ");
 			String date = rfc2616.format(now);
 			addHeader("Date", date);
 			stringToSign += date + "\n";
