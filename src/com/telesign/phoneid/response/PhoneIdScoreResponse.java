@@ -1,6 +1,6 @@
 /**
  * @version		1.0
- * @copyright		Copyright © 2013, TeleSign Corporation.
+ * @copyright		Copyright Â© 2013, TeleSign Corporation.
  * @license		http://opensource.org/licenses/mit-license.php The MIT License (MIT).
  * @author		J. Weatherford
  * @maintainer		Humberto Morales
@@ -73,13 +73,13 @@ public class PhoneIdScoreResponse {
 	/** An object containing details about the numbering attributes of the specified phone number. */
 	public static class Numbering {
 	    	
-	    	/** An object containing details about the original phone number passed to TeleSign’s PhoneID API. */
+	    	/** An object containing details about the original phone number passed to TeleSignï¿½s PhoneID API. */
 		public OriginalNumber original;
 		
 		/** An object containing details about how the phone number was cleansed. Phone Cleansing corrects common formatting issues in submitted phone numbers. */
 		public CleansingNumber cleansing;
 		
-	    	/** An object containing details about the original phone number passed to TeleSign’s PhoneID API. */
+	    	/** An object containing details about the original phone number passed to TeleSignï¿½s PhoneID API. */
 		public static class OriginalNumber {
 		    
 		    	/** The Base Phone Number. This is simply the phone number without the Country Dialing Code. */

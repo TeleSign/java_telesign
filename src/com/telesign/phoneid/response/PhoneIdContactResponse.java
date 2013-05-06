@@ -1,6 +1,6 @@
 /**
  * @version		1.0
- * @copyright		Copyright © 2013, TeleSign Corporation.
+ * @copyright		Copyright Â© 2013, TeleSign Corporation.
  * @license		http://opensource.org/licenses/mit-license.php The MIT License (MIT).
  * @author		J. Weatherford
  * @maintainer		Humberto Morales
@@ -79,13 +79,13 @@ public class PhoneIdContactResponse {
 	/** An object containing details about the numbering attributes of the specified phone number. */
 	public static class Numbering {
 	    	
-	    	/** An object containing details about the original phone number passed to TeleSign’s PhoneID API. */
+	    	/** An object containing details about the original phone number passed to TeleSignï¿½s PhoneID API. */
 		public OriginalNumber original;
 		
 		/** An object containing details about how the phone number was cleansed. Phone Cleansing corrects common formatting issues in submitted phone numbers. */
 		public CleansingNumber cleansing;
 		
-	    	/** An object containing details about the original phone number passed to TeleSign’s PhoneID API. */
+	    	/** An object containing details about the original phone number passed to TeleSignï¿½s PhoneID API. */
 		public static class OriginalNumber {
 		    
 		    	/** The Base Phone Number. This is simply the phone number without the Country Dialing Code. */
@@ -198,22 +198,22 @@ public class PhoneIdContactResponse {
 	/** An object that describes data associated with the contact specified in the request. */
 	public static class Contact {
 	    
-	    	/** A string that indicates the contact’s first name or given name. If the result is a business name, the full business name goes in this field. Depending on the data provider, it might or might not be possible to distinguish business names from personal names. */
+	    	/** A string that indicates the contactï¿½s first name or given name. If the result is a business name, the full business name goes in this field. Depending on the data provider, it might or might not be possible to distinguish business names from personal names. */
 		public String firstname;
 		
-		/** A string that indicates the contact’s last name or family name. If that contact is a business, this value is null. */
+		/** A string that indicates the contactï¿½s last name or family name. If that contact is a business, this value is null. */
 		public String lastname;
 		
-		/** A string that indicates the first line of the contact’s street address. */
+		/** A string that indicates the first line of the contactï¿½s street address. */
 		public String address1;
 		
-		/** A string that indicates the second line of the contact’s street address. */
+		/** A string that indicates the second line of the contactï¿½s street address. */
 		public String address2;
 		
-		/** A string that indicates the third line of the contact’s street address. */
+		/** A string that indicates the third line of the contactï¿½s street address. */
 		public String address3;
 		
-		/** A string that indicates the fourth line of the contact’s street address. */
+		/** A string that indicates the fourth line of the contactï¿½s street address. */
 		public String address4;
 		
 		/** A string that indicates the city in which the contact is located. */

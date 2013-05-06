@@ -1,6 +1,6 @@
 /**
  * @version     1.0
- * @copyright   Copyright © 2013, TeleSign Corporation.
+ * @copyright   Copyright Â© 2013, TeleSign Corporation.
  * @license     http://opensource.org/licenses/mit-license.php The MIT License (MIT).
  * @author      John Weatherford
  * @maintainer  Humberto Morales
@@ -38,7 +38,7 @@ public class Verify {
 
 	/**
 	 * Delivers a verification code to the end user by sending it in a text message.
-	 * This is the simplest of the three overloads of this method. This overload takes the only required paramter—the end user's phone number. 
+	 * This is the simplest of the three overloads of this method. This overload takes the only required paramterï¿½the end user's phone number. 
 	 * @param phone_number	[Required] A string containing the user's phone number.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
@@ -50,7 +50,7 @@ public class Verify {
 	/**
 	 * Delivers a verification code to the end user by sending it in a text message.
 	 * Use this overload when the user's native written language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
-	 * @param phone_number	[Required]	A string containing the user’s phone number.
+	 * @param phone_number	[Required]	A string containing the userï¿½s phone number.
 	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default). This value is used in applying predefined text message templates.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
@@ -68,7 +68,7 @@ public class Verify {
 	 * 	<li>when you want to apply a custom text message template.</li>
 	 * </ul>
 	 * 
-	 * @param phone_number	[Required]	A string containing the user’s phone number.
+	 * @param phone_number	[Required]	A string containing the userï¿½s phone number.
 	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default). This value is used in applying predefined text message templates.
 	 * @param verify_code	[Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
 	 * @param template		[Optional]	A string containing a text message to override the predefined text message template. Your text message must incorporate a $$CODE$$ placeholder to integrate the verify_code field. Set this value to null (the default) to use the predefined template.
@@ -115,8 +115,8 @@ public class Verify {
 	
 	/**
 	 * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
-	 * This is the simplest of the three overloads of this method. This overload takes the only required parameter—the end user's phone number.
-	 * @param phone_number	[Required]	A string containing the user’s phone number.
+	 * This is the simplest of the three overloads of this method. This overload takes the only required parameterï¿½the end user's phone number.
+	 * @param phone_number	[Required]	A string containing the userï¿½s phone number.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse call(String phone_number) {
@@ -127,7 +127,7 @@ public class Verify {
 	/**
 	 * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
 	 * Use this overload when the user's native spoken language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
-	 * @param phone_number	[Required] A string containing the user’s phone number.
+	 * @param phone_number	[Required] A string containing the userï¿½s phone number.
 	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
@@ -145,7 +145,7 @@ public class Verify {
 	 * 	<li>when you need to specify a method for handling automated interactions with a PBX.</li>
 	 * </ul>
 	 * 
-	 * @param phone_number			[Required]	A string containing the user’s phone number.
+	 * @param phone_number			[Required]	A string containing the userï¿½s phone number.
 	 * @param language				[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
 	 * @param verify_code			[Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
 	 * @param verify_method			[Optional]	A string containing the input method you want the end user to use when returning the verification code. Use a value of "keypress" when you want the user to use their phone to dial the code. Set this value to null when you want the user to enter the code into your web aplication (the default). 
@@ -209,7 +209,7 @@ public class Verify {
 	/**
 	 * Requests the verification result from TeleSign.
 	 * After sending an end user a verification code, wait a minute or two to allow them to receive it and then respond, and then call this method to find out if the end user passed the code challenge.
-	 * This method takes only one parameter—the ID of this particular web service transaction.
+	 * This method takes only one parameterï¿½the ID of this particular web service transaction.
 	 * @param resource_id	[Required]	The string returned in the Response Message that TeleSign sends upon receipt of your HTTP 1.1 Request Message - for either {@link com.telesign.verify#sms()} or {@link com.telesign.verify#call()}.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */

@@ -1,6 +1,6 @@
 /**
  * @version		1.0
- * @copyright		Copyright © 2013, TeleSign Corporation.
+ * @copyright		Copyright Â© 2013, TeleSign Corporation.
  * @license		http://opensource.org/licenses/mit-license.php The MIT License (MIT).
  * @author		J. Weatherford
  * @maintainer		Humberto Morales

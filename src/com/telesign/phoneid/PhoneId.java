@@ -1,6 +1,6 @@
 /**
  * @version     1.0
- * @copyright   Copyright © 2013, TeleSign Corporation.
+ * @copyright   Copyright Â© 2013, TeleSign Corporation.
  * @license     http://opensource.org/licenses/mit-license.php The MIT License (MIT).
  * @author      John Weatherford
  * @maintainer  Humberto Morales
@@ -47,7 +47,7 @@ public class PhoneId {
 	}
 
 	/**
-	 * Returns information about a specified phone number’s type, numbering
+	 * Returns information about a specified phone numberï¿½s type, numbering
 	 * structure, cleansing details, and location details.
 	 * 
 	 * @param phone_number
@@ -118,7 +118,7 @@ public class PhoneId {
 	}
 
 	/**
-	 * Returns contact details for a specified phone number’s subscriber. This
+	 * Returns contact details for a specified phone numberï¿½s subscriber. This
 	 * includes the subscriber's First Name, Last Name, Street Address, City,
 	 * State (or Province), Country, and ZIP (Postal) Code.
 	 * 
@@ -157,7 +157,7 @@ public class PhoneId {
 	}
 
 	/**
-	 * Returns information about a specified phone number’s
+	 * Returns information about a specified phone numberï¿½s
 	 * <em>state of operation</em>. You can use it to find out if:
 	 * <ul>
 	 * <li>the line is in service,</li>

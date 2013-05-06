@@ -1,6 +1,6 @@
 /**
  * @version		1.0
- * @copyright		Copyright © 2013, TeleSign Corporation.
+ * @copyright		Copyright Â© 2013, TeleSign Corporation.
  * @license		http://opensource.org/licenses/mit-license.php The MIT License (MIT).
  * @author		J. Weatherford
  * @maintainer		Humberto Morales
@@ -41,7 +41,7 @@ public class PhoneIdLiveResponse {
 	public Location location; 
 	
 	/**
-	 * A JSON object containing details about a specified phone number’s state of operation.
+	 * A JSON object containing details about a specified phone numberï¿½s state of operation.
 	 * <strong>Note:</strong> In the case where PhoneID Live is not supported for the specified phone number, the server returns a <strong>Live</strong> object that is <em>null</em>. 
 	 */
 	public Live live;
@@ -82,13 +82,13 @@ public class PhoneIdLiveResponse {
 	/** An object containing details about the numbering attributes of the specified phone number. */
 	public static class Numbering {
 	    	
-	    	/** An object containing details about the original phone number passed to TeleSign’s PhoneID API. */
+	    	/** An object containing details about the original phone number passed to TeleSignï¿½s PhoneID API. */
 		public OriginalNumber original;
 		
 		/** An object containing details about how the phone number was cleansed. Phone Cleansing corrects common formatting issues in submitted phone numbers. */
 		public CleansingNumber cleansing;
 		
-	    	/** An object containing details about the original phone number passed to TeleSign’s PhoneID API. */
+	    	/** An object containing details about the original phone number passed to TeleSignï¿½s PhoneID API. */
 		public static class OriginalNumber {
 		    
 		    	/** The Base Phone Number. This is simply the phone number without the Country Dialing Code. */
@@ -199,12 +199,12 @@ public class PhoneIdLiveResponse {
 	}
 
 	/**
-	 * A JSON object containing details about a specified phone number’s state of operation.
+	 * A JSON object containing details about a specified phone numberï¿½s state of operation.
 	 * <strong>Note:</strong> In the case where PhoneID Live is not supported for the specified phone number, the server returns a <strong>Live</strong> object that is <em>null</em>. 
 	 */
 	public static class Live {
 	    
-	    	/** A string indicating the current status of the subscriber’s phone number. */
+	    	/** A string indicating the current status of the subscriberï¿½s phone number. */
 		public String subscriber_status;
 		
 		/** A string indicating the current status of the phone equipment. */
