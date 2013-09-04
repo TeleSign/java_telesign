@@ -183,4 +183,56 @@ public class VerifyTest {
 		assertNotNull(ret2);
 		assertTrue(ret2.errors.length == 0);
 	}
+
+	@Test
+    public void verifyRequestPush() {
+        if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+            fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+        }
+
+        Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+        VerifyResponse ret = ver.push(PHONE_NUMBER, null, null, "Outlook-2FA", "Test Message");
+        assertNotNull(ret);
+        assertTrue(ret.errors.length == 0);
+
+        String reference_id = ret.reference_id;
+
+        VerifyResponse ret2 = ver.status(reference_id);
+        assertNotNull(ret2);
+        assertTrue(ret2.errors.length == 0);
+    }
+
+    @Test
+    public void verifyRequestSoftToken() {
+        if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+            fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+        }
+
+        Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+        VerifyResponse ret = ver.sms(PHONE_NUMBER, "123112");
+        assertNotNull(ret);
+        assertTrue(ret.errors.length == 0);
+
+        VerifyResponse ret2 = ver.soft_token(PHONE_NUMBER, null,"123112");
+        assertNotNull(ret2);
+        assertTrue(ret2.errors.length == 0);
+    }
+
+    @Test
+    public void verifyRequestTwoWaySMS() {
+        if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+            fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+        }
+
+        Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+        VerifyResponse ret = ver.two_way_sms(PHONE_NUMBER, "BACS");
+        assertNotNull(ret);
+        assertTrue(ret.errors.length == 0);
+
+        String reference_id = ret.reference_id;
+
+        VerifyResponse ret2 = ver.status(reference_id);
+        assertNotNull(ret2);
+        assertTrue(ret2.errors.length == 0);
+    }
 }
