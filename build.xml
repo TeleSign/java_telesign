@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="TeleSign Java SDK" default="HTML Docs" basedir=".">
+ <path id="my-classpath">
+   <fileset dir="${basedir}/libs">
+     <include name="*.jar"/>
+   </fileset> 
+ </path> 
+ <javac srcdir="${basedir}/src" destdir="${basedir}/classes" classpathref="my-classpath"/>
  <target name="init" description="--> Setup environment variables for building this project.">
   <property name="${eclipse.home}" location="/home/eclipse" />
  </target>
@@ -31,4 +37,9 @@
   <bottom><![CDATA[${javadoc.bottom}]]></bottom>
         </javadoc>
     </target>
+ <jar destfile="${basedir}/java_telesign.jar">
+   <fileset dir="${basedir}/classes"/>
+   <fileset dir="${basedir}" includes="LICENSE.txt"/>
+   <fileset dir="${basedir}/src"/>
+ </jar>     
 </project>
