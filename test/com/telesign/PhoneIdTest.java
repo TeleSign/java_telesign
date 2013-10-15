@@ -64,9 +64,6 @@ public class PhoneIdTest {
 		}
 	}
 
-
-	
-	
 	@Test
 	public void phoneIdError() {
 		PhoneId pid = new PhoneId("Junk" , "Fake");
@@ -181,8 +178,5 @@ public class PhoneIdTest {
 		assertTrue(json4.contains("{\"reference_id\":"));
 		
 	}
-	
-	
-	
-	
+
 }
