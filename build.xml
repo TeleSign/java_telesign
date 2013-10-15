@@ -41,5 +41,10 @@
    <fileset dir="${basedir}/classes"/>
    <fileset dir="${basedir}" includes="LICENSE.txt"/>
    <fileset dir="${basedir}/src"/>
+   <manifest>
+     <attribute name="Manifest-Version" value="2.0"/>
+     <attribute name="Implementation-Version"
+                value="latestOriginRevision_6b86a06303"/>
+   </manifest>
  </jar>     
 </project>

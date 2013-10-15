@@ -14,6 +14,7 @@ import com.telesign.phoneid.response.PhoneIdContactResponse;
 import com.telesign.phoneid.response.PhoneIdLiveResponse;
 import com.telesign.phoneid.response.PhoneIdScoreResponse;
 import com.telesign.phoneid.response.PhoneIdStandardResponse;
+import com.telesign.util.ProxyHostPort;
 import com.telesign.util.TeleSignRequest;
 import java.io.IOException;
 
@@ -26,6 +27,10 @@ public class PhoneId {
 
 	private final String customer_id;
 	private final String secret_key;
+
+  private final ProxyHostPort proxy;
+
+  private static final String TELESIGN_BASE = "https://rest.telesign.com";
 
 	/**
 	 * The PhoneId class constructor. Once you instantiate a PhoneId object, you
@@ -41,12 +46,32 @@ public class PhoneId {
 	 *            (available from the TeleSign Client Portal).
 	 */
 	public PhoneId(String customer_id, String secret_key) {
-
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
+    this(customer_id, secret_key, null);
 	}
 
-	/**
+  /**
+   * The PhoneId class constructor. Once you instantiate a PhoneId object, you
+   * can use it to make instance calls to <em>PhoneID Standard</em>,
+   * <em>PhoneID Score</em>, <em>PhoneID Contact</em>, and
+   * <em>PhoneID Live</em>.
+   *
+   * @param customer_id
+   *            [Required] A string representing your TeleSign Customer ID.
+   *            This represents your TeleSign account number.
+   * @param secret_key
+   *            [Required] A string representing your TeleSign Secret Key
+   *            (available from the TeleSign Client Portal).
+   * @param proxy
+   *            [Optional] A proxy to use during the request. Can be null.
+   */
+  public PhoneId(String customer_id, String secret_key, ProxyHostPort proxy) {
+
+    this.customer_id = customer_id;
+    this.secret_key = secret_key;
+    this.proxy = proxy;
+  }
+
+  /**
 	 * Returns information about a specified phone number�s type, numbering
 	 * structure, cleansing details, and location details.
 	 * 
@@ -64,8 +89,8 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/standard/"
-							+ phone_number, "GET", customer_id, secret_key);
+          TELESIGN_BASE, "/v1/phoneid/standard/"
+							+ phone_number, proxy, "GET", customer_id, secret_key);
 			result = tr.executeRequest();
 		} catch (IOException e) {
 
@@ -100,8 +125,8 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/score/"
-							+ phone_number, "GET", customer_id, secret_key);
+          TELESIGN_BASE, "/v1/phoneid/score/"
+							+ phone_number, proxy, "GET", customer_id, secret_key);
 			tr.addParam("ucid", ucid);
 			result = tr.executeRequest();
 		} catch (IOException e) {
@@ -138,8 +163,8 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/contact/"
-							+ phone_number, "GET", customer_id, secret_key);
+          TELESIGN_BASE, "/v1/phoneid/contact/"
+							+ phone_number, proxy, "GET", customer_id, secret_key);
 			tr.addParam("ucid", ucid);
 
 			result = tr.executeRequest();
@@ -179,8 +204,8 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/live/"
-							+ phone_number, "GET", customer_id, secret_key);
+          TELESIGN_BASE, "/v1/phoneid/live/"
+							+ phone_number, proxy, "GET", customer_id, secret_key);
 			tr.addParam("ucid", ucid);
 
 			result = tr.executeRequest();
