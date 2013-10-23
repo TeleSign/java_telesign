@@ -1,34 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="TeleSign Java SDK" default="HTML Docs" basedir=".">
- <target name="init" description="--> Setup environment variables for building this project.">
-  <property name="${eclipse.home}" location="/home/eclipse" />
- </target>
-    <target name="HTML Docs" depends="init" description="--> Compile the HTML version of the doc set.">
-        <property name="javadoc.header" value="&lt;strong&gt;TeleSign Java SDK&lt;/strong&gt;&#09;v1.0" />
-  <property name="javadoc.footer" value="&lt;strong&gt;DocBuild:&lt;/strong&gt;&#09;&lt;script&gt; var tStamp=new Date(); document.write(tStamp.toUTCString()); &lt;/script&gt;" />
-  <property name="javadoc.bottom" value='Copyright &amp;copy; 2012 - &lt;script&gt; var currYear=new Date(); document.write(currYear.getFullYear()); &lt;/script&gt;, TeleSign Corp., All rights reserved.' />
-        <javadoc access="private" 
-          additionalparam=" -noqualifier java.lang:java.io " 
-          author="true" 
-          classpath="${basedir}/libs/commons-codec-1.7.jar;${basedir}/libs/gson-2.2.1.jar" 
-          destdir="${basedir}/doc" 
-          doctitle="TeleSign Java SDK Documentation" 
-          nodeprecated="true" 
-          nodeprecatedlist="true" 
-          noindex="false" 
-          nonavbar="false" 
-          notree="false" 
-          overview="${basedir}/overview.html" 
-          packagenames="com.telesign.verify,com.telesign.util,com.telesign.verify.response,com.telesign.phoneid,com.telesign.phoneid.response" 
-          source="1.7.0" 
-          sourcepath="${basedir}/src" 
-          splitindex="true" 
-          use="true" 
-          version="true">
-            <link href="http://download.oracle.com/javase/7/docs/api/"/>
-  <header><![CDATA[${javadoc.header}]]></header>
-  <footer><![CDATA[${javadoc.footer}]]></footer>
-  <bottom><![CDATA[${javadoc.bottom}]]></bottom>
-        </javadoc>
-    </target>
+
+  <path id="classpath">
+    <fileset dir="libs" includes="**/*.jar"/>
+  </path>
+
+  <target name="clean">
+    <delete dir="build"/>
+  </target>
+
+  <target name="compile" depends="clean">
+    <property name="build.sysclasspath" value="last"/>
+    <mkdir dir="build/classes"/>
+    <javac srcdir="src" destdir="build/classes" classpathref="classpath"/>
+  </target>
+
+  <target name="jar" depends="compile">
+    <mkdir dir="build/jar"/>
+    <jar destfile="build/jar/TeleSign.jar" basedir="build/classes"/>
+  </target>
+
+  <target name="compile_unittest" depends="clean">
+    <property name="build.sysclasspath" value="last"/>
+    <mkdir dir="build/classes"/>
+    <javac srcdir="src" destdir="build/classes" classpathref="classpath"/>
+    <javac srcdir="test" destdir="build/classes" classpathref="classpath"/>
+  </target>
+
+  <target name="jar_unit" depends="compile_unittest">
+    <mkdir dir="build/jar"/>
+    <jar destfile="build/jar/TeleSign.jar" basedir="build/classes"/>
+  </target>
+
+  <target name="junit" depends="jar_unit">
+    <junit printsummary="yes">
+      <classpath>
+        <path refid="classpath"/>
+  		  <pathelement location="${basedir}/build/jar/TeleSign.jar"/>
+      </classpath>
+      <batchtest fork="yes">
+        <fileset dir="test" includes="**/*Test*.java"/>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="doc" description="--> Compile the HTML version of the doc set.">
+    <property name="${eclipse.home}" location="/home/eclipse" />
+    <property name="javadoc.header" value="&lt;strong&gt;TeleSign Java SDK&lt;/strong&gt;&#09;v1.0" />
+    <property name="javadoc.footer" value="&lt;strong&gt;DocBuild:&lt;/strong&gt;&#09;&lt;script&gt; var tStamp=new Date(); document.write(tStamp.toUTCString()); &lt;/script&gt;" />
+    <property name="javadoc.bottom" value='Copyright &amp;copy; 2012 - &lt;script&gt; var currYear=new Date(); document.write(currYear.getFullYear()); &lt;/script&gt;, TeleSign Corp., All rights reserved.' />
+    <javadoc access="private"
+      additionalparam=" -noqualifier java.lang:java.io "
+      author="true"
+      classpath="${basedir}/libs/commons-codec-1.7.jar;${basedir}/libs/gson-2.2.1.jar"
+      destdir="${basedir}/doc"
+      doctitle="TeleSign Java SDK Documentation"
+      nodeprecated="true"
+      nodeprecatedlist="true"
+      noindex="false"
+      nonavbar="false"
+      notree="false"
+      overview="${basedir}/overview.html"
+      packagenames="com.telesign.verify,com.telesign.util,com.telesign.verify.response,com.telesign.phoneid,com.telesign.phoneid.response"
+      source="1.7.0"
+      sourcepath="${basedir}/src"
+      splitindex="true"
+      use="true"
+      version="true">
+      <link href="http://download.oracle.com/javase/7/docs/api/"/>
+      <header><![CDATA[${javadoc.header}]]></header>
+      <footer><![CDATA[${javadoc.footer}]]></footer>
+      <bottom><![CDATA[${javadoc.bottom}]]></bottom>
+    </javadoc>
+  </target>
+
 </project>
