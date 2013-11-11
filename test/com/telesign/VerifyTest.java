@@ -213,7 +213,7 @@ public class VerifyTest {
         assertNotNull(ret);
         assertTrue(ret.errors.length == 0);
 
-        VerifyResponse ret2 = ver.soft_token(PHONE_NUMBER, null,"123112");
+        VerifyResponse ret2 = ver.soft_token(PHONE_NUMBER, null, "123112");
         assertNotNull(ret2);
         assertTrue(ret2.errors.length == 0);
     }
@@ -225,7 +225,7 @@ public class VerifyTest {
         }
 
         Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-        VerifyResponse ret = ver.two_way_sms(PHONE_NUMBER, "BACS");
+        VerifyResponse ret = ver.two_way_sms(PHONE_NUMBER, "BACS", null, null);
         assertNotNull(ret);
         assertTrue(ret.errors.length == 0);
 
