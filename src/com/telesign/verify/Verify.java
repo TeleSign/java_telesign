@@ -104,7 +104,7 @@ public class Verify {
 		}
 		catch (IOException e) {
 
-			System.err.println("IOException while executing phoneid API: " + e.getMessage());
+			System.err.println("IOException while executing verify API: " + e.getMessage());
 		}
 		
 		Gson gson = new Gson();
@@ -112,6 +112,141 @@ public class Verify {
 		
 		return response;
 	}
+
+	/**
+     * The TeleSign Verify Push web service is a server-side component of the TeleSign AuthID application, and it allows you to provide on-device transaction authorization for your users. It works by delivering authorization requests to your users via Push Notification, and then by receiving their permission responses via their mobile device’s wireless Internet connection. The service provides two levels of security to support two types of transactions.
+     *
+     * @param phone_number	        [Required]	A string containing the user�s phone number.
+     * @param notification_type		[Optional]	Indicates the security measure to use for transaction authorization. The following types are currently supported: CODE, SIMPLE
+     * @param notification_value	[Optional]	Applies when notification_type=CODE. The verification code used for the code challenge. This is a randomly generated numeric value that you display in your web page for your user. After reading this value, the user then types it into the AuthID application on their mobile device
+     * @param template		        [Optional]	A string containing a text message to override the predefined text message template. Your text message must incorporate a $$CODE$$ placeholder to integrate the verify_code field. Set this value to null (the default) to use the predefined template.
+     * @param message		        [Optional]	The message to display to the end user, in the body of the notification. You normally leave this parameter empty (or set to null), and the default message is displayed.
+     * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+     */
+    public VerifyResponse push(String phone_number, String notification_type, String notification_value, String template, String message) {
+
+        String result = null;
+
+        try {
+
+            TeleSignRequest tr = new TeleSignRequest("https://rest-mobile.telesign.com", "/v1/verify/push", "POST", customer_id, secret_key);
+            String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
+
+            if(notification_type != null) {
+                body += "&notification_type=" + URLEncoder.encode(notification_type, "UTF-8");
+            }
+
+            if(notification_value != null) {
+                body += "&notification_value=" + URLEncoder.encode(notification_value, "UTF-8");
+            }
+
+            if(template != null) {
+                body += "&template=" + URLEncoder.encode(template, "UTF-8");
+            }
+
+            if(message != null) {
+                body += "&message=" + URLEncoder.encode(message, "UTF-8");
+            }
+
+            tr.setPostBody(body);
+
+            result = tr.executeRequest();
+        }
+        catch (IOException e) {
+
+            System.err.println("IOException while executing verify API: " + e.getMessage());
+        }
+
+        Gson gson = new Gson();
+        VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
+
+        return response;
+    }
+
+    /**
+     * The TeleSign Verify Soft Token web service is a server-side component of the TeleSign AuthID application, and it allows you to authenticate your end users when they use the TeleSign AuthID application on their mobile device to generate a Time-based One-time Password (TOTP) verification code
+     *
+     * @param phone_number	        [Required]	A string containing the user�s phone number.
+     * @param soft_token_id		    [Optional]	The alphanumeric string that uniquely identifies your TeleSign soft token subscription
+     * @param verify_code	        [Optional]	The verification code received from the end user
+     * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+     */
+    public VerifyResponse soft_token(String phone_number, String soft_token_id, String verify_code) {
+
+        String result = null;
+
+        try {
+
+            TeleSignRequest tr = new TeleSignRequest("https://rest-mobile.telesign.com", "/v1/verify/soft_token", "POST", customer_id, secret_key);
+            String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
+
+            if(soft_token_id != null) {
+                body += "&soft_token_id=" + URLEncoder.encode(soft_token_id, "UTF-8");
+            }
+
+            if(verify_code != null) {
+                body += "&verify_code=" + URLEncoder.encode(verify_code, "UTF-8");
+            }
+
+            tr.setPostBody(body);
+
+            result = tr.executeRequest();
+        }
+        catch (IOException e) {
+
+            System.err.println("IOException while executing verify API: " + e.getMessage());
+        }
+
+        Gson gson = new Gson();
+        VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
+
+        return response;
+    }
+
+    /**
+     * The TeleSign Verify 2-Way SMS web service allows you to authenticate your users and verify user transactions via two-way Short Message Service (SMS) wireless communication. Verification requests are sent to user’s in a text message, and users return their verification responses by replying to the text message.
+     *
+     * @param phone_number	        [Required]	The phone number for the Verify Soft Token request, including country code
+     * @param $ucid		            [Required]	A string specifying one of the Use Case Codes
+     * @param $message	            [Optional]	The text to display in the body of the text message. You must include the $$CODE$$ placeholder for the verification code somewhere in your message text. TeleSign automatically replaces it with a randomly-generated verification code
+     * @param $validity_period	    [Optional]	This parameter allows you to place a time-limit on the verification. This provides an extra level of security by restricting the amount of time your end user has to respond (after which, TeleSign automatically rejects their response). Values are expressed as a natural number followed by a lower-case letter that represents the unit of measure. You can use ‘s’ for seconds, ‘m’ for minutes, ‘h’ for hours, and ‘d’ for days
+     * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+     */
+    public VerifyResponse two_way_sms(String phone_number, String ucid, String message, String validity_period) {
+
+        String result = null;
+
+        try {
+
+            TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/two_way_sms", "POST", customer_id, secret_key);
+            String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
+
+            if(ucid != null) {
+                body += "&ucid=" + URLEncoder.encode(ucid, "UTF-8");
+            }
+
+            if(message != null) {
+                body += "&message=" + URLEncoder.encode(message, "UTF-8");
+            }
+
+            if(validity_period != null) {
+                body += "&validity_period=" + URLEncoder.encode(validity_period, "UTF-8");
+            }
+
+            tr.setPostBody(body);
+
+            result = tr.executeRequest();
+        }
+        catch (IOException e) {
+
+            System.err.println("IOException while executing verify API: " + e.getMessage());
+        }
+
+        Gson gson = new Gson();
+        VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
+
+        return response;
+    }
 	
 	/**
 	 * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
@@ -197,7 +332,7 @@ public class Verify {
 		}
 		catch (IOException e) {
 
-			System.err.println("IOException while executing phoneid API: " + e.getMessage());
+			System.err.println("IOException while executing verify API: " + e.getMessage());
 		}
 		
 		Gson gson = new Gson();
@@ -224,7 +359,7 @@ public class Verify {
 		}
 		catch (IOException e) {
 
-			System.err.println("IOException while executing phoneid API: " + e.getMessage());
+			System.err.println("IOException while executing verify API: " + e.getMessage());
 		}
 		
 		Gson gson = new Gson();
