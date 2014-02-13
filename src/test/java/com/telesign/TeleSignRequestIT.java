@@ -24,7 +24,7 @@ import com.telesign.util.TeleSignRequest;
  *	Support email address "support@telesign.com"
  *	Author: jweatherford
  */
-public class TeleSignRequestTest {
+public class TeleSignRequestIT {
 	public static String CUSTOMER_ID;
 	public static String SECRET_KEY;
 	public static String PHONE_NUMBER;
