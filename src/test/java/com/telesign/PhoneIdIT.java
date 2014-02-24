@@ -22,7 +22,7 @@ import com.telesign.phoneid.response.PhoneIdStandardResponse;
  *	Support email address "support@telesign.com"
  *	Author: jweatherford
  */
-public class PhoneIdTest {
+public class PhoneIdIT {
 	public static String CUSTOMER_ID;
 	public static String SECRET_KEY;
 	public static String PHONE_NUMBER;

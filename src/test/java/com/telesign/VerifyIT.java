@@ -21,7 +21,7 @@ import com.telesign.verify.response.VerifyResponse;
  *	Support email address "support@telesign.com"
  *	Author: jweatherford
  */
-public class VerifyTest {
+public class VerifyIT {
 
 	public static String CUSTOMER_ID;
 	public static String SECRET_KEY;

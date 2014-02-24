@@ -1,17 +1,9 @@
 # Build & Release Folders.
-bin/
-doc/
-# Package Files
-.war
-.ear
-.swp
-
-# Compiled Java files.
-.class
-
-# Experimental Bits
-# The output from an XML Doclet.
-jel/
+target/
+.idea/
+*.iml
 
 # Properties File for Tests
 test.properties
+src/test/resources/test.properties
+
