@@ -2,8 +2,10 @@
 TeleSign
 ========
 
-NOTE: This is a forked version from Telesign to support building in Maven and creating an OSGi bundle. The tests are also run using failsafe as integration tests.
+WARNING (DML): After looking at the quality of this code, you should stay far, far away from this codebase and/or SDK. This is not idiomatic Java, and it violates a whole variety of quality practices on virtually every page (muting exceptions, printing stacktraces to STDOUT, returnning null in arbitrary places, etc). It's probably better to see how the Ruby/Python stuff is approached, and just code up a Java version from that instead (assuming those are better).
  
+NOTE: This is a forked version from Telesign to support building in Maven and creating an OSGi bundle. The tests are also run using failsafe as integration tests.
+
 :Info:
     For more information, visit the `TeleSign web site <http://www.TeleSign.com>`_.
     For the latest source code, visit the `TeleSign github repository <http://github.com/TeleSign/java_telesign/tree>`_.
