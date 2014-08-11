@@ -183,4 +183,24 @@ public class VerifyTest {
 		assertNotNull(ret2);
 		assertTrue(ret2.errors.length == 0);
 	}
+
+	@Test
+	public void verifyRequestSMSwithVerifyCode() {
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		
+		String verify_code = "12345";
+		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		VerifyResponse ret = ver.sms(PHONE_NUMBER, null, verify_code, null);
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+		
+		String reference_id = ret.reference_id;
+		
+		VerifyResponse ret2 = ver.status(reference_id, verify_code);
+		assertNotNull(ret2);
+		assertTrue(ret2.errors.length == 0);
+		assertTrue(ret2.verify.code_state.equals("VALID"));
+	}
 }

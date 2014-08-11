@@ -19,7 +19,7 @@ import java.net.URLEncoder;
  *  The Verify class abstracts your interactions with the <em>TeleSign Verify web service</em>.
  *  A Verify object encapsulates your credentials (your TeleSign <em>Customer ID</em> and <em>Secret Key</em>).
  */
-public class Verify {
+public class    Verify {
 
 	private final String customer_id;
 	private final String secret_key;
@@ -215,11 +215,28 @@ public class Verify {
 	 */
 	public VerifyResponse status(String resource_id) {
 
+		return status(resource_id, null);
+	}
+
+	/**
+	 * Requests the verification result from TeleSign.
+	 * After sending an end user a verification code, wait a minute or two to allow them to receive it and then respond, and then call this method to find out if the end user passed the code challenge.
+	 * This method takes only one parameter�the ID of this particular web service transaction.
+	 * @param resource_id	[Required]	The string returned in the Response Message that TeleSign sends upon receipt of your HTTP 1.1 Request Message - for either {@link com.telesign.verify#sms()} or {@link com.telesign.verify#call()}.
+	 * @param verify_code	[Required]	The verification code received from the user.
+	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+	 */
+	public VerifyResponse status(String resource_id, String verify_code) {
+
 		String result = null;
 		
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/" + resource_id, "GET", customer_id, secret_key);
+
+			if (verify_code != null)
+				tr.addParam("verify_code", verify_code);
+
 			result = tr.executeRequest();
 		}
 		catch (IOException e) {
