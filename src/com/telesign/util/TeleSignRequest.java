@@ -17,6 +17,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.Proxy;
+import java.net.InetSocketAddress;
 import java.security.SignatureException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -62,6 +64,9 @@ public class TeleSignRequest {
 	/** The persistent session connection for the Request. */
 	private HttpURLConnection connection;
 
+	/** The proxyu for the Request. */
+	private Proxy proxy;
+
 	/** The contents of the entity body in the POST Request. */
 	private String body = "";
 
@@ -72,7 +77,7 @@ public class TeleSignRequest {
 	private AuthMethod auth = AuthMethod.SHA1;
 
 	/**
-	 * The TeleSitgnRequest class constructor. A TeleSitgnRequest object
+	 * The TeleSignRequest class constructor. A TeleSitgnRequest object
 	 * contains all of the information required to call any/all of the TeleSign
 	 * web services.
 	 *
@@ -96,10 +101,41 @@ public class TeleSignRequest {
 	 */
 	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key) {
 
+		this(base, resource, method, customer_id, secret_key, null);
+	}
+
+	/**
+	 * The TeleSignRequest class constructor. A TeleSitgnRequest object
+	 * contains all of the information required to call any/all of the TeleSign
+	 * web services.
+	 *
+	 * @param base
+	 *			[Required] A string representing the Base URI. For TeleSign
+	 *			web services, this is https://rest.telesign.com/.
+	 * @param resource
+	 *			[Required] A string representing the name of the network
+	 *			resource. Each of the TeleSign web services is identified by
+	 *			its resource specifier.
+	 * @param method
+	 *			[Required] A string representing the method to be performed on
+	 *			the resource. For TeleSign web services, this is either GET or
+	 *			POST.
+	 * @param customer_id
+	 *			[Required] A string representing your TeleSign Customer ID.
+	 *			This represents your TeleSign account number.
+	 * @param secret_key
+	 *			[Required] A string representing your TeleSign Secret Shared
+	 *			Key (available from the TeleSign Client Portal).
+	 * @param proxy
+	 *			[Required] A string representing your proxy.
+	 */
+	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key, InetSocketAddress proxy) {
+
 		this.base = base;
 		this.resource = resource;
 		this.customer_id = customer_id;
 		this.secret_key = secret_key;
+		this.proxy = proxy != null ? new Proxy(Proxy.Type.HTTP, proxy) : null;
 
 		post = (method.toLowerCase().equals("post"));
 
@@ -250,9 +286,6 @@ public class TeleSignRequest {
 
 		url = new URL(full_url.toString());
 
-		connection = (HttpURLConnection) url.openConnection();
-		connection.setConnectTimeout(30000);
-
 		// Create the Signature using the formula: Signature = Base64(HMAC-SHA( YourTeleSignAPIKey, UTF-8-Encoding-Of( StringToSign )).
 		try {
 
@@ -267,17 +300,21 @@ public class TeleSignRequest {
 
 		String auth_header = "TSA " + customer_id + ":" + signature;
 
-		connection = (HttpURLConnection) url.openConnection();
+		if (this.proxy != null) {
+			connection = (HttpURLConnection) url.openConnection(this.proxy);
+		}
+		else {
+			connection = (HttpURLConnection) url.openConnection();
+		}
+
 		connection.setConnectTimeout(30000);
 		connection.setRequestProperty("Authorization", auth_header);
 
 		if (post) {
-
 			connection.setRequestProperty("Content-Length", Integer.toString(body.length()));
 		}
 
-		for (String key : ts_headers.keySet()){
-
+		for (String key : ts_headers.keySet()) {
 			connection.setRequestProperty(key, ts_headers.get(key));
 		}
 

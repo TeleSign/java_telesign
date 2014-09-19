@@ -1,11 +1,13 @@
 package com.telesign;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import java.net.InetSocketAddress;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,6 +28,7 @@ public class PhoneIdTest {
 	public static String CUSTOMER_ID;
 	public static String SECRET_KEY;
 	public static String PHONE_NUMBER;
+	public static InetSocketAddress PROXY;
 	
 	
 	@BeforeClass
@@ -43,6 +46,13 @@ public class PhoneIdTest {
 		SECRET_KEY =  props.getProperty("test.secretkey");
 		PHONE_NUMBER = props.getProperty("test.phonenumber");
 		
+		try{
+			PROXY = new InetSocketAddress(props.getProperty("test.proxyserver"), Integer.parseInt(props.getProperty("test.proxyport")));
+		} 
+		catch (NumberFormatException nfe) {
+			PROXY = null;
+		}
+
 		boolean pass = true; 
 		
 		if(CUSTOMER_ID == null || CUSTOMER_ID.isEmpty()) {
@@ -64,9 +74,6 @@ public class PhoneIdTest {
 		}
 	}
 
-
-	
-	
 	@Test
 	public void phoneIdError() {
 		PhoneId pid = new PhoneId("Junk" , "Fake");
@@ -99,6 +106,21 @@ public class PhoneIdTest {
 		assertTrue(ret.errors.length == 0);
 		assertTrue(ret.status.code == 300);
 		
+	}
+
+	@Test
+	public void phoneIdStandardWithProxy() {
+		assumeTrue(PROXY != null);
+		
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty()) {
+			fail("CUSTOMER_ID and SECRET_KEY and PROXY must be set to pass this test");
+		}
+		
+		PhoneId pid = new PhoneId(CUSTOMER_ID, SECRET_KEY, PROXY);
+		PhoneIdStandardResponse ret = pid.standard("13102224444");
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+		assertTrue(ret.status.code == 300);
 	}
 	
 	@Test

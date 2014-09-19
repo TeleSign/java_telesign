@@ -1,13 +1,13 @@
 package com.telesign;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import java.net.InetSocketAddress;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,6 +26,7 @@ public class VerifyTest {
 	public static String CUSTOMER_ID;
 	public static String SECRET_KEY;
 	public static String PHONE_NUMBER;
+	public static InetSocketAddress PROXY;
 	
 	
 	@BeforeClass
@@ -42,6 +43,13 @@ public class VerifyTest {
 		CUSTOMER_ID = props.getProperty("test.customerid");
 		SECRET_KEY =  props.getProperty("test.secretkey");
 		PHONE_NUMBER = props.getProperty("test.phonenumber");
+		
+		try{
+			PROXY = new InetSocketAddress(props.getProperty("test.proxyserver"), Integer.parseInt(props.getProperty("test.proxyport")));
+		} 
+		catch (NumberFormatException nfe) {
+			PROXY = null;
+		}
 		
 		boolean pass = true; 
 		
@@ -84,6 +92,20 @@ public class VerifyTest {
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}
+
+	@Test
+	public void verifyRequestCallWithProxy() {
+		assumeTrue(PROXY != null);
+
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		
+		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY, PROXY);
+		VerifyResponse ret = ver.call(PHONE_NUMBER);
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+	}
 	
 	@Test
 	public void verifyRequestCallWithLanguage() {
@@ -116,6 +138,21 @@ public class VerifyTest {
 		}
 		
 		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		VerifyResponse ret = ver.sms(PHONE_NUMBER);
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+		
+	}
+
+	@Test
+	public void verifyRequestSMSWithProxy() {
+		assumeTrue(PROXY != null);
+		
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		
+		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY, PROXY);
 		VerifyResponse ret = ver.sms(PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);

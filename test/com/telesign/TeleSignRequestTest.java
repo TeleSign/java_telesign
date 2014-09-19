@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import java.net.InetSocketAddress;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,7 +29,6 @@ public class TeleSignRequestTest {
 	public static String CUSTOMER_ID;
 	public static String SECRET_KEY;
 	public static String PHONE_NUMBER;
-	
 	
 	@BeforeClass
     public static void setUp() throws IOException {
