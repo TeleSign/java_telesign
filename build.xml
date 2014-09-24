@@ -12,7 +12,7 @@
   <target name="compile" depends="clean">
     <property name="build.sysclasspath" value="last"/>
     <mkdir dir="build/classes"/>
-    <javac srcdir="src" destdir="build/classes" classpathref="classpath"/>
+    <javac srcdir="src" destdir="build/classes" classpathref="classpath" encoding="UTF-8"/>
   </target>
 
   <target name="jar" depends="compile">
@@ -23,8 +23,8 @@
   <target name="compile_unittest" depends="clean">
     <property name="build.sysclasspath" value="last"/>
     <mkdir dir="build/classes"/>
-    <javac srcdir="src" destdir="build/classes" classpathref="classpath"/>
-    <javac srcdir="test" destdir="build/classes" classpathref="classpath"/>
+    <javac srcdir="src" destdir="build/classes" classpathref="classpath" encoding="UTF-8"/>
+    <javac srcdir="test" destdir="build/classes" classpathref="classpath" encoding="UTF-8"/>
   </target>
 
   <target name="jar_unit" depends="compile_unittest">
@@ -55,6 +55,7 @@
       classpath="${basedir}/libs/commons-codec-1.7.jar;${basedir}/libs/gson-2.2.1.jar"
       destdir="${basedir}/doc"
       doctitle="TeleSign Java SDK Documentation"
+      encoding="UTF-8"
       nodeprecated="true"
       nodeprecatedlist="true"
       noindex="false"
