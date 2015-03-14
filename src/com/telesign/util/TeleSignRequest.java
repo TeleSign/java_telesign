@@ -29,353 +29,381 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.log4j.Logger;
+
 
 /** The TeleSignRequest class is an abstraction for creating and sending HTTP 1.1 REST Requests for TeleSign web services. */
 public class TeleSignRequest {
-	/** A boolean value that indicates the Request Method. <em>True</em> for <strong>POST</strong>, and <em>False</em> for <strong>GET</strong>. */
-	private boolean post;
-
-	/** The web service's Base URI. For TeleSign web services, this is <em>https://rest.telesign.com/</em>. */
-	private final String base;
-
-	/** The name that identifies the network resource. Each of the TeleSign web services is identified by its resource specifier. */
-	private final String resource;
-
-	/** Your TeleSign Customer ID. This represents your TeleSign account number. */
-	private final String customer_id;
-
-	/** Your TeleSign Secret Shared Key (available from the TeleSign Client Portal). */
-	private final String secret_key;
-
-	/** The set of HTTP 1.1 Request header field/value pairs. */
-	private TreeMap<String, String> headers;
-
-	/** The set of <em>TeleSign-specific</em> Request header field/value pairs. */
-	private TreeMap<String, String> ts_headers;
-
-	/** The set of HTTP 1.1 Request parameter attribute/value pairs. */
-	private HashMap<String, String> params;
-
-	/** The <em>absolute form</em> of the Resource URI */
-	private URL url;
-
-	/** The persistent session connection for the Request. */
-	private HttpURLConnection connection;
-
-	/** The contents of the entity body in the POST Request. */
-	private String body = "";
-
-	/** A boolean value that indicates whether the <em>TeleSign-specific</em> <strong>Date</strong> Request header field is used. */
-	private boolean ts_date = false;
-
-	/** An AuthMethod enumeration value  that specifies the strength of the encryption method to use when signing the Authentication header. */
-	private AuthMethod auth = AuthMethod.SHA1;
-
-	/**
-	 * The TeleSitgnRequest class constructor. A TeleSitgnRequest object
-	 * contains all of the information required to call any/all of the TeleSign
-	 * web services.
-	 *
-	 * @param base
-	 *			[Required] A string representing the Base URI. For TeleSign
-	 *			web services, this is https://rest.telesign.com/.
-	 * @param resource
-	 *			[Required] A string representing the name of the network
-	 *			resource. Each of the TeleSign web services is identified by
-	 *			its resource specifier.
-	 * @param method
-	 *			[Required] A string representing the method to be performed on
-	 *			the resource. For TeleSign web services, this is either GET or
-	 *			POST.
-	 * @param customer_id
-	 *			[Required] A string representing your TeleSign Customer ID.
-	 *			This represents your TeleSign account number.
-	 * @param secret_key
-	 *			[Required] A string representing your TeleSign Secret Shared
-	 *			Key (available from the TeleSign Client Portal).
-	 */
-	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key) {
-
-		this.base = base;
-		this.resource = resource;
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
-
-		post = (method.toLowerCase().equals("post"));
-
-		ts_headers = new TreeMap<String, String>();
-		headers = new TreeMap<String, String>();
-		params = new HashMap<String, String>();
-	}
-
-	/**
-	 * Adds an HTTP 1.1 request header field/value pair to the set of request
-	 * headers.
-	 *
-	 * @param key
-	 *			[Required] A string representing a Request header field
-	 *			<em>name</em>.
-	 * @param value
-	 *			[Required] A string representing a Request header field
-	 *			<em>value</em>.
-	 */
-	public void addHeader(String key, String value) {
-
-		// Check to see if this request header field is a "TeleSign-specific" header field.
-		if ((key.length() > 4) && (key.toLowerCase().substring(0, 5).equals("x-ts-"))) {
-
-			// If using the TeleSign-specific date header, then use a blank line for the standard Date Request header.
-			if (key.toLowerCase().equals("x-ts-date")) {
-
-				ts_date = true;
-			}
-
-			ts_headers.put(key, value);
-		}
-
-		headers.put(key, value);
-	}
-
-	/**
-	 * Adds an HTTP 1.1 Request parameter attribute/value pair to the set of
-	 * Request Parameters.
-	 *
-	 * @param key
-	 *			[Required] A string representing a Request parameter attribute
-	 *			<em>name</em>.
-	 * @param value
-	 *			[Required] A string representing a Request parameter attribute
-	 *			<em>value</em>.
-	 */
-	public void addParam(String key, String value) {
-
-		params.put(key, value);
-	}
-
-	/**
-	 * Sets the entity body of an HTTP 1.1 POST Request message. Contains the
-	 * Request parameters for <strong>Verify.call</strong> and
-	 * <strong>Verify.sms</strong>.
-	 *
-	 * @param post_body
-	 *			[Required] A string that contains the contents of the POST
-	 *			Request's entity body.
-	 */
-	public void setPostBody(String post_body) {
-
-		body = post_body;
-	}
-
-	/**
-	 * Gets the entity body of an HTTP 1.1 POST Request message. Used for calls
-	 * to <strong>Verify.call</strong> and <strong>Verify.sms</strong>.
-	 *
-	 * @return A string that contains the contents of the POST Request's entity
-	 *		 body.
-	 */
-	public String getPostBody() {
-
-		return body;
-	}
-
-	/**
-	 * Returns the set of <em>TeleSign-specific</em> Request header fields.
-	 *
-	 * @return A sorted key/value mapping that contains the TeleSign-specific
-	 *		 Request header fields.
-	 */
-	public Map<String, String> getTsHeaders() {
+    private static Logger logger = Logger.getLogger(TeleSignRequest.class);
+
+    /**
+     * A boolean value that indicates the Request Method. <em>True</em> for <strong>POST</strong>, and <em>False</em> for <strong>GET</strong>.
+     */
+    private boolean post;
+
+    /**
+     * The web service's Base URI. For TeleSign web services, this is <em>https://rest.telesign.com/</em>.
+     */
+    private final String base;
+
+    /**
+     * The name that identifies the network resource. Each of the TeleSign web services is identified by its resource specifier.
+     */
+    private final String resource;
+
+    /**
+     * Your TeleSign Customer ID. This represents your TeleSign account number.
+     */
+    private final String customer_id;
+
+    /**
+     * Your TeleSign Secret Shared Key (available from the TeleSign Client Portal).
+     */
+    private final String secret_key;
+
+    /**
+     * The set of HTTP 1.1 Request header field/value pairs.
+     */
+    private TreeMap<String, String> headers;
+
+    /**
+     * The set of <em>TeleSign-specific</em> Request header field/value pairs.
+     */
+    private TreeMap<String, String> ts_headers;
+
+    /**
+     * The set of HTTP 1.1 Request parameter attribute/value pairs.
+     */
+    private HashMap<String, String> params;
+
+    /** The <em>absolute form</em> of the Resource URI */
+    private URL url;
+
+    /**
+     * The persistent session connection for the Request.
+     */
+    private HttpURLConnection connection;
+
+    /** The contents of the entity body in the POST Request. */
+    private String body = "";
+
+    /** A boolean value that indicates whether the <em>TeleSign-specific</em> <strong>Date</strong> Request header field is used. */
+    private boolean ts_date = false;
+
+    /** An AuthMethod enumeration value  that specifies the strength of the encryption method to use when signing the Authentication header. */
+    private AuthMethod auth = AuthMethod.SHA1;
+
+    /**
+     * The TeleSitgnRequest class constructor. A TeleSitgnRequest object
+     * contains all of the information required to call any/all of the TeleSign
+     * web services.
+     *
+     * @param base        [Required] A string representing the Base URI. For TeleSign
+     *                    web services, this is https://rest.telesign.com/.
+     * @param resource    [Required] A string representing the name of the network
+     *                    resource. Each of the TeleSign web services is identified by
+     *                    its resource specifier.
+     * @param method      [Required] A string representing the method to be performed on
+     *                    the resource. For TeleSign web services, this is either GET or
+     *                    POST.
+     * @param customer_id [Required] A string representing your TeleSign Customer ID.
+     *                    This represents your TeleSign account number.
+     * @param secret_key  [Required] A string representing your TeleSign Secret Shared
+     *                    Key (available from the TeleSign Client Portal).
+     */
+    public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key) {
+
+        this.base = base;
+        this.resource = resource;
+        this.customer_id = customer_id;
+        this.secret_key = secret_key;
+
+        post = (method.toLowerCase().equals("post"));
+
+        ts_headers = new TreeMap<String, String>();
+        headers = new TreeMap<String, String>();
+        params = new HashMap<String, String>();
+    }
+
+    /**
+     * Adds an HTTP 1.1 request header field/value pair to the set of request
+     * headers.
+     *
+     * @param key   [Required] A string representing a Request header field
+     *              <em>name</em>.
+     * @param value [Required] A string representing a Request header field
+     *              <em>value</em>.
+     */
+    public void addHeader(String key, String value) {
+
+        // Check to see if this request header field is a "TeleSign-specific" header field.
+        if ((key.length() > 4) && (key.toLowerCase().substring(0, 5).equals("x-ts-"))) {
+
+            // If using the TeleSign-specific date header, then use a blank line for the standard Date Request header.
+            if (key.toLowerCase().equals("x-ts-date")) {
+
+                ts_date = true;
+            }
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("TeleSignRequest::addHeader::Going to Add Header: " + key + " with Value::" + value);
+            }
+
+            ts_headers.put(key, value);
+        }
+
+        headers.put(key, value);
+    }
+
+    /**
+     * Adds an HTTP 1.1 Request parameter attribute/value pair to the set of
+     * Request Parameters.
+     *
+     * @param key
+     *			[Required] A string representing a Request parameter attribute
+     *			<em>name</em>.
+     * @param value
+     *			[Required] A string representing a Request parameter attribute
+     *			<em>value</em>.
+     */
+    public void addParam(String key, String value) {
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("TeleSignRequest::addParam:: Going to add Parameter: " + key + " with Value:: " + value);
+        }
+
+        params.put(key, value);
+    }
+
+    /**
+     * Sets the entity body of an HTTP 1.1 POST Request message. Contains the
+     * Request parameters for <strong>Verify.call</strong> and
+     * <strong>Verify.sms</strong>.
+     *
+     * @param post_body
+     *			[Required] A string that contains the contents of the POST
+     *			Request's entity body.
+     */
+    public void setPostBody(String post_body) {
+
+        body = post_body;
+    }
+
+    /**
+     * Gets the entity body of an HTTP 1.1 POST Request message. Used for calls
+     * to <strong>Verify.call</strong> and <strong>Verify.sms</strong>.
+     *
+     * @return A string that contains the contents of the POST Request's entity
+     *		 body.
+     */
+    public String getPostBody() {
 
-		return ts_headers;
-	}
+        return body;
+    }
+
+    /**
+     * Returns the set of <em>TeleSign-specific</em> Request header fields.
+     *
+     * @return A sorted key/value mapping that contains the TeleSign-specific
+     *		 Request header fields.
+     */
+    public Map<String, String> getTsHeaders() {
 
-	/**
-	 * Returns the set of both the standard <u>and</u> the
-	 * <em>TeleSign-specific</em> Request header fields.
-	 *
-	 * @return A sorted key/value mapping that contains all of the Request header fields.
-	 */
-	public Map<String, String> getAllHeaders() {
+        return ts_headers;
+    }
 
-		TreeMap<String, String> tmp = new TreeMap<String, String>();
+    /**
+     * Returns the set of both the standard <u>and</u> the
+     * <em>TeleSign-specific</em> Request header fields.
+     *
+     * @return A sorted key/value mapping that contains all of the Request header fields.
+     */
+    public Map<String, String> getAllHeaders() {
 
-		tmp.putAll(headers);
-		tmp.putAll(ts_headers);
+        TreeMap<String, String> tmp = new TreeMap<String, String>();
 
-		return tmp;
-	}
+        tmp.putAll(headers);
+        tmp.putAll(ts_headers);
 
-	/**
-	 * Returns the set of POST Request parameters.
-	 *
-	 * @return A sorted key/value mapping that contains all of the POST Request parameters.
-	 */
-	public Map<String, String> getAllParams() {
+        return tmp;
+    }
 
-		return params;
-	}
+    /**
+     * Returns the set of POST Request parameters.
+     *
+     * @return A sorted key/value mapping that contains all of the POST Request parameters.
+     */
+    public Map<String, String> getAllParams() {
 
-	/**
-	 * Creates and sends the REST request.
-	 *
-	 * @return A string containing the TeleSign web server's Response.
-	 * @throws IOException
-	 *			 A {@link java.security.SignatureException} signals that an
-	 *			 error occurred while attempting to sign the Request.
-	 */
-	public String executeRequest() throws IOException {
+        return params;
+    }
 
-		String signingString = getSigningString(customer_id);
-		String signature;
-		String url_output = "";
+    /**
+     * Creates and sends the REST request.
+     *
+     * @return A string containing the TeleSign web server's Response.
+     * @throws IOException A {@link java.security.SignatureException} signals that an
+     *                     error occurred while attempting to sign the Request.
+     */
+    public String executeRequest() throws IOException {
 
-		// Create the absolute form of the resource URI, and place it in a string buffer.
-		StringBuffer full_url = new StringBuffer(base).append(resource);
+        String signingString = getSigningString(customer_id);
+        String signature;
+        String url_output = "";
 
-		if (params.size() > 0) {
+        // Create the absolute form of the resource URI, and place it in a string buffer.
+        StringBuffer full_url = new StringBuffer(base).append(resource);
 
-			full_url.append("?");
-			int i = 0;
+        if (params.size() > 0) {
 
-			for (String key : params.keySet()) {
+            full_url.append("?");
+            int i = 0;
 
-				if (++i != 0) {
+            for (String key : params.keySet()) {
 
-					full_url.append("&");
-				}
+                if (++i != 0) {
 
-				full_url.append(URLEncoder.encode(key, "UTF-8")).append("=").append(URLEncoder.encode(params.get(key), "UTF-8"));
-			}
-		}
+                    full_url.append("&");
+                }
 
-		url = new URL(full_url.toString());
+                full_url.append(URLEncoder.encode(key, "UTF-8")).append("=").append(URLEncoder.encode(params.get(key), "UTF-8"));
+            }
+        }
 
-		connection = (HttpURLConnection) url.openConnection();
-		connection.setConnectTimeout(30000);
+        url = new URL(full_url.toString());
 
-		// Create the Signature using the formula: Signature = Base64(HMAC-SHA( YourTeleSignAPIKey, UTF-8-Encoding-Of( StringToSign )).
-		try {
-
-			signature = encode(signingString, secret_key);
-		}
-		catch (SignatureException e) {
-
-			System.err.println("Error signing request " + e.getMessage());
-
-			return null;
-		}
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(30000);
 
-		String auth_header = "TSA " + customer_id + ":" + signature;
+        // Create the Signature using the formula: Signature = Base64(HMAC-SHA( YourTeleSignAPIKey, UTF-8-Encoding-Of( StringToSign )).
+        try {
 
-		connection = (HttpURLConnection) url.openConnection();
-		connection.setConnectTimeout(30000);
-		connection.setRequestProperty("Authorization", auth_header);
+            signature = encode(signingString, secret_key);
 
-		if (post) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("TeleSignRequest::executeRequest:: The encoded value is:" + signature);
+            }
 
-			connection.setRequestProperty("Content-Length", Integer.toString(body.length()));
-		}
+        } catch (SignatureException e) {
 
-		for (String key : ts_headers.keySet()){
+            System.err.println("Error signing request " + e.getMessage());
 
-			connection.setRequestProperty(key, ts_headers.get(key));
-		}
+            return null;
+        }
 
+        String auth_header = "TSA " + customer_id + ":" + signature;
 
-		for (String key : headers.keySet()) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("TeleSignRequest::executeRequest:: The authorization String is:" + auth_header);
+        }
 
-			connection.setRequestProperty(key, headers.get(key));
-		}
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(30000);
+        connection.setRequestProperty("Authorization", auth_header);
 
-		if (post) {
+        if (post) {
 
-			connection.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+            connection.setRequestProperty("Content-Length", Integer.toString(body.length()));
+        }
 
-			wr.writeBytes(body);
-			wr.flush();
-			wr.close();
-		}
+        for (String key : ts_headers.keySet()) {
 
-		int response = connection.getResponseCode();
+            connection.setRequestProperty(key, ts_headers.get(key));
+        }
 
-		BufferedReader in;
 
-		try {
+        for (String key : headers.keySet()) {
 
-			InputStream isr = (response == 200) ? connection.getInputStream() : connection.getErrorStream();
-			in = new BufferedReader(new InputStreamReader(isr));
-			String urlReturn;
+            connection.setRequestProperty(key, headers.get(key));
+        }
 
-			while ((urlReturn = in.readLine()) != null) {
+        if (post) {
 
-				url_output += urlReturn;
-			}
+            connection.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
 
-			in.close();
-		}
-		catch (IOException e) {
 
-			System.err.println("IOException while reading from input stream " + e.getMessage());
-		}
+            wr.writeBytes(body);
+            wr.flush();
+            wr.close();
+        }
 
-		return url_output;
-	}
+        int response = connection.getResponseCode();
 
-	/**
-	 * Sets the level of encryption to use when signing this request.
-	 * Current values are SHA-1 and SHA-256, and represented in
-	 * the AuthMethod enumeration.
-	 *
-	 * @param auth	[Required] One of the AuthMethod enumeration values.
-	 */
-	public void setSigningMethod(AuthMethod auth) {
+        BufferedReader in;
 
-		addHeader("x-ts-auth-method", auth.tsValue());
-		this.auth = auth;
-	}
+        try {
 
-	/**
-	 * Sets a nonce (a numeric value that you consider valid for only fifteen minutes or so) to use for this request.
-	 * If use a nonce, you must set its value before each request execution.
-	 * This method is considered a <em>convenience method</em> because this data can also be set using the addHeader option.
-	 *
-	 * @param nonce
-	 */
-	public void setNonce(String nonce) {
-		addHeader("x-ts-nonce", nonce);
-	}
+            InputStream isr = (response == 200) ? connection.getInputStream() : connection.getErrorStream();
+            in = new BufferedReader(new InputStreamReader(isr));
+            String urlReturn;
 
-	/**
-	 * This method is used internally by the {@link com.telesign.util.TeleSignRequest#executeRequest()} method.
-	 *
-	 * @param customer_id
-	 *			[Required] A string representing your TeleSign Customer ID.
-	 *			This represents your TeleSign account number.
-	 * @return A string representing the signing string used to create a
-	 *		 Signature object, for the authenticate the REST request.
-	 */
-	private String getSigningString(String customer_id) {
+            while ((urlReturn = in.readLine()) != null) {
 
-		String stringToSign = post ? "POST\n" : "GET\n";
-		String content_type = post ? "application/x-www-form-urlencoded\n" : "\n";
+                url_output += urlReturn;
+            }
 
-		stringToSign += content_type;
+            in.close();
+        } catch (IOException e) {
 
-		if (ts_date) {
+            System.err.println("IOException while reading from input stream " + e.getMessage());
+        }
 
-			stringToSign += "\n";
-		}
-		else {
+        return url_output;
+    }
 
-			Date now = new Date();
+    /**
+     * Sets the level of encryption to use when signing this request.
+     * Current values are SHA-1 and SHA-256, and represented in
+     * the AuthMethod enumeration.
+     *
+     * @param auth    [Required] One of the AuthMethod enumeration values.
+     */
+    public void setSigningMethod(AuthMethod auth) {
 
-			SimpleDateFormat rfc2616 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ");
-			String date = rfc2616.format(now);
-			addHeader("Date", date);
+        addHeader("x-ts-auth-method", auth.tsValue());
+        this.auth = auth;
+    }
 
-			stringToSign += date + "\n";
-		}
+    /**
+     * Sets a nonce (a numeric value that you consider valid for only fifteen minutes or so) to use for this request.
+     * If use a nonce, you must set its value before each request execution.
+     * This method is considered a <em>convenience method</em> because this data can also be set using the addHeader option.
+     *
+     * @param nonce
+     */
+    public void setNonce(String nonce) {
+        addHeader("x-ts-nonce", nonce);
+    }
+
+    /**
+     * This method is used internally by the {@link com.telesign.util.TeleSignRequest#executeRequest()} method.
+     *
+     * @param customer_id [Required] A string representing your TeleSign Customer ID.
+     *                    This represents your TeleSign account number.
+     * @return A string representing the signing string used to create a
+     * Signature object, for the authenticate the REST request.
+     */
+    private String getSigningString(String customer_id) {
+
+        String stringToSign = post ? "POST\n" : "GET\n";
+        String content_type = post ? "application/x-www-form-urlencoded\n" : "\n";
+
+        stringToSign += content_type;
+
+        if (ts_date) {
+
+            stringToSign += "\n";
+        } else {
+
+            Date now = new Date();
+
+            SimpleDateFormat rfc2616 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ");
+            String date = rfc2616.format(now);
+            addHeader("Date", date);
+
+            stringToSign += date + "\n";
+        }
 
 		/*
 		 * Create the CanonicalizedTsHeaders element. This entails: Converting
@@ -385,66 +413,78 @@ public class TeleSignRequest {
 		 * (newline) with a single space, and Removing white space surrounding
 		 * the colon that appears between each header name/value pair.
 		 */
-		Set<String> orderedKeys = ts_headers.keySet();
+        Set<String> orderedKeys = ts_headers.keySet();
 
-		for (String key : orderedKeys) {
+        for (String key : orderedKeys) {
 
-			stringToSign += key.toLowerCase() + ":" + ts_headers.get(key) + "\n";
-		}
+            stringToSign += key.toLowerCase() + ":" + ts_headers.get(key) + "\n";
+        }
 
-		if (post) {
+        if (post) {
 
-			stringToSign += body + "\n";
-		}
+            stringToSign += body + "\n";
+        }
 
-		stringToSign += resource;
+        stringToSign += resource;
 
-		return stringToSign;
-	}
+        if (logger.isDebugEnabled()) {
+            logger.debug("TeleSignRequest::getSigningString:: The string to be signed is:\n***\n" + stringToSign + "\n****\n");
+        }
 
-	/**
-	 * Creates the Signature component for the Authorization header field.
-	 * Uses your Secret Key to encode the stringToSign.
-	 * This is a <em>helper method</em>, used internally by the {@link TeleSignRequest#executeRequest()} method.
-	 *
-	 * @param data
-	 *			[Required] The stringToSign.
-	 * @param key
-	 *			[Required] Your TeleSign API Key. Also known as your Secret
-	 *			Key, and your Shared Cryptographic Key. It s a bese64-encoded
-	 *			string value.
-	 * @return A String containing the Base64-encoded hash-based message
-	 *		 authentication code.
-	 * @throws java.security.SignatureException
-	 *			 Failed to generate HMAC. IllegalArgumentException - if
-	 *			 algorithm is null or key is null or empty.
-	 */
-	private String encode(String data, String key)  throws java.security.SignatureException {
+        return stringToSign;
+    }
 
-		String result;
+    public void addXTSDate() {
 
-		byte[] decoded_key = Base64.decodeBase64(key);
 
-		try {
-			// Get an hmac_sha key from the raw key bytes.
-			SecretKeySpec signingKey = new SecretKeySpec(decoded_key, auth.value());
+        Date now = new Date();
 
-			// Get an hmac_sha Mac instance, and initialize it with the signing key.
-			Mac mac = Mac.getInstance(auth.value());
-			mac.init(signingKey);
+        SimpleDateFormat rfc2616 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ");
+        String date = rfc2616.format(now);
+        addHeader("Date", date);
 
-			// Compute the HMAC on input data bytes.
-			byte[] rawHmac = mac.doFinal(data.getBytes());
+        this.addHeader("x-ts-date", date);
+    }
 
-			// Base64-encode the HMAC.
-			result =  new String(Base64.encodeBase64(rawHmac));
+    /**
+     * Creates the Signature component for the Authorization header field.
+     * Uses your Secret Key to encode the stringToSign.
+     * This is a <em>helper method</em>, used internally by the {@link TeleSignRequest#executeRequest()} method.
+     *
+     * @param data [Required] The stringToSign.
+     * @param key  [Required] Your TeleSign API Key. Also known as your Secret
+     *             Key, and your Shared Cryptographic Key. It s a bese64-encoded
+     *             string value.
+     * @return A String containing the Base64-encoded hash-based message
+     * authentication code.
+     * @throws java.security.SignatureException Failed to generate HMAC. IllegalArgumentException - if
+     *                                          algorithm is null or key is null or empty.
+     */
+    private String encode(String data, String key) throws java.security.SignatureException {
 
-		}
-		catch (Exception e) {
+        String result;
 
-			throw new SignatureException("Failed to generate HMAC : " + e.getMessage());
-		}
+        byte[] decoded_key = Base64.decodeBase64(key);
 
-		return result;
-	}
+        try {
+            // Get an hmac_sha key from the raw key bytes.
+            SecretKeySpec signingKey = new SecretKeySpec(decoded_key, auth.value());
+
+            // Get an hmac_sha Mac instance, and initialize it with the signing key.
+            Mac mac = Mac.getInstance(auth.value());
+            mac.init(signingKey);
+
+            // Compute the HMAC on input data bytes.
+            byte[] rawHmac = mac.doFinal(data.getBytes());
+
+            // Base64-encode the HMAC.
+            result = new String(Base64.encodeBase64(rawHmac));
+
+        } catch (Exception e) {
+
+            throw new SignatureException("Failed to generate HMAC : " + e.getMessage());
+        }
+
+        return result;
+    }
 }

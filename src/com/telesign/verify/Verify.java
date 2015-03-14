@@ -10,243 +10,285 @@
 package com.telesign.verify;
 
 import com.google.gson.Gson;
+import com.telesign.util.DeliveryMethod;
 import com.telesign.util.TeleSignRequest;
 import com.telesign.verify.response.VerifyResponse;
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 
 /**
  *  The Verify class abstracts your interactions with the <em>TeleSign Verify web service</em>.
  *  A Verify object encapsulates your credentials (your TeleSign <em>Customer ID</em> and <em>Secret Key</em>).
+ *  telesign URL is the actual telesign URL
+ *  telesign URL path is the relative path which telesign sends.
  */
-public class    Verify {
+public class Verify {
 
-	private final String customer_id;
-	private final String secret_key;
 
-	/**
-	 * The Verify class constructor.
-	 * Once you instantiate a Verify object, you can use it to make instance calls to <em>Verify SMS</em> and <em>Verify Call</em>.
-	 * @param customer_id	[Required]	A string containing your TeleSign Customer ID (your TeleSign account number).
-	 * @param secret_key	[Required]	A string containing your TeleSign Secret Key (a bese64-encoded string valu, available from the TeleSign Client Portal).
-	 */
-	public Verify(String customer_id, String secret_key) {
+    private static Logger logger = Logger.getLogger(Verify.class.getName());
+    private String customer_id;
+    private String secret_key;
+    private String telesign_url;
+    private String telesign_url_path;
 
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
-	}
+    /**
+     * The Verify class constructor.
+     * Once you instantiate a Verify object, you can use it to make instance calls to <em>Verify SMS</em> and <em>Verify Call</em>.
+     *
+     * @param customer_id [Required]	A string containing your TeleSign Customer ID (your TeleSign account number).
+     * @param secret_key  [Required]	A string containing your TeleSign Secret Key (a bese64-encoded string valu, available from the TeleSign Client Portal).
+     */
+    public Verify(String customer_id, String secret_key) {
 
-	/**
-	 * Delivers a verification code to the end user by sending it in a text message.
-	 * This is the simplest of the three overloads of this method. This overload takes the only required paramter�the end user's phone number. 
-	 * @param phone_number	[Required] A string containing the user's phone number.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse sms(String phone_number) {
 
-		return sms(phone_number, null, null, null);
-	}
+        this.customer_id = customer_id;
+        this.secret_key = secret_key;
+    }
 
-	/**
-	 * Delivers a verification code to the end user by sending it in a text message.
-	 * Use this overload when the user's native written language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
-	 * @param phone_number	[Required]	A string containing the user�s phone number.
-	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default). This value is used in applying predefined text message templates.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse sms(String phone_number, String language) {
 
-		return sms(phone_number, language, null, null);
-	}
+    public String getTelesign_url() {
+        return telesign_url == null ? "https://rest.telesign.com" : telesign_url;
+    }
 
-	/**
-	 * Delivers a verification code to the end user by sending it in a text message.
-	 * Use this overload when:
-	 * <ul>
-	 * 	<li>the end user's native written language is not the default language (English), or</li>
-	 * 	<li>when you want to send the user a verification code that you create, or</li>
-	 * 	<li>when you want to apply a custom text message template.</li>
-	 * </ul>
-	 * 
-	 * @param phone_number	[Required]	A string containing the user�s phone number.
-	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default). This value is used in applying predefined text message templates.
-	 * @param verify_code	[Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
-	 * @param template		[Optional]	A string containing a text message to override the predefined text message template. Your text message must incorporate a $$CODE$$ placeholder to integrate the verify_code field. Set this value to null (the default) to use the predefined template.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse sms(String phone_number, String language, String verify_code, String template) {
+    public void setTelesign_url(String telesign_url) {
+        this.telesign_url = telesign_url;
+    }
 
-		String result = null;
+    public String getTelesign_url_path() {
+        return telesign_url_path == null ? "/v1/verify/" : telesign_url_path;
+    }
 
-		try {
+    public void setTelesign_url_path(String telesign_url_path) {
+        this.telesign_url_path = telesign_url_path;
+    }
 
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/sms", "POST", customer_id, secret_key);
-			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
-			
-			if(language != null) {
 
-				body += "&language=" + URLEncoder.encode(language, "UTF-8");
-			}
-			
-			if(verify_code != null) {
+    public String basePathWithDeliveryMethod(DeliveryMethod deliveryMethod) {
+        return this.getTelesign_url_path() + deliveryMethod.toString();
+    }
 
-				body += "&verify_code=" + URLEncoder.encode(verify_code, "UTF-8");
-			}
-			
-			if(template != null) {
+    /**
+     * Delivers a verification code to the end user by sending it in a text message.
+     * This is the simplest of the three overloads of this method. This overload takes the only required paramter�the end user's phone number.
+     *
+     * @param phone_number [Required] A string containing the user's phone number.
+     * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+     */
+    public VerifyResponse sms(String phone_number) {
 
-				body += "&template=" + URLEncoder.encode(template, "UTF-8");
-			}
-			
-			tr.setPostBody(body);
-			
-			result = tr.executeRequest();
-		}
-		catch (IOException e) {
+        return sms(phone_number, null, null, null);
+    }
 
-			System.err.println("IOException while executing phoneid API: " + e.getMessage());
-		}
-		
-		Gson gson = new Gson();
-		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
-		
-		return response;
-	}
-	
-	/**
-	 * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
-	 * This is the simplest of the three overloads of this method. This overload takes the only required parameter�the end user's phone number.
-	 * @param phone_number	[Required]	A string containing the user�s phone number.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse call(String phone_number) {
+    /**
+     * Delivers a verification code to the end user by sending it in a text message.
+     * Use this overload when the user's native written language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
+     *
+     * @param phone_number [Required]	A string containing the user�s phone number.
+     * @param language     [Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default). This value is used in applying predefined text message templates.
+     * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+     */
+    public VerifyResponse sms(String phone_number, String language) {
 
-		return call(phone_number, null, null, null, 0, null, true);
-	}
-	
-	/**
-	 * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
-	 * Use this overload when the user's native spoken language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
-	 * @param phone_number	[Required] A string containing the user�s phone number.
-	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse call(String phone_number, String language) {
+        return sms(phone_number, language, null, null);
+    }
 
-		return call(phone_number, language, null, null, 0, null, true);
-	}
-	
-	/**
-	 * Delivers a verification code to the end user - with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
-	 * Use this overload when:
-	 * <ul>
-	 * 	<li>the end user's spoken language is not the default language (English), or</li>
-	 * 	<li>when you want to send them a verification code that you create, or </li>
-	 * 	<li>when you need to specify a method for handling automated interactions with a PBX.</li>
-	 * </ul>
-	 * 
-	 * @param phone_number			[Required]	A string containing the user�s phone number.
-	 * @param language				[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
-	 * @param verify_code			[Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
-	 * @param verify_method			[Optional]	A string containing the input method you want the end user to use when returning the verification code. Use a value of "keypress" when you want the user to use their phone to dial the code. Set this value to null when you want the user to enter the code into your web aplication (the default). 
-	 * @param extension_type		[Optional]	An Integer value representing the type of response to use when dialing into a Private Branch Exchange (PBX). Use a value of 1 to have TeleSign use Dual-Tone Multi-Frequency (DTMF) tones to dail the user's extension. Use a value of 2 to have TeleSign use voice automation to request the user's extension. Use a value of 0 (the default) when the user isn't behind a PBX. 
-	 * @param extension_template	[Optional]	A numerical string specifying the user's PBX extension number. Since this value is used in the call string, you can include one second pauses by adding commas before the extension number.  Set this value to null (the default) if not used. 
-	 * @param redial				[Optional]	A boolean value that enables/disables redialing. Set this value to "true" (the default) when you want TeleSign to re-attempt the call after a failed attempt. Set this value to "false" when you don't.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse call(String phone_number , String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial) {
+    /**
+     * Delivers a verification code to the end user by sending it in a text message.
+     * Use this overload when:
+     * <ul>
+     * <li>the end user's native written language is not the default language (English), or</li>
+     * <li>when you want to send the user a verification code that you create, or</li>
+     * <li>when you want to apply a custom text message template.</li>
+     * </ul>
+     *
+     * @param phone_number [Required]	A string containing the user�s phone number.
+     * @param language     [Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default). This value is used in applying predefined text message templates.
+     * @param verify_code  [Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
+     * @param template     [Optional]	A string containing a text message to override the predefined text message template. Your text message must incorporate a $$CODE$$ placeholder to integrate the verify_code field. Set this value to null (the default) to use the predefined template.
+     * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+     */
+    public VerifyResponse sms(String phone_number, String language, String verify_code, String template) {
 
-		String result = null;
+        String result = null;
 
-		try {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Verify::VerifyResponse:: Going to send an SMS to " + phone_number + " With code " + verify_code);
+        }
 
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/call", "POST", customer_id, secret_key);
-			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
-			
-			if(language != null) {
+        try {
 
-				body += "&language=" + URLEncoder.encode(language, "UTF-8");
-			}
-			
-			if(verify_code != null) {
 
-				body += "&verify_code=" + URLEncoder.encode(verify_code, "UTF-8");
-			}
-			
-			if(verify_method != null && verify_method.equalsIgnoreCase("keypress")) {
+            TeleSignRequest tr = new TeleSignRequest(getTelesign_url(), basePathWithDeliveryMethod(DeliveryMethod.SMS), "POST", customer_id, secret_key);
 
-				body += "&verify_method=" + URLEncoder.encode(verify_method, "UTF-8");
-			}
+            tr.addXTSDate();
 
-			if(extension_type > 0 && extension_type < 3) {
+            String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 
-				body += "&extension_type=" + URLEncoder.encode(Integer.toString(extension_type), "UTF-8");
-			}
-			if(extension_template != null) {
+            if (language != null) {
 
-				body += "&extension_template=" + URLEncoder.encode(extension_template, "UTF-8");
-			}
+                body += "&language=" + URLEncoder.encode(language, "UTF-8");
+            }
 
-			if(!redial) {
+            if (verify_code != null) {
 
-				body += "&redial=" + URLEncoder.encode(Boolean.toString(redial), "UTF-8");
-			}
-			
-			tr.setPostBody(body);
-			result = tr.executeRequest();
-		}
-		catch (IOException e) {
+                body += "&verify_code=" + URLEncoder.encode(verify_code, "UTF-8");
+            }
 
-			System.err.println("IOException while executing phoneid API: " + e.getMessage());
-		}
-		
-		Gson gson = new Gson();
-		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
-		
-		return response;
-	}
-	
-	/**
-	 * Requests the verification result from TeleSign.
-	 * After sending an end user a verification code, wait a minute or two to allow them to receive it and then respond, and then call this method to find out if the end user passed the code challenge.
-	 * This method takes only one parameter�the ID of this particular web service transaction.
-	 * @param resource_id	[Required]	The string returned in the Response Message that TeleSign sends upon receipt of your HTTP 1.1 Request Message - for either {@link com.telesign.verify#sms()} or {@link com.telesign.verify#call()}.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse status(String resource_id) {
+            if (template != null) {
 
-		return status(resource_id, null);
-	}
+                body += "&template=" + URLEncoder.encode(template, "UTF-8");
+            }
 
-	/**
-	 * Requests the verification result from TeleSign.
-	 * After sending an end user a verification code, wait a minute or two to allow them to receive it and then respond, and then call this method to find out if the end user passed the code challenge.
-	 * This method takes only one parameter�the ID of this particular web service transaction.
-	 * @param resource_id	[Required]	The string returned in the Response Message that TeleSign sends upon receipt of your HTTP 1.1 Request Message - for either {@link com.telesign.verify#sms()} or {@link com.telesign.verify#call()}.
-	 * @param verify_code	[Required]	The verification code received from the user.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse status(String resource_id, String verify_code) {
+            tr.setPostBody(body);
 
-		String result = null;
-		
-		try {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Verify::VerifyResponse:: The Body is::" + body);
+            }
 
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/" + resource_id, "GET", customer_id, secret_key);
+            result = tr.executeRequest();
+        } catch (IOException e) {
 
-			if (verify_code != null)
-				tr.addParam("verify_code", verify_code);
+            System.err.println("IOException while executing phoneid API: " + e.getMessage());
+        }
 
-			result = tr.executeRequest();
-		}
-		catch (IOException e) {
+        Gson gson = new Gson();
+        VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
 
-			System.err.println("IOException while executing phoneid API: " + e.getMessage());
-		}
-		
-		Gson gson = new Gson();
-		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
-		
-		return response;
-	}
+        return response;
+    }
+
+    /**
+     * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
+     * This is the simplest of the three overloads of this method. This overload takes the only required parameter�the end user's phone number.
+     *
+     * @param phone_number [Required]	A string containing the user�s phone number.
+     * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+     */
+    public VerifyResponse call(String phone_number) {
+
+        logger.info("Verify::call:: Going to call:" + phone_number);
+        return call(phone_number, null, null, null, 0, null, true);
+    }
+
+    /**
+     * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
+     * Use this overload when the user's native spoken language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
+     *
+     * @param phone_number [Required] A string containing the user�s phone number.
+     * @param language     [Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
+     * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+     */
+    public VerifyResponse call(String phone_number, String language) {
+
+
+        logger.info("Verify::call:: Going to call:" + phone_number + " language: " + language);
+
+        return call(phone_number, language, null, null, 0, null, true);
+    }
+
+    /**
+     * Delivers a verification code to the end user - with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
+     * Use this overload when:
+     * <ul>
+     * <li>the end user's spoken language is not the default language (English), or</li>
+     * <li>when you want to send them a verification code that you create, or </li>
+     * <li>when you need to specify a method for handling automated interactions with a PBX.</li>
+     * </ul>
+     *
+     * @param phone_number       [Required]	A string containing the user�s phone number.
+     * @param language           [Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
+     * @param verify_code        [Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
+     * @param verify_method      [Optional]	A string containing the input method you want the end user to use when returning the verification code. Use a value of "keypress" when you want the user to use their phone to dial the code. Set this value to null when you want the user to enter the code into your web aplication (the default).
+     * @param extension_type     [Optional]	An Integer value representing the type of response to use when dialing into a Private Branch Exchange (PBX). Use a value of 1 to have TeleSign use Dual-Tone Multi-Frequency (DTMF) tones to dail the user's extension. Use a value of 2 to have TeleSign use voice automation to request the user's extension. Use a value of 0 (the default) when the user isn't behind a PBX.
+     * @param extension_template [Optional]	A numerical string specifying the user's PBX extension number. Since this value is used in the call string, you can include one second pauses by adding commas before the extension number.  Set this value to null (the default) if not used.
+     * @param redial             [Optional]	A boolean value that enables/disables redialing. Set this value to "true" (the default) when you want TeleSign to re-attempt the call after a failed attempt. Set this value to "false" when you don't.
+     * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+     */
+    public VerifyResponse call(String phone_number, String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial) {
+
+        String result = null;
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Going to Call " + phone_number + " language " + language
+                    + " verify_code:" + verify_code + " verify_method:  " + verify_method
+                    + " extension_type:" + extension_type + " extension_template: " + extension_template);
+        }
+
+        try {
+
+            TeleSignRequest tr = new TeleSignRequest(getTelesign_url(), basePathWithDeliveryMethod(DeliveryMethod.VOICE), "POST", customer_id, secret_key);
+            String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
+
+            if (language != null) {
+
+                body += "&language=" + URLEncoder.encode(language, "UTF-8");
+            }
+
+            if (verify_code != null) {
+
+                body += "&verify_code=" + URLEncoder.encode(verify_code, "UTF-8");
+            }
+
+            if (verify_method != null && verify_method.equalsIgnoreCase("keypress")) {
+
+                body += "&verify_method=" + URLEncoder.encode(verify_method, "UTF-8");
+            }
+
+            if (extension_type > 0 && extension_type < 3) {
+
+                body += "&extension_type=" + URLEncoder.encode(Integer.toString(extension_type), "UTF-8");
+            }
+            if (extension_template != null) {
+
+                body += "&extension_template=" + URLEncoder.encode(extension_template, "UTF-8");
+            }
+
+            if (!redial) {
+
+                body += "&redial=" + URLEncoder.encode(Boolean.toString(redial), "UTF-8");
+            }
+
+            tr.setPostBody(body);
+            result = tr.executeRequest();
+        } catch (IOException e) {
+
+            System.err.println("IOException while executing phoneid API: " + e.getMessage());
+        }
+
+        Gson gson = new Gson();
+        VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
+
+        return response;
+    }
+
+    /**
+     * Requests the verification result from TeleSign.
+     * After sending an end user a verification code, wait a minute or two to allow them to receive it and then respond, and then call this method to find out if the end user passed the code challenge.
+     * This method takes only one parameter�the ID of this particular web service transaction.
+     *
+     * @param resource_id [Required]	The string returned in the Response Message that TeleSign sends upon receipt of your HTTP 1.1 Request Message - for either {@link com.telesign.verify#SMS()} or {@link com.telesign.verify#call()}.
+     * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+     */
+    public VerifyResponse status(String resource_id) {
+
+        String result = null;
+
+        try {
+
+            TeleSignRequest tr = new TeleSignRequest(getTelesign_url(), getTelesign_url_path() + resource_id, "GET", customer_id, secret_key);
+            result = tr.executeRequest();
+        } catch (IOException e) {
+
+            System.err.println("IOException while executing phoneid API: " + e.getMessage());
+        }
+
+        Gson gson = new Gson();
+        VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
+
+        logger.info("Verify::status:" + response.status);
+
+        return response;
+    }
 }
