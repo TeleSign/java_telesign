@@ -84,16 +84,20 @@ With just two classes, **telesign.api** abstracts much of the complexity of the 
 |                              |                                                                          | 
 +------------------------------+--------------------------------------------------------------------------+ 
 
+test.properties
+----------------
+>>>
+
+test.secretkey=<ENTER KEY>
+test.customerid=<ENTER CUST ID>
+test.phonenumber=<ENTER TEST PHONE>
+
 Java Code Example: To Verify a Call
 -------------------------------------
 
 Here's a basic code example.
 
 >>>
-  String customer_id = "CUSTOMER_ID_GOES_HERE";
-  String secret_key = "SECRECT_KEY_GOES_HERE";
-  Verify verify = new Verify(customer_id, secret_key);
-  VerifyResponse ret = verify.call("13103409700");
    
   {"reference_id":"013C8CC050DF040BE4D412D700002101","resource_uri":"/v1/verify/013C8CC050DF040BE4D412D700002101","sub_resource":"call","errors":[],"status":{"updated_on":"2013-01-30T18:37:59.444100Z","code":103,"description":"Call in progress"},"verify":{"code_state":"UNKNOWN","code_entered":""}}
 
