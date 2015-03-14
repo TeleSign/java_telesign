@@ -25,12 +25,12 @@ Authentication
 You supply your credentials to the API by passing them in during class initialization.
 
 
-test.properties
+telesign.properties
 ----------------
 >>>
-test.secretkey=<ENTER KEY>
-test.customerid=<ENTER CUST ID>
-test.phonenumber=<ENTER TEST PHONE>
+telesign.secretkey=<ENTER KEY>
+telesign.customerid=<ENTER CUST ID>
+telesign.phonenumber=<ENTER TEST PHONE>
 
 The Java Classes
 ------------------
