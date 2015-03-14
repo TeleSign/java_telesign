@@ -34,16 +34,16 @@ public class VerifyTest {
     public static void setUp() throws IOException {
         Properties props = new Properties();
         try {
-            props.load(new FileInputStream("test.properties"));
+            props.load(new FileInputStream("telesign.properties"));
         } catch (FileNotFoundException fne) {
-            fail("Please create a \"test.properties\" file at the root project directory " +
+            fail("Please create a \"telesign.properties\" file at the root project directory " +
                     "and include your telesign customerid, secretkey and your phone number. " +
                     "If you need assistance, please contact telesign support at support@telesign.com");
         }
 
-        CUSTOMER_ID = props.getProperty("test.customerid");
-        SECRET_KEY = props.getProperty("test.secretkey");
-        PHONE_NUMBER = props.getProperty("test.phonenumber");
+        CUSTOMER_ID = props.getProperty("telesign.customerid");
+        SECRET_KEY = props.getProperty("telesign.secretkey");
+        PHONE_NUMBER = props.getProperty("telesign.phonenumber");
 
         boolean pass = true;
 
