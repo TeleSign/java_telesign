@@ -24,10 +24,13 @@ Authentication
 
 You supply your credentials to the API by passing them in during class initialization.
 
+
+test.properties
+----------------
 >>>
-  String customer_id = "CUSTOMER_ID_GOES_HERE";
-  String secret_key = "SECRECT_KEY_GOES_HERE";
-  Verify verify = new Verify(customer_id, secret_key);
+test.secretkey=<ENTER KEY>
+test.customerid=<ENTER CUST ID>
+test.phonenumber=<ENTER TEST PHONE>
 
 The Java Classes
 ------------------
@@ -84,13 +87,7 @@ With just two classes, **telesign.api** abstracts much of the complexity of the 
 |                              |                                                                          | 
 +------------------------------+--------------------------------------------------------------------------+ 
 
-test.properties
-----------------
->>>
 
-test.secretkey=<ENTER KEY>
-test.customerid=<ENTER CUST ID>
-test.phonenumber=<ENTER TEST PHONE>
 
 Java Code Example: To Verify a Call
 -------------------------------------
