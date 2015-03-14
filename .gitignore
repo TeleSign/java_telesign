@@ -14,7 +14,7 @@ doc/
 jel/
 
 # Properties File for Tests
-test.properties
+#test.properties
 
 # IntelliJIDEA
-.idea/
+#.idea/
