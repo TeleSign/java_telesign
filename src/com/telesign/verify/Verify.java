@@ -23,6 +23,8 @@ public class    Verify {
 
 	private final String customer_id;
 	private final String secret_key;
+	private int connectTimeout = 30000;
+	private int readTimeout = 30000;
 
 	/**
 	 * The Verify class constructor.
@@ -34,6 +36,24 @@ public class    Verify {
 
 		this.customer_id = customer_id;
 		this.secret_key = secret_key;
+	}
+	
+	/**
+	 * The Verify class constructor.
+	 * Once you instantiate a Verify object, you can use it to make instance calls to <em>Verify SMS</em> and <em>Verify Call</em>.
+	 * @param customer_id	[Required]	A string containing your TeleSign Customer ID (your TeleSign account number).
+	 * @param secret_key	[Required]	A string containing your TeleSign Secret Key (a bese64-encoded string valu, available from the TeleSign Client Portal).
+	 * @param connectTimeout 
+	 * 			[Required] A integer representing connection timeout value while connecting to Telesign api.
+	 * @param readTimeout
+	 * 			[Required] A integer representing read timeout value while reading response returned from Telesign api.
+	 */
+	public Verify(String customer_id, String secret_key, int connectTimeout, int readTimeout) {
+
+		this.customer_id = customer_id;
+		this.secret_key = secret_key;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
 	}
 
 	/**
@@ -80,7 +100,7 @@ public class    Verify {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/sms", "POST", customer_id, secret_key);
+			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/sms", "POST", customer_id, secret_key, connectTimeout, readTimeout);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -160,7 +180,7 @@ public class    Verify {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/call", "POST", customer_id, secret_key);
+			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/call", "POST", customer_id, secret_key, connectTimeout, readTimeout);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -232,7 +252,7 @@ public class    Verify {
 		
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/" + resource_id, "GET", customer_id, secret_key);
+			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/" + resource_id, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 
 			if (verify_code != null)
 				tr.addParam("verify_code", verify_code);

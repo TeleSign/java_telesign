@@ -26,6 +26,8 @@ public class PhoneId {
 
 	private final String customer_id;
 	private final String secret_key;
+	private int connectTimeout = 30000;
+	private int readTimeout = 30000;
 
 	/**
 	 * The PhoneId class constructor. Once you instantiate a PhoneId object, you
@@ -45,7 +47,31 @@ public class PhoneId {
 		this.customer_id = customer_id;
 		this.secret_key = secret_key;
 	}
+	
+	/**
+	 * The PhoneId class constructor. Once you instantiate a PhoneId object, you
+	 * can use it to make instance calls to <em>PhoneID Standard</em>,
+	 * <em>PhoneID Score</em>, <em>PhoneID Contact</em>, and
+	 * <em>PhoneID Live</em>.
+	 * 
+	 * @param customer_id
+	 *            [Required] A string representing your TeleSign Customer ID.
+	 *            This represents your TeleSign account number.
+	 * @param secret_key
+	 *            [Required] A string representing your TeleSign Secret Key
+	 *            (available from the TeleSign Client Portal).
+	 * @param connectTimeout 
+	 * 			[Required] A integer representing connection timeout value while connecting to Telesign api.
+	 * @param readTimeout
+	 * 			[Required] A integer representing read timeout value while reading response returned from Telesign api.
+	 */
+	public PhoneId(String customer_id, String secret_key, int connectTimeout, int readTimeout) {
 
+		this.customer_id = customer_id;
+		this.secret_key = secret_key;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
+	}
 	/**
 	 * Returns information about a specified phone number�s type, numbering
 	 * structure, cleansing details, and location details.
@@ -65,7 +91,7 @@ public class PhoneId {
 
 			TeleSignRequest tr = new TeleSignRequest(
 					"https://rest.telesign.com", "/v1/phoneid/standard/"
-							+ phone_number, "GET", customer_id, secret_key);
+							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			result = tr.executeRequest();
 		} catch (IOException e) {
 
@@ -101,7 +127,7 @@ public class PhoneId {
 
 			TeleSignRequest tr = new TeleSignRequest(
 					"https://rest.telesign.com", "/v1/phoneid/score/"
-							+ phone_number, "GET", customer_id, secret_key);
+							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 			result = tr.executeRequest();
 		} catch (IOException e) {
@@ -139,7 +165,7 @@ public class PhoneId {
 
 			TeleSignRequest tr = new TeleSignRequest(
 					"https://rest.telesign.com", "/v1/phoneid/contact/"
-							+ phone_number, "GET", customer_id, secret_key);
+							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
 			result = tr.executeRequest();
@@ -180,7 +206,7 @@ public class PhoneId {
 
 			TeleSignRequest tr = new TeleSignRequest(
 					"https://rest.telesign.com", "/v1/phoneid/live/"
-							+ phone_number, "GET", customer_id, secret_key);
+							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
 			result = tr.executeRequest();

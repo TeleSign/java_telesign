@@ -26,6 +26,11 @@ public class PhoneIdTest {
 	public static String CUSTOMER_ID;
 	public static String SECRET_KEY;
 	public static String PHONE_NUMBER;
+	public static String CONNECT_TIMEOUT;
+	public static String READ_TIMEOUT;
+	public static int readTimeout;
+	public static int connectTimeout;
+	public static boolean timeouts = false;
 	
 	
 	@BeforeClass
@@ -42,6 +47,8 @@ public class PhoneIdTest {
 		CUSTOMER_ID = props.getProperty("test.customerid");
 		SECRET_KEY =  props.getProperty("test.secretkey");
 		PHONE_NUMBER = props.getProperty("test.phonenumber");
+		CONNECT_TIMEOUT =  props.getProperty("test.connecttimeout");
+		READ_TIMEOUT =  props.getProperty("test.readtimeout");
 		
 		boolean pass = true; 
 		
@@ -59,6 +66,17 @@ public class PhoneIdTest {
 			pass = false;
 		}
 		
+		if(CONNECT_TIMEOUT == null || CONNECT_TIMEOUT.isEmpty() || READ_TIMEOUT == null || READ_TIMEOUT.isEmpty()) {
+			System.out.println("Either of CONNECT_TIMEOUT or READ_TIMEOUT is not set. Please set the \"test.connecttimeout\" & \"test.readtimeout\" property in the properties file. " +
+					"Or default connect & read timeout values would be used");
+			pass = true;
+		} else {
+			connectTimeout = Integer.parseInt(CONNECT_TIMEOUT);
+			readTimeout = Integer.parseInt(READ_TIMEOUT);
+			timeouts = true;
+			pass = true;
+		}		
+		
 		if(!pass) {
 			fail("Configuration file not setup correctly!");
 		}
@@ -69,7 +87,12 @@ public class PhoneIdTest {
 	
 	@Test
 	public void phoneIdError() {
-		PhoneId pid = new PhoneId("Junk" , "Fake");
+		PhoneId pid;
+		if(!timeouts)
+			pid = new PhoneId("Junk" , "Fake");
+		else 
+			pid = new PhoneId("Junk" , "Fake", connectTimeout, readTimeout);
+		
 		PhoneIdStandardResponse ret = pid.standard("13102224444");
 		assertNotNull(ret);
 		assertTrue(ret.errors[0].code == -30000);
@@ -92,8 +115,12 @@ public class PhoneIdTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty()) {
 			fail("CUSTOMER_ID and SECRET_KEY must be set to pass this test");
 		}
+		PhoneId pid;
+		if(!timeouts)
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
+		else 
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		PhoneId pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
 		PhoneIdStandardResponse ret = pid.standard("13102224444");
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
@@ -106,8 +133,12 @@ public class PhoneIdTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty()) {
 			fail("CUSTOMER_ID and SECRET_KEY must be set to pass this test");
 		}
+		PhoneId pid;
+		if(!timeouts)
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
+		else 
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		PhoneId pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
 		PhoneIdScoreResponse ret = pid.score("13105551234", "BACS");
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
@@ -121,8 +152,12 @@ public class PhoneIdTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty()) {
 			fail("CUSTOMER_ID and SECRET_KEY must be set to pass this test");
 		}
+		PhoneId pid;
+		if(!timeouts)
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
+		else
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		PhoneId pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
 		PhoneIdContactResponse ret = pid.contact("13105551234", "BACS");
 		assertNotNull(ret);
 		
@@ -134,8 +169,12 @@ public class PhoneIdTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty()) {
 			fail("CUSTOMER_ID and SECRET_KEY must be set to pass this test");
 		}
+		PhoneId pid;
+		if(!timeouts)
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
+		else
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		PhoneId pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
 		PhoneIdLiveResponse ret = pid.live("13105551234", "BACS");
 		assertNotNull(ret);
 		
@@ -148,8 +187,12 @@ public class PhoneIdTest {
 		if(PHONE_NUMBER.isEmpty()) {
 			fail("For this test we require a valid phone number to test against");
 		}
+		PhoneId pid;
+		if(!timeouts)
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
+		else
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		PhoneId pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
 		PhoneIdLiveResponse ret2 = pid.live(PHONE_NUMBER , "BACS");
 		
 		assertTrue(ret2.status.code == 300); 
@@ -159,8 +202,12 @@ public class PhoneIdTest {
 	
 	@Test
 	public void responseToString() {
+		PhoneId pid;
+		if(!timeouts)
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
+		else
+			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		PhoneId pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
 		PhoneIdStandardResponse ret1 = pid.standard(PHONE_NUMBER);
 		PhoneIdContactResponse ret2 = pid.contact(PHONE_NUMBER , "BACS");
 		PhoneIdScoreResponse ret3 = pid.score(PHONE_NUMBER , "BACS");
