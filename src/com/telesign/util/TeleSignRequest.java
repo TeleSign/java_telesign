@@ -301,11 +301,7 @@ public class TeleSignRequest {
 		}
 
 		url = new URL(full_url.toString());
-
-		connection = (HttpURLConnection) url.openConnection();
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-
+		
 		// Create the Signature using the formula: Signature = Base64(HMAC-SHA( YourTeleSignAPIKey, UTF-8-Encoding-Of( StringToSign )).
 		try {
 
