@@ -21,10 +21,10 @@ import java.security.SignatureException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -73,7 +73,7 @@ public class TeleSignRequest {
 
 	/** Setting default Integer value that specifies the HttpConnection connect timeout value. Having default value as 30000 **/
     private int connectTimeout = 30000;
-    
+
     /** Setting default Integer value that specifies the HttpConnection read timeout value. Having default value as 30000 **/
     private int readTimeout = 30000;
 
@@ -159,7 +159,7 @@ public class TeleSignRequest {
 		headers = new TreeMap<String, String>();
 		params = new HashMap<String, String>();
 	}
-	
+
 	/**
 	 * Adds an HTTP 1.1 request header field/value pair to the set of request
 	 * headers.
@@ -301,7 +301,7 @@ public class TeleSignRequest {
 		}
 
 		url = new URL(full_url.toString());
-		
+
 		// Create the Signature using the formula: Signature = Base64(HMAC-SHA( YourTeleSignAPIKey, UTF-8-Encoding-Of( StringToSign )).
 		try {
 
@@ -420,7 +420,7 @@ public class TeleSignRequest {
 
 			Date now = new Date();
 
-			SimpleDateFormat rfc2616 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ");
+			SimpleDateFormat rfc2616 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ", Locale.US);
 			String date = rfc2616.format(now);
 			addHeader("Date", date);
 
