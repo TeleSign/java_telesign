@@ -71,6 +71,13 @@ public class TeleSignRequest {
 	/** An AuthMethod enumeration value  that specifies the strength of the encryption method to use when signing the Authentication header. */
 	private AuthMethod auth = AuthMethod.SHA1;
 
+	/** Setting default Integer value that specifies the HttpConnection connect timeout value. Having default value as 30000 **/
+    private int connectTimeout = 30000;
+    
+    /** Setting default Integer value that specifies the HttpConnection read timeout value. Having default value as 30000 **/
+    private int readTimeout = 30000;
+
+
 	/**
 	 * The TeleSitgnRequest class constructor. A TeleSitgnRequest object
 	 * contains all of the information required to call any/all of the TeleSign
@@ -108,6 +115,51 @@ public class TeleSignRequest {
 		params = new HashMap<String, String>();
 	}
 
+	/**
+	 * The TeleSitgnRequest class constructor. A TeleSitgnRequest object
+	 * contains all of the information required to call any/all of the TeleSign
+	 * web services.
+	 *
+	 * @param base
+	 *			[Required] A string representing the Base URI. For TeleSign
+	 *			web services, this is https://rest.telesign.com/.
+	 * @param resource
+	 *			[Required] A string representing the name of the network
+	 *			resource. Each of the TeleSign web services is identified by
+	 *			its resource specifier.
+	 * @param method
+	 *			[Required] A string representing the method to be performed on
+	 *			the resource. For TeleSign web services, this is either GET or
+	 *			POST.
+	 * @param customer_id
+	 *			[Required] A string representing your TeleSign Customer ID.
+	 *			This represents your TeleSign account number.
+	 * @param secret_key
+	 *			[Required] A string representing your TeleSign Secret Shared
+	 *			Key (available from the TeleSign Client Portal).
+	 * @param connectTimeout
+	 * 			[Required] A integer representing connection timeout
+	 *			connecting to Telesign api.
+	 * @param readTimeout
+	 * 			[Required] A integer representing read timeout
+	 *			while reading response returned from Telesign api.
+	 */
+	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key, int connectTimeout, int readTimeout) {
+
+		this.base = base;
+		this.resource = resource;
+		this.customer_id = customer_id;
+		this.secret_key = secret_key;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
+
+		post = (method.toLowerCase().equals("post"));
+
+		ts_headers = new TreeMap<String, String>();
+		headers = new TreeMap<String, String>();
+		params = new HashMap<String, String>();
+	}
+	
 	/**
 	 * Adds an HTTP 1.1 request header field/value pair to the set of request
 	 * headers.
@@ -249,10 +301,7 @@ public class TeleSignRequest {
 		}
 
 		url = new URL(full_url.toString());
-
-		connection = (HttpURLConnection) url.openConnection();
-		connection.setConnectTimeout(30000);
-
+		
 		// Create the Signature using the formula: Signature = Base64(HMAC-SHA( YourTeleSignAPIKey, UTF-8-Encoding-Of( StringToSign )).
 		try {
 
@@ -268,7 +317,8 @@ public class TeleSignRequest {
 		String auth_header = "TSA " + customer_id + ":" + signature;
 
 		connection = (HttpURLConnection) url.openConnection();
-		connection.setConnectTimeout(30000);
+		connection.setConnectTimeout(connectTimeout);
+		connection.setReadTimeout(readTimeout);
 		connection.setRequestProperty("Authorization", auth_header);
 
 		if (post) {

@@ -41,6 +41,9 @@ public class PhoneIdStandardResponse
 	/** An object containing geographical location information associated with the phone number. */
 	public Location location; 
 
+	/** An object containing information about the company that provides telecommunications services for the phone number. */
+	public Carrier carrier;
+
 	/** An array of property-value pairs, that contain information on error conditions that might have resulted from the Request. */
 	public static class Error
 	{
@@ -191,6 +194,13 @@ public class PhoneIdStandardResponse
 			/** A value indicating the number of degrees of longitude of the location associated with the phone number, expressed in eight decimal digits, with five decimal places For example, -118.30840. */
 			public double longitude;
 		}
+	}
+
+	/**  An object containing information about the company that provides telecommunications services for the phone number. */
+	public static class Carrier {
+
+		/** The string specifying the name of the carrier.  For example: "Verizon". */
+		public String name;
 	}
 
 	/**

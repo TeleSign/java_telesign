@@ -26,7 +26,11 @@ public class VerifyTest {
 	public static String CUSTOMER_ID;
 	public static String SECRET_KEY;
 	public static String PHONE_NUMBER;
-	
+	public static String CONNECT_TIMEOUT;
+	public static String READ_TIMEOUT;
+	public static int readTimeout;
+	public static int connectTimeout;
+	public static boolean timeouts = false;
 	
 	@BeforeClass
     public static void setUp() throws IOException {
@@ -42,6 +46,8 @@ public class VerifyTest {
 		CUSTOMER_ID = props.getProperty("test.customerid");
 		SECRET_KEY =  props.getProperty("test.secretkey");
 		PHONE_NUMBER = props.getProperty("test.phonenumber");
+		CONNECT_TIMEOUT =  props.getProperty("test.connecttimeout");
+		READ_TIMEOUT =  props.getProperty("test.readtimeout");
 		
 		boolean pass = true; 
 		
@@ -59,6 +65,17 @@ public class VerifyTest {
 			pass = false;
 		}
 		
+		if(CONNECT_TIMEOUT == null || CONNECT_TIMEOUT.isEmpty() || READ_TIMEOUT == null || READ_TIMEOUT.isEmpty()) {
+			System.out.println("Either of CONNECT_TIMEOUT or READ_TIMEOUT is not set. Please set the \"test.connecttimeout\" & \"test.readtimeout\" property in the properties file. " +
+					"Or default connect & read timeout values would be used");
+			pass = true;
+		} else {
+			connectTimeout = Integer.parseInt(CONNECT_TIMEOUT);
+			readTimeout = Integer.parseInt(READ_TIMEOUT);
+			timeouts = true;
+			pass = true;
+		}
+		
 		if(!pass) {
 			fail("Configuration file not setup correctly!");
 		}
@@ -67,7 +84,12 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyError() {
-		Verify ver = new Verify("Junk" , "Fake");
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify("Junk" , "Fake");
+		else 
+			ver = new Verify("Junk" , "Fake", connectTimeout, readTimeout);
+		
 		VerifyResponse ret = ver.call("13102224444");
 		assertNotNull(ret);
 		assertTrue(ret.errors[0].code == -30000);
@@ -78,8 +100,12 @@ public class VerifyTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
 		}
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
 		VerifyResponse ret = ver.call(PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
@@ -90,8 +116,12 @@ public class VerifyTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
 		}
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
 		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US");
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
@@ -102,8 +132,12 @@ public class VerifyTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
 		}
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
 		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
@@ -114,8 +148,12 @@ public class VerifyTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
 		}
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
 		VerifyResponse ret = ver.sms(PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
@@ -127,8 +165,12 @@ public class VerifyTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
 		}
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
 		VerifyResponse ret = ver.sms(PHONE_NUMBER, "en-US");
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
@@ -139,8 +181,12 @@ public class VerifyTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
 		}
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
 		VerifyResponse ret = ver.sms(PHONE_NUMBER, "en-US", "12345", "Thanks! Custom code template pass! Code: $$CODE$$");
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
@@ -152,8 +198,12 @@ public class VerifyTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
 		}
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
 		VerifyResponse ret = ver.call(PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
@@ -171,8 +221,12 @@ public class VerifyTest {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
 		}
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
 		VerifyResponse ret = ver.sms(PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
@@ -191,7 +245,12 @@ public class VerifyTest {
 		}
 		
 		String verify_code = "12345";
-		Verify ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		
 		VerifyResponse ret = ver.sms(PHONE_NUMBER, null, verify_code, null);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
