@@ -1,0 +1,122 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.telesign</groupId>
+	<artifactId>telesign</artifactId>
+	<packaging>pom</packaging>
+	<version>0.1.0-SNAPSHOT</version>
+	<name>telesign</name>
+	<url>https://github.com/TeleSign/java_telesign</url>
+	<inceptionYear>2010</inceptionYear>
+	<organization>
+		<name>Telesign</name>
+	</organization>
+	<description>The TeleSign Java SDK is a Java library that provides an interface to TeleSign Web Services. TeleSign Web Services conform to the REST Web Service Design Model. Services are exposed as URI-addressable resources through the set of RESTful procedures in our TeleSign REST API.</description>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+	<licenses>
+		<license>
+			<name>Lesser General Public License (LGPL) version 3.0</name>
+			<url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+		<license>
+			<name>Apache Software License (ASL) version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Humberto Morales</name>
+			<email>HumbertoM@telesign.com</email>
+			<roles>
+				<role>Lead Developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<!-- <issueManagement>
+		<system>GitHub Issue Tracker</system>
+		<url>https://github.com/aliteralmind/xbnjava/issues</url>
+	</issueManagement> -->
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+	</distributionManagement>
+
+	<scm>
+		<connection>scm:git:git@github.com:TeleSign/java_telesign.git</connection>
+		<url>scm:git:git@github.com:TeleSign/java_telesign.git</url>
+		<developerConnection>scm:git:git@github.com:TeleSign/java_telesign.git</developerConnection>
+	</scm>
+
+	<properties>
+		<java.version>1.7</java.version>
+		<jarprefix>./build/release/${project.artifactId}-${project.version}</jarprefix>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>${jarprefix}.jar</file>
+									<type>jar</type>
+								</artifact>
+								<artifact>
+									<file>${jarprefix}-javadoc.jar</file>
+									<type>jar</type>
+									<classifier>javadoc</classifier>
+								</artifact>
+								<artifact>
+									<file>${jarprefix}-sources.jar</file>
+									<type>jar</type>
+									<classifier>sources</classifier>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<!--
+          This profile will sign the JAR file, sources file, and javadocs file using the GPG key on the local machine.
+          See: https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven
+          -->
+		<profile>
+			<id>ossrh</id>			
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>				
+				<gpg.executable>gpg2</gpg.executable>
+				<gpg.passphrase>Tele$ign_key</gpg.passphrase>
+			</properties>			
+		</profile>
+	</profiles>
+</project>
