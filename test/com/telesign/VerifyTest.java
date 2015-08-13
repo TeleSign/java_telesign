@@ -31,6 +31,8 @@ public class VerifyTest {
 	public static int readTimeout;
 	public static int connectTimeout;
 	public static boolean timeouts = false;
+	public static String ORIGINATING_IP;
+	public static String SESSION_ID;
 	
 	@BeforeClass
     public static void setUp() throws IOException {
@@ -48,6 +50,8 @@ public class VerifyTest {
 		PHONE_NUMBER = props.getProperty("test.phonenumber");
 		CONNECT_TIMEOUT =  props.getProperty("test.connecttimeout");
 		READ_TIMEOUT =  props.getProperty("test.readtimeout");
+		ORIGINATING_IP = props.getProperty("test.originating_ip");
+		SESSION_ID = props.getProperty("test.session_id");
 		
 		boolean pass = true; 
 		
@@ -73,6 +77,16 @@ public class VerifyTest {
 			connectTimeout = Integer.parseInt(CONNECT_TIMEOUT);
 			readTimeout = Integer.parseInt(READ_TIMEOUT);
 			timeouts = true;
+			pass = true;
+		}
+		
+		if(ORIGINATING_IP == null || ORIGINATING_IP.isEmpty()) {
+			System.out.println("ORIGINATING_IP not set. Please set the \"test.originating_ip\" property in the properties file");
+			pass = true;
+		}
+		
+		if(SESSION_ID == null || SESSION_ID.isEmpty()) {
+			System.out.println("SESSION_ID not set. Please set the \"test.session_id\" property in the properties file");
 			pass = true;
 		}
 		
@@ -138,7 +152,7 @@ public class VerifyTest {
 		else
 			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true);
+		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true, ORIGINATING_IP, SESSION_ID);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}
@@ -187,7 +201,7 @@ public class VerifyTest {
 		else
 			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		VerifyResponse ret = ver.sms(PHONE_NUMBER, "en-US", "12345", "Thanks! Custom code template pass! Code: $$CODE$$");
+		VerifyResponse ret = ver.sms(PHONE_NUMBER, "en-US", "12345", "Thanks! Custom code template pass! Code: $$CODE$$", ORIGINATING_IP, SESSION_ID);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		
@@ -251,13 +265,13 @@ public class VerifyTest {
 		else
 			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		VerifyResponse ret = ver.sms(PHONE_NUMBER, null, verify_code, null);
+		VerifyResponse ret = ver.sms(PHONE_NUMBER, null, verify_code, null, ORIGINATING_IP, SESSION_ID);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		
 		String reference_id = ret.reference_id;
 		
-		VerifyResponse ret2 = ver.status(reference_id, verify_code);
+		VerifyResponse ret2 = ver.status(reference_id, verify_code, ORIGINATING_IP, SESSION_ID);
 		assertNotNull(ret2);
 		assertTrue(ret2.errors.length == 0);
 		assertTrue(ret2.verify.code_state.equals("VALID"));

@@ -31,7 +31,8 @@ public class PhoneIdTest {
 	public static int readTimeout;
 	public static int connectTimeout;
 	public static boolean timeouts = false;
-	
+	public static String ORIGINATING_IP;
+	public static String SESSION_ID;	
 	
 	@BeforeClass
     public static void setUp() throws IOException {
@@ -49,6 +50,8 @@ public class PhoneIdTest {
 		PHONE_NUMBER = props.getProperty("test.phonenumber");
 		CONNECT_TIMEOUT =  props.getProperty("test.connecttimeout");
 		READ_TIMEOUT =  props.getProperty("test.readtimeout");
+		ORIGINATING_IP = props.getProperty("test.originating_ip");
+		SESSION_ID = props.getProperty("test.session_id");
 		
 		boolean pass = true; 
 		
@@ -76,6 +79,16 @@ public class PhoneIdTest {
 			timeouts = true;
 			pass = true;
 		}		
+
+		if(ORIGINATING_IP == null || ORIGINATING_IP.isEmpty()) {
+			System.out.println("ORIGINATING_IP not set. Please set the \"test.originating_ip\" property in the properties file");
+			pass = true;
+		}
+		
+		if(SESSION_ID == null || SESSION_ID.isEmpty()) {
+			System.out.println("SESSION_ID not set. Please set the \"test.session_id\" property in the properties file");
+			pass = true;
+		}
 		
 		if(!pass) {
 			fail("Configuration file not setup correctly!");
@@ -208,10 +221,10 @@ public class PhoneIdTest {
 		else
 			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		PhoneIdStandardResponse ret1 = pid.standard(PHONE_NUMBER);
-		PhoneIdContactResponse ret2 = pid.contact(PHONE_NUMBER , "BACS");
-		PhoneIdScoreResponse ret3 = pid.score(PHONE_NUMBER , "BACS");
-		PhoneIdLiveResponse ret4 = pid.live(PHONE_NUMBER , "BACS");
+		PhoneIdStandardResponse ret1 = pid.standard(PHONE_NUMBER, ORIGINATING_IP, SESSION_ID);
+		PhoneIdContactResponse ret2 = pid.contact(PHONE_NUMBER , "BACS", ORIGINATING_IP, SESSION_ID);
+		PhoneIdScoreResponse ret3 = pid.score(PHONE_NUMBER , "BACS", ORIGINATING_IP, SESSION_ID);
+		PhoneIdLiveResponse ret4 = pid.live(PHONE_NUMBER , "BACS", ORIGINATING_IP, SESSION_ID);
 		
 		//all the successful responses should contain a json formatted reference_id at the start
 		String json1 = ret1.toString();

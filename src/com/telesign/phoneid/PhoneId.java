@@ -222,4 +222,197 @@ public class PhoneId {
 
 		return response;
 	}
+		
+	/**
+	 * Returns information about a specified phone number�s type, numbering
+	 * structure, cleansing details, and location details.
+	 * 
+	 * @param phone_number
+	 *            [Required] A string representing the phone number you want
+	 *            information about.
+	 * @return A {@link com.telesign.phoneid.response.PhoneIdStandardResponse}
+	 *         object, which contains the JSON-formatted response body from the
+	 *         TeleSign server.
+	 */
+	public PhoneIdStandardResponse standard(String phone_number, String originating_ip, String session_id) {
+
+		String result = null;
+
+		try {
+
+			TeleSignRequest tr = new TeleSignRequest(
+					"https://rest.telesign.com", "/v1/phoneid/standard/"
+							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+
+			if(originating_ip != null) {
+
+				tr.addParam("originating_ip", originating_ip);
+			}
+			
+			if(session_id != null) {
+
+				tr.addParam("session_id", session_id);
+			}
+
+			result = tr.executeRequest();
+		} catch (IOException e) {
+
+			System.err.println("IOException while executing phoneid API: "
+					+ e.getMessage());
+		}
+
+		Gson gson = new Gson();
+		PhoneIdStandardResponse response = gson.fromJson(result,
+				PhoneIdStandardResponse.class);
+
+		return response;
+	}
+
+	/**
+	 * Returns risk information about a specified phone number, including a
+	 * real-time risk score, threat level, and recommendation for action.
+	 * 
+	 * @param phone_number
+	 *            [Required] A string representing the phone number you want
+	 *            information about.
+	 * @param ucid
+	 *            [Required] A string specifying one of the Use Case Codes.
+	 * @return A {@link com.telesign.phoneid.response.PhoneIdScoreResponse}
+	 *         object, which contains the JSON-formatted response body from the
+	 *         TeleSign server.
+	 */
+	public PhoneIdScoreResponse score(String phone_number, String ucid, String originating_ip, String session_id) {
+
+		String result = null;
+
+		try {
+
+			TeleSignRequest tr = new TeleSignRequest(
+					"https://rest.telesign.com", "/v1/phoneid/score/"
+							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			tr.addParam("ucid", ucid);
+
+			if(originating_ip != null) {
+
+				tr.addParam("originating_ip", originating_ip);
+			}
+			
+			if(session_id != null) {
+
+				tr.addParam("session_id", session_id);
+			}
+
+			result = tr.executeRequest();
+		} catch (IOException e) {
+
+			System.err.println("IOException while executing phoneid API: "
+					+ e.getMessage());
+		}
+
+		Gson gson = new Gson();
+		PhoneIdScoreResponse response = gson.fromJson(result,
+				PhoneIdScoreResponse.class);
+
+		return response;
+	}
+
+	/**
+	 * Returns contact details for a specified phone number�s subscriber. This
+	 * includes the subscriber's First Name, Last Name, Street Address, City,
+	 * State (or Province), Country, and ZIP (Postal) Code.
+	 * 
+	 * @param phone_number
+	 *            [Required] A string representing the phone number you want
+	 *            information about.
+	 * @param ucid
+	 *            [Required] A string specifying one of the Use Case Codes.
+	 * @return A {@link com.telesign.phoneid.response.PhoneIdContactResponse}
+	 *         object, which contains the JSON-formatted response body from the
+	 *         TeleSign server.
+	 */
+	public PhoneIdContactResponse contact(String phone_number, String ucid, String originating_ip, String session_id) {
+
+		String result = null;
+
+		try {
+
+			TeleSignRequest tr = new TeleSignRequest(
+					"https://rest.telesign.com", "/v1/phoneid/contact/"
+							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			tr.addParam("ucid", ucid);
+			
+			if(originating_ip != null) {
+
+				tr.addParam("originating_ip", originating_ip);
+			}
+			
+			if(session_id != null) {
+
+				tr.addParam("session_id", session_id);
+			}
+
+			result = tr.executeRequest();
+		} catch (IOException e) {
+
+			System.err.println("IOException while executing phoneid API: "
+					+ e.getMessage());
+		}
+
+		Gson gson = new Gson();
+		PhoneIdContactResponse response = gson.fromJson(result,
+				PhoneIdContactResponse.class);
+
+		return response;
+	}
+
+	/**
+	 * Returns information about a specified phone number�s
+	 * <em>state of operation</em>. You can use it to find out if:
+	 * <ul>
+	 * <li>the line is in service,</li>
+	 * <li>the number is reachable,</li>
+	 * <li>the mobile phone is roaming, and if so, in which country.</li>
+	 * </ul>
+	 * 
+	 * @param phone_number
+	 *            [Required] A string representing the phone number you want
+	 *            information about.
+	 * @return A {@link com.telesign.phoneid.response.PhoneIdContactResponse}
+	 *         object, which contains the JSON-formatted response body from the
+	 *         TeleSign server.
+	 */
+	public PhoneIdLiveResponse live(String phone_number, String ucid, String originating_ip, String session_id) {
+
+		String result = null;
+
+		try {
+
+			TeleSignRequest tr = new TeleSignRequest(
+					"https://rest.telesign.com", "/v1/phoneid/live/"
+							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			tr.addParam("ucid", ucid);
+
+			if(originating_ip != null) {
+
+				tr.addParam("originating_ip", originating_ip);
+			}
+			
+			if(session_id != null) {
+
+				tr.addParam("session_id", session_id);
+			}
+
+			result = tr.executeRequest();
+		} catch (IOException e) {
+
+			System.err.println("IOException while executing phoneid API: "
+					+ e.getMessage());
+		}
+
+		Gson gson = new Gson();
+		PhoneIdLiveResponse response = gson.fromJson(result,
+				PhoneIdLiveResponse.class);
+
+		return response;
+	}
 }
