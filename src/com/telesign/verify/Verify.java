@@ -85,10 +85,10 @@ public class    Verify {
 	 * Use this overload when the user's native written language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
 	 * @param phone_number	[Required]	A string containing the userï¿½s phone number.
 	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default). This value is used in applying predefined text message templates.
-	 * @param originating_ip [Optional] Your end user’s IP Address. This value must be in the format defined by IETF in the 
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
 	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
 	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end user’s session id. Set it to "null" if not sending session id.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
@@ -110,10 +110,10 @@ public class    Verify {
 	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default). This value is used in applying predefined text message templates.
 	 * @param verify_code	[Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
 	 * @param template		[Optional]	A string containing a text message to override the predefined text message template. Your text message must incorporate a $$CODE$$ placeholder to integrate the verify_code field. Set this value to null (the default) to use the predefined template.
-	 * @param originating_ip [Optional] Your end user’s IP Address. This value must be in the format defined by IETF in the 
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
 	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
 	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end user’s session id. Set it to "null" if not sending session id.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse sms(String phone_number, String language, String verify_code, String template, String originating_ip, String session_id) {
@@ -194,10 +194,10 @@ public class    Verify {
 	 * Use this overload when the user's native spoken language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
 	 * @param phone_number	[Required] A string containing the userï¿½s phone number.
 	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
-	 * @param originating_ip [Optional] Your end user’s IP Address. This value must be in the format defined by IETF in the 
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
 	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
 	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end user’s session id. Set it to "null" if not sending session id.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse call(String phone_number, String language, String originating_ip, String session_id) {
@@ -221,10 +221,10 @@ public class    Verify {
 	 * @param extension_type		[Optional]	An Integer value representing the type of response to use when dialing into a Private Branch Exchange (PBX). Use a value of 1 to have TeleSign use Dual-Tone Multi-Frequency (DTMF) tones to dail the user's extension. Use a value of 2 to have TeleSign use voice automation to request the user's extension. Use a value of 0 (the default) when the user isn't behind a PBX. 
 	 * @param extension_template	[Optional]	A numerical string specifying the user's PBX extension number. Since this value is used in the call string, you can include one second pauses by adding commas before the extension number.  Set this value to null (the default) if not used. 
 	 * @param redial				[Optional]	A boolean value that enables/disables redialing. Set this value to "true" (the default) when you want TeleSign to re-attempt the call after a failed attempt. Set this value to "false" when you don't.
-	 * @param originating_ip [Optional] Your end user’s IP Address. This value must be in the format defined by IETF in the 
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
 	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
 	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end user’s session id. Set it to "null" if not sending session id.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse call(String phone_number , String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial, String originating_ip, String session_id) {
@@ -335,10 +335,10 @@ public class    Verify {
 	 * After sending an end user a verification code, wait a minute or two to allow them to receive it and then respond, and then call this method to find out if the end user passed the code challenge.
 	 * This method takes only one parameterï¿½the ID of this particular web service transaction.
 	 * @param resource_id	[Required]	The string returned in the Response Message that TeleSign sends upon receipt of your HTTP 1.1 Request Message - for either {@link com.telesign.verify#sms()} or {@link com.telesign.verify#call()}.
-	 * @param originating_ip [Optional] Your end user’s IP Address. This value must be in the format defined by IETF in the 
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
 	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
 	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end user’s session id. Set it to "null" if not sending session id.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse status(String resource_id, String originating_ip, String session_id) {
@@ -352,10 +352,10 @@ public class    Verify {
 	 * This method takes only one parameterï¿½the ID of this particular web service transaction.
 	 * @param resource_id	[Required]	The string returned in the Response Message that TeleSign sends upon receipt of your HTTP 1.1 Request Message - for either {@link com.telesign.verify#sms()} or {@link com.telesign.verify#call()}.
 	 * @param verify_code	[Required]	The verification code received from the user.
-	 * @param originating_ip [Optional] Your end user’s IP Address. This value must be in the format defined by IETF in the 
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
 	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
 	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end user’s session id. Set it to "null" if not sending session id.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse status(String resource_id, String verify_code, String originating_ip, String session_id) {
