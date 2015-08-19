@@ -24,6 +24,9 @@ public class PhoneIdScoreResponse {
 	
 	/** An array of {@link Error} objects. Each Error object contains information about an error condition that might have resulted from the Request. */	
 	public Error[] errors;
+	
+	/** An object that contains details about the phone type. */
+	public PhoneType phone_type;
 
 	/** A String containing the Signature, exactly as it was sent in the Request. Unless the request contained an invalid Signature, this contains an empty string.*/
 	public String signature_string;
@@ -34,6 +37,12 @@ public class PhoneIdScoreResponse {
 	/** An object containing details about the numbering attributes of the specified phone number. */
 	public Numbering numbering;
 
+	/** An object containing geographical location information associated with the phone number. */
+	public Location location;
+	
+	/** An object containing information about the company that provides telecommunications services for the phone number. */
+	public Carrier carrier;
+	
 	/** An object that describes the risk score for the phone number specified in the request. */
 	public Risk risk;
 	
@@ -133,6 +142,80 @@ public class PhoneIdScoreResponse {
 		
 		/** A string indicating the action that TeleSign recommends that you take based on the risk score. */
 		public String recommendation;
+	}
+
+	/**
+	 * An object containing geographical location information associated with the phone number.
+	 * <strong>Note:</strong> <emphasis>Location</emphasis> refers to the place where the phone is registered, <emphasis>not</emphasis> to where it actually is at the time of this request. 
+	 */
+	public static class Location {
+	    
+	    	/** A string specifying the name of the County (or Parish) associated with the phone number (U.S. only). */
+		public String county;
+		
+		/** A string specifying the name of the city associated with the phone number. */
+		public String city;
+		
+		/** The 2-letter State Code of the state (province, district, or territory) associated with the phone number (North America only). */
+		public String state;
+		
+		/** The 5-digit United States Postal Service ZIP Code associated with the phone number (U.S. only). */
+		public String zip;
+		
+		/** An object containing details about the country associated with the phone number. */
+		public Country country;
+		
+		/** An object containing details about the Time Zone associated with the phone number. */
+		public TimeZone time_zone;
+		
+		/** An object containing details about the geographical coordinates of the location where the phone number is registered. */
+		public Coordinates coordinates;
+		
+		/** A 4-digit string indicating the Primary Metropolitan Statistical Area (PMSA) Code for the location associated with the phone number (U.S. only). PMSA Codes are governed by the US Census Bureau. */
+		public String metro_code;
+		
+		/** An object containing details about the country associated with the phone number. */
+		public static class Country {
+		    
+		    	/** The ISO 3166-1 2-letter Country Code associated with the phone number. */
+			public String iso2;
+			
+			/** The ISO 3166-1 3-letter Country Code associated with the phone number */
+			public String iso3;
+			
+			/** The Country Name associated with phone number. */
+			public String name;
+		}
+
+		/** An object containing details about the Time Zone associated with the phone number. */
+		public static class TimeZone {
+		    
+		    	/** For U.S. domestic phone numbers, this parameter returns the UTC offset associated with the phone number. */
+			public String utc_offset_min;
+			
+			/** A string identifying the Time Zone Name (TZ) associated with the phone number (U.S. only). For example: "America/Los_Angeles". */
+			public String name;
+			
+			/** For international phone numbers, this parameter returns the maximum UTC offset for the country associated with the phone number. For U.S. domestic phone numbers, this parameter returns the same result as utc_offset_min. */
+			public String utc_offset_max;
+		}
+
+		/** An object containing details about the geographical coordinates of the location where the phone number is registered. */
+		public static class Coordinates {
+		    
+		    	/** A value indicating the number of degrees of latitude of the location associated with the phone number, expressed in seven decimal digits, with five decimal places. For example, 34.18264. */
+			public double latitude;
+			
+			/** A value indicating the number of degrees of longitude of the location associated with the phone number, expressed in eight decimal digits, with five decimal places For example, -118.30840. */
+			public double longitude;
+		}
+	}
+
+	/**  An object containing information about the company that provides telecommunications services for the phone number. */
+	public static class Carrier {
+
+		/** The string specifying the name of the carrier.  For example: "Verizon". */
+		public String name;
 	}
 
 	/**
