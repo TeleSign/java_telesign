@@ -230,6 +230,10 @@ public class PhoneId {
 	 * @param phone_number
 	 *            [Required] A string representing the phone number you want
 	 *            information about.
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
+	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
+	 * 								   Set it to null if not sending originating ip.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.phoneid.response.PhoneIdStandardResponse}
 	 *         object, which contains the JSON-formatted response body from the
 	 *         TeleSign server.
@@ -277,6 +281,10 @@ public class PhoneId {
 	 *            information about.
 	 * @param ucid
 	 *            [Required] A string specifying one of the Use Case Codes.
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
+	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
+	 * 								   Set it to null if not sending originating ip.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.phoneid.response.PhoneIdScoreResponse}
 	 *         object, which contains the JSON-formatted response body from the
 	 *         TeleSign server.
@@ -326,6 +334,10 @@ public class PhoneId {
 	 *            information about.
 	 * @param ucid
 	 *            [Required] A string specifying one of the Use Case Codes.
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
+	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
+	 * 								   Set it to null if not sending originating ip.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.phoneid.response.PhoneIdContactResponse}
 	 *         object, which contains the JSON-formatted response body from the
 	 *         TeleSign server.
@@ -377,6 +389,12 @@ public class PhoneId {
 	 * @param phone_number
 	 *            [Required] A string representing the phone number you want
 	 *            information about.
+	 * @param ucid
+	 *            [Required] A string specifying one of the Use Case Codes.
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
+	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
+	 * 								   Set it to null if not sending originating ip.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.phoneid.response.PhoneIdContactResponse}
 	 *         object, which contains the JSON-formatted response body from the
 	 *         TeleSign server.
