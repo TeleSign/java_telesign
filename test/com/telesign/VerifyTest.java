@@ -26,6 +26,7 @@ public class VerifyTest {
 	public static String CUSTOMER_ID;
 	public static String SECRET_KEY;
 	public static String PHONE_NUMBER;
+	public static String CALLER_ID; 
 	public static String CONNECT_TIMEOUT;
 	public static String READ_TIMEOUT;
 	public static int readTimeout;
@@ -33,6 +34,12 @@ public class VerifyTest {
 	public static boolean timeouts = false;
 	public static String ORIGINATING_IP;
 	public static String SESSION_ID;
+	public static String SMART_VERIFY_PREFERENCE;
+	public static String SMART_VERIFY_IGNORE_RISK;
+	public static String PUSH_NOTIFICATION_TYPE;
+	public static String PUSH_NOTIFICATION_VALUE;
+	public static String SOFT_TOKEN_ID;
+	public static String CALL_FORWARD_ACTION;
 	
 	@BeforeClass
     public static void setUp() throws IOException {
@@ -52,6 +59,13 @@ public class VerifyTest {
 		READ_TIMEOUT =  props.getProperty("test.readtimeout");
 		ORIGINATING_IP = props.getProperty("test.originating_ip");
 		SESSION_ID = props.getProperty("test.session_id");
+		SMART_VERIFY_PREFERENCE=props.getProperty("test.smart_verify_preference");
+		SMART_VERIFY_IGNORE_RISK=props.getProperty("test.smart_verify_ignore_risk");
+		PUSH_NOTIFICATION_TYPE=props.getProperty("test.push_notification_type");
+		PUSH_NOTIFICATION_VALUE=props.getProperty("test.push_notification_value");
+		SOFT_TOKEN_ID = props.getProperty("test.soft_token_id");
+		CALL_FORWARD_ACTION = props.getProperty("test.call_forward_action");
+		CALLER_ID = props.getProperty("test.caller_id");
 		
 		boolean pass = true; 
 		
@@ -87,6 +101,26 @@ public class VerifyTest {
 		
 		if(SESSION_ID == null || SESSION_ID.isEmpty()) {
 			System.out.println("SESSION_ID not set. Please set the \"test.session_id\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == SMART_VERIFY_PREFERENCE || SMART_VERIFY_PREFERENCE.isEmpty()) {
+			System.out.println("SMART_VERIFY_PREFERENCE not set. Please set the \"test.smart_verify_preference\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == SMART_VERIFY_IGNORE_RISK || SESSION_ID.isEmpty()) {
+			System.out.println("SMART_VERIFY_IGNORE_RISK not set. Please set the \"test.smart_verify_ignore_risk\" property in the properties file");
+			pass = true;
+		}		
+		
+		if(null == CALL_FORWARD_ACTION || CALL_FORWARD_ACTION.isEmpty()) {
+			System.out.println("CALL_FORWARD_ACTION not set. Please set the \"test.call_forward_action\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == CALLER_ID || CALLER_ID.isEmpty()) {
+			System.out.println("CALLER_ID not set. Please set the \"test.caller_id\" property in the properties file");
 			pass = true;
 		}
 		
@@ -142,6 +176,22 @@ public class VerifyTest {
 	}
 	
 	@Test
+	public void verifyRequestCallWithCallForwardAction() {
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		
+		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", CALL_FORWARD_ACTION, ORIGINATING_IP, SESSION_ID);		
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+	}
+	
+	@Test
 	public void verifyRequestCallWithAllParams() {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
@@ -152,7 +202,7 @@ public class VerifyTest {
 		else
 			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
-		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true, ORIGINATING_IP, SESSION_ID);
+		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true, CALL_FORWARD_ACTION, ORIGINATING_IP, SESSION_ID);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}
@@ -275,5 +325,59 @@ public class VerifyTest {
 		assertNotNull(ret2);
 		assertTrue(ret2.errors.length == 0);
 		assertTrue(ret2.verify.code_state.equals("VALID"));
+	}
+			
+	@Test
+	public void verifyRequestRegistration(){
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		
+		VerifyResponse ret = ver.registration(PHONE_NUMBER);
+		System.out.println(ret.toString()); // To Be removed
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+	}
+	
+	@Test
+	public void smartVerify(){
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		
+		VerifyResponse ret = ver.smartVerify(PHONE_NUMBER,"BACS");
+		System.out.println(ret.toString()); // To Be removed
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+	}
+	
+	@Test
+	public void smartVerifyWithAllParams(){
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		
+		VerifyResponse ret = ver.smartVerify(PHONE_NUMBER,"BACS", CALLER_ID, "en-US", null, SMART_VERIFY_PREFERENCE, SMART_VERIFY_IGNORE_RISK , ORIGINATING_IP, SESSION_ID);
+		System.out.println(ret.toString()); // To Be removed
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
 	}
 }
