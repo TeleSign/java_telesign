@@ -46,6 +46,8 @@ public class PhoneIdContactResponse {
 	/** An object that describes data associated with the contact specified in the request. */
 	public Contact contact;
 	
+    private final Gson gson = new Gson();
+	
 	/** An array of property-value pairs, that contain information on error conditions that might have resulted from the Request. */
 	public static class Error
 	{
@@ -247,7 +249,6 @@ public class PhoneIdContactResponse {
 	 */
 	@Override
 	public String toString() {
-		Gson gson = new Gson();
 		return gson.toJson(this);
 	}	
 }

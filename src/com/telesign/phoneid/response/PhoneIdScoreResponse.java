@@ -46,6 +46,8 @@ public class PhoneIdScoreResponse {
 	/** An object that describes the risk score for the phone number specified in the request. */
 	public Risk risk;
 	
+	private final Gson gson = new Gson();
+	
 	/** An array of property-value pairs, that contain information on error conditions that might have resulted from the Request. */
 	public static class Error
 	{
@@ -226,7 +228,6 @@ public class PhoneIdScoreResponse {
 	 */
 	@Override
 	public String toString() {
-		Gson gson = new Gson();
 		return gson.toJson(this);
 	}
 }
