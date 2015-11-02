@@ -38,6 +38,7 @@
         <path refid="classpath"/>
   		  <pathelement location="${basedir}/build/jar/TeleSign.jar"/>
       </classpath>
+      <formatter type="plain" usefile="false" />
       <batchtest fork="yes">
         <fileset dir="test" includes="**/*Test*.java"/>
       </batchtest>

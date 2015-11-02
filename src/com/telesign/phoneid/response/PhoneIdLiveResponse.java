@@ -43,7 +43,7 @@ public class PhoneIdLiveResponse {
 	/** An object containing information about the company that provides telecommunications services for the phone number. */
 	public Carrier carrier;
 	
-	private final Gson gson = new Gson();
+	private final transient Gson gson = new Gson();
 	
 	/**
 	 * A JSON object containing details about a specified phone number�s state of operation.

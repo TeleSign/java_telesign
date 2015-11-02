@@ -31,7 +31,7 @@ public class VerifyResponse {
 	/** An object that describes the verification status. */
 	public Verify verify;
 	
-    private final Gson gson = new Gson();
+    private final transient Gson gson = new Gson();
 	
 	/** An array of property-value pairs, that contain information on error conditions that might have resulted from the Request. */
 	public static class Error

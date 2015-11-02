@@ -44,7 +44,7 @@ public class PhoneIdStandardResponse
 	/** An object containing information about the company that provides telecommunications services for the phone number. */
 	public Carrier carrier;
 
-	private final Gson gson = new Gson();
+	private final transient Gson gson = new Gson();
 	
 	/** An array of property-value pairs, that contain information on error conditions that might have resulted from the Request. */
 	public static class Error
