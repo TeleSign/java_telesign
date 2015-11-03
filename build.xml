@@ -38,6 +38,7 @@
         <path refid="classpath"/>
   		  <pathelement location="${basedir}/build/jar/TeleSign.jar"/>
       </classpath>
+      <formatter type="plain" usefile="false" />
       <batchtest fork="yes">
         <fileset dir="test" includes="**/*Test*.java"/>
       </batchtest>
@@ -52,7 +53,7 @@
     <javadoc access="private"
       additionalparam=" -noqualifier java.lang:java.io "
       author="true"
-      classpath="${basedir}/libs/commons-codec-1.7.jar;${basedir}/libs/gson-2.2.1.jar"
+      classpath="${basedir}/libs/commons-codec-1.7.jar;${basedir}/libs/gson-2.3.1.jar"
       destdir="${basedir}/doc"
       doctitle="TeleSign Java SDK Documentation"
       encoding="UTF-8"

@@ -43,6 +43,8 @@ public class PhoneIdLiveResponse {
 	/** An object containing information about the company that provides telecommunications services for the phone number. */
 	public Carrier carrier;
 	
+	private final transient Gson gson = new Gson();
+	
 	/**
 	 * A JSON object containing details about a specified phone number�s state of operation.
 	 * <strong>Note:</strong> In the case where PhoneID Live is not supported for the specified phone number, the server returns a <strong>Live</strong> object that is <em>null</em>. 
@@ -235,7 +237,6 @@ public class PhoneIdLiveResponse {
 	 */
 	@Override
 	public String toString() {
-		Gson gson = new Gson();
 		return gson.toJson(this);
 	}
 }

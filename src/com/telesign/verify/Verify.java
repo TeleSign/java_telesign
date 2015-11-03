@@ -27,6 +27,8 @@ public class    Verify {
 	private int connectTimeout = 30000;
 	private int readTimeout = 30000;
 
+	private final Gson gson = new Gson();
+	
 	/**
 	 * The Verify class constructor.
 	 * Once you instantiate a Verify object, you can use it to make instance calls to <em>Verify SMS</em> and <em>Verify Call</em>.
@@ -160,7 +162,6 @@ public class    Verify {
 			System.err.println("IOException while executing phoneid API: " + e.getMessage());
 		}
 		
-		Gson gson = new Gson();
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
 		
 		return response;
@@ -280,7 +281,6 @@ public class    Verify {
 			System.err.println("IOException while executing phoneid API: " + e.getMessage());
 		}
 		
-		Gson gson = new Gson();
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
 		
 		return response;
@@ -324,7 +324,6 @@ public class    Verify {
 			System.err.println("IOException while executing phoneid API: " + e.getMessage());
 		}
 		
-		Gson gson = new Gson();
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
 		
 		return response;
@@ -386,7 +385,6 @@ public class    Verify {
 			System.err.println("IOException while executing phoneid API: " + e.getMessage());
 		}
 		
-		Gson gson = new Gson();
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
 		
 		return response;
