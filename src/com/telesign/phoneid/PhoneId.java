@@ -28,6 +28,8 @@ public class PhoneId {
 	private final String secret_key;
 	private int connectTimeout = 30000;
 	private int readTimeout = 30000;
+	
+	private final Gson gson = new Gson();
 
 	/**
 	 * The PhoneId class constructor. Once you instantiate a PhoneId object, you
@@ -99,7 +101,6 @@ public class PhoneId {
 					+ e.getMessage());
 		}
 
-		Gson gson = new Gson();
 		PhoneIdStandardResponse response = gson.fromJson(result,
 				PhoneIdStandardResponse.class);
 
@@ -136,7 +137,6 @@ public class PhoneId {
 					+ e.getMessage());
 		}
 
-		Gson gson = new Gson();
 		PhoneIdScoreResponse response = gson.fromJson(result,
 				PhoneIdScoreResponse.class);
 
@@ -175,7 +175,6 @@ public class PhoneId {
 					+ e.getMessage());
 		}
 
-		Gson gson = new Gson();
 		PhoneIdContactResponse response = gson.fromJson(result,
 				PhoneIdContactResponse.class);
 
@@ -216,7 +215,6 @@ public class PhoneId {
 					+ e.getMessage());
 		}
 
-		Gson gson = new Gson();
 		PhoneIdLiveResponse response = gson.fromJson(result,
 				PhoneIdLiveResponse.class);
 
@@ -265,7 +263,6 @@ public class PhoneId {
 					+ e.getMessage());
 		}
 
-		Gson gson = new Gson();
 		PhoneIdStandardResponse response = gson.fromJson(result,
 				PhoneIdStandardResponse.class);
 
@@ -317,7 +314,6 @@ public class PhoneId {
 					+ e.getMessage());
 		}
 
-		Gson gson = new Gson();
 		PhoneIdScoreResponse response = gson.fromJson(result,
 				PhoneIdScoreResponse.class);
 
@@ -370,7 +366,6 @@ public class PhoneId {
 					+ e.getMessage());
 		}
 
-		Gson gson = new Gson();
 		PhoneIdContactResponse response = gson.fromJson(result,
 				PhoneIdContactResponse.class);
 
@@ -427,7 +422,6 @@ public class PhoneId {
 					+ e.getMessage());
 		}
 
-		Gson gson = new Gson();
 		PhoneIdLiveResponse response = gson.fromJson(result,
 				PhoneIdLiveResponse.class);
 

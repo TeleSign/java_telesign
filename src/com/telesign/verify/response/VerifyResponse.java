@@ -42,6 +42,9 @@ public class VerifyResponse {
 	
 	/** An object that describes the user’s verification response. */
 	public UserResponse user_response; 
+
+    private final transient Gson gson = new Gson();
+
 	
 	/** An array of property-value pairs, that contain information on error conditions that might have resulted from the Request. */
 	public static class Error
@@ -133,7 +136,6 @@ public class VerifyResponse {
 	 */
 	@Override
 	public String toString() {
-		Gson gson = new Gson();
 		return gson.toJson(this);
 	}
 }
