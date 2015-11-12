@@ -518,10 +518,10 @@ public class TeleSignRequest {
 			// typecasting ssl with HttpsUrlConnection and setting sslcontext
 			((HttpsURLConnection)connection).setSSLSocketFactory(sslContext.getSocketFactory());			
 		} catch (NoSuchAlgorithmException e1) {
-			System.err.println("Error signing request " + e1.getMessage());
+			System.err.println("Received No Such Alogorithm Exception " + e1.getMessage());
 		}
 		catch (KeyManagementException e) {
-			System.err.println("Error signing request " + e.getMessage());
+			System.err.println("Key Management Exception received " + e.getMessage());
 		}
 	}
 }
