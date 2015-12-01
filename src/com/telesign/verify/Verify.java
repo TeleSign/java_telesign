@@ -234,6 +234,28 @@ public class    Verify {
 	 * 	<li>when you need to specify a method for handling automated interactions with a PBX.</li>
 	 * </ul>
 	 * 
+	 * @param phone_number			[Required]	A string containing the user's phone number.
+	 * @param language				[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
+	 * @param verify_code			[Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
+	 * @param verify_method			[Optional]	A string containing the input method you want the end user to use when returning the verification code. Use a value of "keypress" when you want the user to use their phone to dial the code. Set this value to null when you want the user to enter the code into your web aplication (the default). 
+	 * @param extension_type		[Optional]	An Integer value representing the type of response to use when dialing into a Private Branch Exchange (PBX). Use a value of 1 to have TeleSign use Dual-Tone Multi-Frequency (DTMF) tones to dail the user's extension. Use a value of 2 to have TeleSign use voice automation to request the user's extension. Use a value of 0 (the default) when the user isn't behind a PBX. 
+	 * @param extension_template	[Optional]	A numerical string specifying the user's PBX extension number. Since this value is used in the call string, you can include one second pauses by adding commas before the extension number.  Set this value to null (the default) if not used. 
+	 * @param redial				[Optional]	A boolean value that enables/disables redialing. Set this value to "true" (the default) when you want TeleSign to re-attempt the call after a failed attempt. Set this value to "false" when you don't.	
+	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+	 */
+	public VerifyResponse call(String phone_number, String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial) {
+		
+		return call(phone_number , language, verify_code, verify_method, extension_type, extension_template, redial, null, null);
+	}
+	/**
+	 * Delivers a verification code to the end user - with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
+	 * Use this overload when:
+	 * <ul>
+	 * 	<li>the end user's spoken language is not the default language (English), or</li>
+	 * 	<li>when you want to send them a verification code that you create, or </li>
+	 * 	<li>when you need to specify a method for handling automated interactions with a PBX.</li>
+	 * </ul>
+	 * 
 	 * @param phone_number			[Required]	A string containing the user�s phone number.
 	 * @param language				[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
 	 * @param verify_code			[Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
@@ -320,14 +342,16 @@ public class    Verify {
 				body += "&redial=" + URLEncoder.encode(Boolean.toString(redial), "UTF-8");
 			}
 			
-			if(null != call_forward_action && "block".equalsIgnoreCase(call_forward_action)) {
-				
-				body += "&call_forward_action=" + URLEncoder.encode("Block", "UTF-8");
-			
-			} else if(null != call_forward_action && "flag".equalsIgnoreCase(call_forward_action) ) {
-				
-				body += "&call_forward_action=" + URLEncoder.encode("Flag", "UTF-8");
-				
+			if (null != call_forward_action) {				
+				if ("block".equalsIgnoreCase(call_forward_action)) {
+
+					body += "&call_forward_action=" + URLEncoder.encode("Block", "UTF-8");
+
+				} else if ("flag".equalsIgnoreCase(call_forward_action)) {
+
+					body += "&call_forward_action=" + URLEncoder.encode("Flag", "UTF-8");
+
+				}
 			}
 			
 			tr.setPostBody(body);

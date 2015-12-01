@@ -219,6 +219,22 @@ public class VerifyTest {
 	}
 	
 	@Test
+	public void verifyReqCallNoOptionalParams() {
+		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
+			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
+		}
+		Verify ver;
+		if(!timeouts)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		
+		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", "54321", "keypress", 1, "1234", true); 
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+	}
+	
+	@Test
 	public void verifyRequestCallWithAllParams() {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
