@@ -89,16 +89,13 @@ public class    Verify {
 	 * Use this overload when the user's native written language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
 	 * @param phone_number	[Required]	A string containing the user�s phone number.
 	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default). This value is used in applying predefined text message templates.
-	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
-	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
-	
+	 * @param verify_code	[Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
+	 * @param template		[Optional]	A string containing a text message to override the predefined text message template. Your text message must incorporate a $$CODE$$ placeholder to integrate the verify_code field. Set this value to null (the default) to use the predefined template.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse sms(String phone_number, String language, String originating_ip, String session_id) {
+	public VerifyResponse sms(String phone_number, String language, String verify_code, String template) {
 		
-		return sms(phone_number, language, null, null, originating_ip, session_id);
+		return sms(phone_number, language, verify_code, template, null, null);
 	}
 
 	/**
