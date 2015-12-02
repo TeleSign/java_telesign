@@ -431,7 +431,23 @@ public class    Verify {
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
 		
 		return response;
-	}	
+	}
+	
+	/**
+	 * Requests the verification result from TeleSign.
+	 * After sending an end user a verification code, wait a minute or two to allow them to receive it and then respond, and then call this method to find out if the end user passed the code challenge.
+	 * This method takes only one parameterï¿½the ID of this particular web service transaction.
+	 * @param resource_id	[Required]	The string returned in the Response Message that TeleSign sends upon receipt of your HTTP 1.1 Request Message - for either {@link com.telesign.verify#sms()} or {@link com.telesign.verify#call()}.
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
+	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
+	 * 								   Set it to null if not sending originating ip.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
+	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+	 */
+	public VerifyResponse status(String resource_id, String originating_ip, String session_id) {
+
+		return status(resource_id, null, originating_ip, session_id);
+	}
 
 	/**
 	 * @param phone_number [Required] Your end user’s phone number, including the country code.
