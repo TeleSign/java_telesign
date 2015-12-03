@@ -28,7 +28,7 @@ public class VerifyResponse {
 	/** An object containing details about the request status. */
 	public Status status;
 	
-	/** An object that describes aspects of the user’s phone. */
+	/** An object that describes aspects of the user's phone. */
 	public Device device;
 	
 	/** An object that identifies your whitelabel app (customized/branded version of our AuthID application). */
@@ -40,7 +40,7 @@ public class VerifyResponse {
 	/** An object that describes the verification status. */
 	public Verify verify;
 	
-	/** An object that describes the user’s verification response. */
+	/** An object that describes the user's verification response. */
 	public UserResponse user_response; 
 
     private final transient Gson gson = new Gson();
@@ -69,20 +69,20 @@ public class VerifyResponse {
 		public String description;
 	}
 
-	/** An object that describes aspects of the user’s phone. */
+	/** An object that describes aspects of the user's phone. */
 	public static class Device {
 	    	
-	    	/** The user’s phone number, prefixed with the Country Dialing Code. */
+	    	/** The user's phone number, prefixed with the Country Dialing Code. */
 		public String phone_number;
 		
 		/**  The name of the mobile operating system running on the phone. */
 		public String operating_system;
 		
-		/** The IETF Language Tag corresponding to the user’s written language, as they have configured it on their phone (in Language Setting). */
+		/** The IETF Language Tag corresponding to the user's written language, as they have configured it on their phone (in Language Setting). */
 		public String language;
 	}
 	
-	/** An object that describes aspects of the user’s phone. */
+	/** An object that describes aspects of the user's phone. */
 	public static class App {
 	    	
 	    	/** The TeleSign-assigned ID associated with your whitelabel app. */
@@ -118,13 +118,13 @@ public class VerifyResponse {
 		public String code_expected;
 	}
 	
-	/** An object that describes the user’s verification response. */
+	/** An object that describes the user's verification response. */
 	public static class UserResponse{
-		/** A timestamp marking the time when TeleSign received the user’s verification response. */
+		/** A timestamp marking the time when TeleSign received the user's verification response. */
 		public String received;
 		/** The pass code returned from the user. */
 		public String verification_code;
-		/** Indicates the user’s intention, as selected from three choices. Possible values are ALLOWED, DENIED, and REPORTED_FRAUD. */
+		/** Indicates the user's intention, as selected from three choices. Possible values are ALLOWED, DENIED, and REPORTED_FRAUD. */
 		public String selection;
 	
 	}

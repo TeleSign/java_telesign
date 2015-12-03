@@ -450,7 +450,7 @@ public class    Verify {
 	}
 
 	/**
-	 * @param phone_number [Required] Your end user’s phone number, including the country code.
+	 * @param phone_number [Required] Your end user's phone number, including the country code.
 	 * @param bundle_id    [Required]
 	 * @return  A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
@@ -459,7 +459,7 @@ public class    Verify {
 	}
 
 	/**
-	 * @param phone_number 		   [Required] Your end user’s phone number, including the country code.
+	 * @param phone_number 		   [Required] Your end user's phone number, including the country code.
 	 * @param bundle_id 		   [optional] The identifier associated with your whitelabel app (your customized/branded version of the AuthID application).
 	 * @param originating_ip       [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
 	 * 								          Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
@@ -501,7 +501,7 @@ public class    Verify {
 	}
 	
 	/**
-	 * @param phone_number [Required] Your end user’s phone number, including the country code.
+	 * @param phone_number [Required] Your end user's phone number, including the country code.
 	 * @param ucid		   [Required] A string the specifies one of the <a href="http://docs.telesign.com/rest/content/xt/xt-use-case-codes.html#xref-use-case-codes">Use Case Codes</a>.
 	 * @return	A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
@@ -510,17 +510,17 @@ public class    Verify {
 	}
 		
 	/**
-	 * @param phone_number [Required] Your end user’s phone number, including the country code.
+	 * @param phone_number [Required] Your end user's phone number, including the country code.
 	 * @param ucid		   [Required] A string the specifies one of the <a href="http://docs.telesign.com/rest/content/xt/xt-use-case-codes.html#xref-use-case-codes">Use Case Codes</a>.
-	 * @param caller_id	   [Optional] End user’s caller ID if available. Used for Verify SMS and Verify Call transations, but is ignored for Verify Push transactions.
+	 * @param caller_id	   [Optional] End user's caller ID if available. Used for Verify SMS and Verify Call transactions, but is ignored for Verify Push transactions.
 	 * @param language	   [Optional] Determines the message for Verify SMS and Verify Push. IETF language tag is used in mapping languages codes to predefined templates. 
 	 * 								  For Verify Voice, the language determines the set of audio files to play for the call. </br>For a complete list of language tags, see <a href="http://docs.telesign.com/rest/content/xt/xt-language-tags.html#xref-language-tags">Supported Languages</a>.
 	 * @param verify_code  [Optional] The verification code used for the code challenge. By default, TeleSign automatically generates a six-digit value for you.
 	 * 								  </br>If you prefer to use your own verification code, you can override the default behavior by including this parameter and giving it an all-digit string value (0-9 in Latin-1), with the length as specified by your selected TeleSign settings.
 	 *     							  </br>Leading zeros are recognized, and therefore should be used accordingly.
-	 * @param preference   [Optional] Allows customers to override the Smart Verify method selection. Customers can specify either “call”, “sms” or “push” to be the recommended method to attempt. 
-	 * 								  </br>Since not all methods are supported on all devices, TeleSign may ignore the selected override method, in order to provide the method that is most appropriate, in which case Telesign selects the method in the order of “push”, “sms”, and “call”.
-	 * @param ignore_risk  [Optional] If set to “true”, allows customers to bypass blocking the request if the score is above the threshold value configured in the customer account.
+	 * @param preference   [Optional] Allows customers to override the Smart Verify method selection. Customers can specify either "call", "sms" or "push" to be the recommended method to attempt. 
+	 * 								  </br>Since not all methods are supported on all devices, TeleSign may ignore the selected override method, in order to provide the method that is most appropriate, in which case Telesign selects the method in the order of "push", "sms", and "call".
+	 * @param ignore_risk  [Optional] If set to "true", allows customers to bypass blocking the request if the score is above the threshold value configured in the customer account.
 	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. 
 	 * 									</br>Ex: originating_ip=192.168.123.456. </br>Set it to null if not sending originating ip.
 	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
@@ -607,14 +607,14 @@ public class    Verify {
 	 * 									   	The default value is <i>SIMPLE</i>.
 	 * @param notification_value [Optional] Applies when notification_type=CODE.You normally leave this parameter empty, 
 	 * 										and accept the default behavior in which TeleSign automatically generates a six-digit value for you, 
-	 * 										and sends it to you in our response message. If you’d prefer to use your own verification code, 
+	 * 										and sends it to you in our response message. If you'd prefer to use your own verification code, 
 	 * 										you can override the default behavior by setting a numeric value for this parameter. 
 	 * 										Values must be between six and eight digits long. [Default] is <i>null</i>.
 	 * @param bundle_id 		 [Required] Specifies a custom banner and icon for the TeleSign AuthID application to use for this notification. 
 	 * 							  			This allows you to brand your notifications with your corporate logo and/or your service-specific branding.
 	 * 							  			[Examples] template=mobile_2fa, or template=Outlook-2FA
 	 * @param message 			 [Optional] The message to display to the end user, in the body of the notification. 
-	 * 							 			If you don’t include this parameter, then TeleSign automatically supplies the default message.
+	 * 							 			If you don't include this parameter, then TeleSign automatically supplies the default message.
 	 * 							 			[Example] message=Enter the code displayed on our web site.[Default] is <i>null</i>.
 	 * @param originating_ip 	 [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
 	 * 								   		Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
