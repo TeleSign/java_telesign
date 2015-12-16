@@ -29,6 +29,14 @@ public class PhoneId {
 	private int connectTimeout = 30000;
 	private int readTimeout = 30000;
 	
+	private static final String apiBaseUrl = "https://rest.telesign.com";
+	
+	private static final String standardResource = "/v1/phoneid/standard/";
+	private static final String scoreResource    = "/v1/phoneid/score/";
+	private static final String contactResource  = "/v1/phoneid/contact/";
+	private static final String liveResource     = "/v1/phoneid/live/";
+	
+	
 	private final Gson gson = new Gson();
 
 	/**
@@ -91,9 +99,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/standard/"
-							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, standardResource + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			result = tr.executeRequest();
 		} catch (IOException e) {
 
@@ -126,9 +132,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/score/"
-							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, scoreResource + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 			result = tr.executeRequest();
 		} catch (IOException e) {
@@ -163,9 +167,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/contact/"
-							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, contactResource + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
 			result = tr.executeRequest();
@@ -203,9 +205,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/live/"
-							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, liveResource + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
 			result = tr.executeRequest();
@@ -242,9 +242,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/standard/"
-							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, standardResource + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 
 			if(originating_ip != null) {
 
@@ -292,9 +290,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/score/"
-							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, scoreResource + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
 			if(originating_ip != null) {
@@ -344,9 +340,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/contact/"
-							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, contactResource + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 			
 			if(originating_ip != null) {
@@ -400,9 +394,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/live/"
-							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, liveResource + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
 			if(originating_ip != null) {
