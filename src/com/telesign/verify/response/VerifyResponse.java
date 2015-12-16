@@ -27,11 +27,24 @@ public class VerifyResponse {
 
 	/** An object containing details about the request status. */
 	public Status status;
+	
+	/** An object that describes aspects of the user's phone. */
+	public Device device;
+	
+	/** An object that identifies your whitelabel app (customized/branded version of our AuthID application). */
+	public App app;
 
+	/** An object that describes the call forwarding status. */
+	public Call_forwarding call_forwarding;
+	
 	/** An object that describes the verification status. */
 	public Verify verify;
 	
+	/** An object that describes the user's verification response. */
+	public UserResponse user_response; 
+
     private final transient Gson gson = new Gson();
+
 	
 	/** An array of property-value pairs, that contain information on error conditions that might have resulted from the Request. */
 	public static class Error
@@ -42,7 +55,7 @@ public class VerifyResponse {
 		/** A string that describes the type of error that occurred. If no error occurs, this parameter is empty. */
 		public String description;
 	}
-
+	
 	/** An object containing details about the request status. */
 	public static class Status {
 	    	
@@ -52,10 +65,46 @@ public class VerifyResponse {
 		/**  One of the<emphasis> Transaction Status Codes</emphasis>. */
 		public int code;
 		
-		/** A descriptionm of the transaction status. */
+		/** A description of the transaction status. */
 		public String description;
 	}
 
+	/** An object that describes aspects of the user's phone. */
+	public static class Device {
+	    	
+	    	/** The user's phone number, prefixed with the Country Dialing Code. */
+		public String phone_number;
+		
+		/**  The name of the mobile operating system running on the phone. */
+		public String operating_system;
+		
+		/** The IETF Language Tag corresponding to the user's written language, as they have configured it on their phone (in Language Setting). */
+		public String language;
+	}
+	
+	/** An object that describes aspects of the user's phone. */
+	public static class App {
+	    	
+	    	/** The TeleSign-assigned ID associated with your whitelabel app. */
+		public String signature;
+		
+		/**  A timestamp value indicating when your whitelabel app was activated by TeleSign. */
+		public String created_on_utc;	
+		
+	}
+	
+	/**
+	 *  An object that describes the Call_forwarding status.
+	 */	
+	public static class Call_forwarding {
+	    
+		/** A string value that indicates FLAG or BLOCK */
+		public String action;
+		
+		/**  Returns the following values: FORWARDED, NOT FORWARDED, UNAVAILABLE and UNSUPPORTED.. */
+		public String call_forward;
+	}
+	
 	/** An object that describes the verification status. */
 	public static class Verify {
 	    
@@ -64,8 +113,22 @@ public class VerifyResponse {
 		
 		/**  Always set to an empty string. */
 		public String code_entered;
+		
+		/** In case of code challenge, contains the verification code presented to the user otherwise contains null if Simple push verification. */
+		public String code_expected;
 	}
-
+	
+	/** An object that describes the user's verification response. */
+	public static class UserResponse{
+		/** A timestamp marking the time when TeleSign received the user's verification response. */
+		public String received;
+		/** The pass code returned from the user. */
+		public String verification_code;
+		/** Indicates the user's intention, as selected from three choices. Possible values are ALLOWED, DENIED, and REPORTED_FRAUD. */
+		public String selection;
+	
+	}
+	
 	/**
 	 * Converts a <strong>VerifyResponse</strong> object to its equivalent JSON format.  
 	 * @see java.lang.Object#toString()

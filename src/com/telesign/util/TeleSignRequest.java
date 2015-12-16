@@ -17,6 +17,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.SignatureException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,6 +30,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -320,7 +325,8 @@ public class TeleSignRequest {
 		connection.setConnectTimeout(connectTimeout);
 		connection.setReadTimeout(readTimeout);
 		connection.setRequestProperty("Authorization", auth_header);
-
+		setTLSProtocol();
+		
 		if (post) {
 
 			connection.setRequestProperty("Content-Length", Integer.toString(body.length()));
@@ -365,7 +371,6 @@ public class TeleSignRequest {
 			in.close();
 		}
 		catch (IOException e) {
-
 			System.err.println("IOException while reading from input stream " + e.getMessage());
 		}
 
@@ -496,5 +501,27 @@ public class TeleSignRequest {
 		}
 
 		return result;
+	}
+	
+	/**
+	 * Set the TLS protocol to TLSv1.2
+	 */
+	private void setTLSProtocol() {
+		SSLContext sslContext;
+		try {			
+			// setting ssl instance to TLSv1.2
+			sslContext = SSLContext.getInstance("TLSv1.2");
+			
+			// sslContext initialize
+			sslContext.init(null,null,new SecureRandom());
+
+			// typecasting ssl with HttpsUrlConnection and setting sslcontext
+			((HttpsURLConnection)connection).setSSLSocketFactory(sslContext.getSocketFactory());			
+		} catch (NoSuchAlgorithmException e1) {
+			System.err.println("Received No Such Alogorithm Exception " + e1.getMessage());
+		}
+		catch (KeyManagementException e) {
+			System.err.println("Key Management Exception received " + e.getMessage());
+		}
 	}
 }
