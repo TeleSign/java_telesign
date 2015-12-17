@@ -204,7 +204,6 @@ public class VerifyTest {
 		VerifyResponse ret = ver.sms(PHONE_NUMBER, "en-US", "12345", "Thanks! Custom code template pass! Code: $$CODE$$", ORIGINATING_IP, SESSION_ID);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
-		
 	}
 	
 	@Test

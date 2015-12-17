@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SignatureException;
@@ -48,19 +49,13 @@ public class TeleSignRequest {
 	private final String secret_key;
 
 	/** The set of HTTP 1.1 Request header field/value pairs. */
-	private TreeMap<String, String> headers;
+	private Map<String, String> headers;
 
 	/** The set of <em>TeleSign-specific</em> Request header field/value pairs. */
-	private TreeMap<String, String> ts_headers;
+	private Map<String, String> ts_headers;
 
 	/** The set of HTTP 1.1 Request parameter attribute/value pairs. */
-	private HashMap<String, String> params;
-
-	/** The <em>absolute form</em> of the Resource URI */
-	private URL url;
-
-	/** The persistent session connection for the Request. */
-	private HttpURLConnection connection;
+	private Map<String, String> params;
 
 	/** The contents of the entity body in the POST Request. */
 	private String body = "";
@@ -110,9 +105,9 @@ public class TeleSignRequest {
 
 		post = (method.toLowerCase().equals("post"));
 
-		ts_headers = new TreeMap<String, String>();
-		headers = new TreeMap<String, String>();
-		params = new HashMap<String, String>();
+		ts_headers = new HashMap<>();
+		headers = new HashMap<>();
+		params = new HashMap<>();
 	}
 
 	/**
@@ -145,19 +140,9 @@ public class TeleSignRequest {
 	 *			while reading response returned from Telesign api.
 	 */
 	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key, int connectTimeout, int readTimeout) {
-
-		this.base = base;
-		this.resource = resource;
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
+		this(base, resource, method, customer_id, secret_key);
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
-
-		post = (method.toLowerCase().equals("post"));
-
-		ts_headers = new TreeMap<String, String>();
-		headers = new TreeMap<String, String>();
-		params = new HashMap<String, String>();
 	}
 
 	/**
@@ -174,11 +159,10 @@ public class TeleSignRequest {
 	public void addHeader(String key, String value) {
 
 		// Check to see if this request header field is a "TeleSign-specific" header field.
-		if ((key.length() > 4) && (key.toLowerCase().substring(0, 5).equals("x-ts-"))) {
+		if ((key.length() > 4) && (key.toLowerCase().startsWith("x-ts-"))) {
 
 			// If using the TeleSign-specific date header, then use a blank line for the standard Date Request header.
 			if (key.toLowerCase().equals("x-ts-date")) {
-
 				ts_date = true;
 			}
 
@@ -200,7 +184,6 @@ public class TeleSignRequest {
 	 *			<em>value</em>.
 	 */
 	public void addParam(String key, String value) {
-
 		params.put(key, value);
 	}
 
@@ -214,7 +197,6 @@ public class TeleSignRequest {
 	 *			Request's entity body.
 	 */
 	public void setPostBody(String post_body) {
-
 		body = post_body;
 	}
 
@@ -226,7 +208,6 @@ public class TeleSignRequest {
 	 *		 body.
 	 */
 	public String getPostBody() {
-
 		return body;
 	}
 
@@ -237,7 +218,6 @@ public class TeleSignRequest {
 	 *		 Request header fields.
 	 */
 	public Map<String, String> getTsHeaders() {
-
 		return ts_headers;
 	}
 
@@ -263,7 +243,6 @@ public class TeleSignRequest {
 	 * @return A sorted key/value mapping that contains all of the POST Request parameters.
 	 */
 	public Map<String, String> getAllParams() {
-
 		return params;
 	}
 
@@ -277,12 +256,8 @@ public class TeleSignRequest {
 	 */
 	public String executeRequest() throws IOException {
 
-		String signingString = getSigningString(customer_id);
-		String signature;
-		String url_output = "";
-
 		// Create the absolute form of the resource URI, and place it in a string buffer.
-		StringBuffer full_url = new StringBuffer(base).append(resource);
+		StringBuilder full_url = new StringBuilder(128).append(base).append(resource);
 
 		if (params.size() > 0) {
 
@@ -295,81 +270,47 @@ public class TeleSignRequest {
 
 					full_url.append("&");
 				}
-
+	
 				full_url.append(URLEncoder.encode(key, "UTF-8")).append("=").append(URLEncoder.encode(params.get(key), "UTF-8"));
 			}
 		}
 
-		url = new URL(full_url.toString());
-
-		// Create the Signature using the formula: Signature = Base64(HMAC-SHA( YourTeleSignAPIKey, UTF-8-Encoding-Of( StringToSign )).
 		try {
+			URL url = new URL(full_url.toString());
 
-			signature = encode(signingString, secret_key);
-		}
-		catch (SignatureException e) {
+			String auth_header = "TSA " + customer_id + ":" + encode(getSigningString(customer_id), secret_key);
+			
+			HttpURLConnection connection = connect(url);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
+			connection.setRequestProperty("Authorization", auth_header);
 
-			System.err.println("Error signing request " + e.getMessage());
-
-			return null;
-		}
-
-		String auth_header = "TSA " + customer_id + ":" + signature;
-
-		connection = (HttpURLConnection) url.openConnection();
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-		connection.setRequestProperty("Authorization", auth_header);
-
-		if (post) {
-
-			connection.setRequestProperty("Content-Length", Integer.toString(body.length()));
-		}
-
-		for (String key : ts_headers.keySet()){
-
-			connection.setRequestProperty(key, ts_headers.get(key));
-		}
-
-
-		for (String key : headers.keySet()) {
-
-			connection.setRequestProperty(key, headers.get(key));
-		}
-
-		if (post) {
-
-			connection.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-
-			wr.writeBytes(body);
-			wr.flush();
-			wr.close();
-		}
-
-		int response = connection.getResponseCode();
-
-		BufferedReader in;
-
-		try {
-
-			InputStream isr = (response == 200) ? connection.getInputStream() : connection.getErrorStream();
-			in = new BufferedReader(new InputStreamReader(isr));
-			String urlReturn;
-
-			while ((urlReturn = in.readLine()) != null) {
-
-				url_output += urlReturn;
+			for (String key : ts_headers.keySet()){
+				connection.setRequestProperty(key, ts_headers.get(key));
 			}
 
-			in.close();
-		}
-		catch (IOException e) {
+			for (String key : headers.keySet()) {
+				connection.setRequestProperty(key, headers.get(key));
+			}
 
-			System.err.println("IOException while reading from input stream " + e.getMessage());
-		}
+			if (post) {
+				writePostBody(connection);
+			}
 
-		return url_output;
+			return readResponse(connection);
+		}
+		catch (MalformedURLException ex) {
+			System.err.println("Invalid url " + ex.getMessage());
+			throw ex;
+		}
+		catch (SignatureException ex) {
+			System.err.println("Error signing request " + ex.getMessage());
+			throw new IOException(ex);
+		}
+		catch (IOException ex) {
+		    System.err.println("IOException while reading from input stream " + ex.getMessage());
+		    throw ex;
+		}
 	}
 
 	/**
@@ -497,4 +438,60 @@ public class TeleSignRequest {
 
 		return result;
 	}
+	
+	/**
+	 * Attempts to read response body using underlying connection input (or error) stream.
+	 * 
+	 * @param connection http connection to remote endpoint
+	 * @return response body
+	 * @throws IOException
+	 */
+	String readResponse(HttpURLConnection connection) throws IOException {
+		
+		BufferedReader in = null;
+		
+		try {
+			int status = connection.getResponseCode();
+			
+			InputStream isr = (status == 200) ? connection.getInputStream() : connection.getErrorStream();
+			in = new BufferedReader(new InputStreamReader(isr));
+				
+			String line;
+			StringBuilder response = new StringBuilder(512);
+			
+			while ((line = in.readLine()) != null) {
+				response.append(line);
+			}
+			
+			return response.toString();
+		}
+		finally {
+			if (in != null) {
+				in.close();
+			}
+		}
+	}
+	
+	/**
+	 * Connects to the remote endpoint represented by the url supplied.
+	 * 
+	 * @param url
+	 * @return 
+	 * @throws IOException
+	 */
+	HttpURLConnection connect(URL url) throws IOException {
+		return (HttpURLConnection) url.openConnection();
+	}
+
+	void writePostBody(HttpURLConnection connection) throws IOException {
+		
+		connection.setRequestProperty("Content-Length", Integer.toString(body.length()));
+		connection.setDoOutput(true);
+		
+		try(DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
+			wr.writeBytes(body);
+			wr.flush();
+		}		
+	}
+	
 }
