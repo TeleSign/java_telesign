@@ -1,17 +1,23 @@
-package com.telesign;
+package com.telesign.util;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringBufferInputStream;
+import java.net.HttpURLConnection;
 import java.util.Properties;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.mockito.Mockito.*;
 
 import com.google.gson.Gson;
 import com.telesign.phoneid.response.PhoneIdStandardResponse;
@@ -201,5 +207,66 @@ public class TeleSignRequestTest {
 		
 		assertTrue(response.errors[0].code == -30012);
 	}
-
+	
+	@Test
+	public void testReadResponse() throws IOException {
+		// given
+		TeleSignRequest tr = new TeleSignRequest(null, null, "", null, null);
+		
+		HttpURLConnection mockConnection = mock(HttpURLConnection.class);
+		doReturn(200).when(mockConnection).getResponseCode();
+		doReturn(new ByteArrayInputStream("foobar".getBytes())).when(mockConnection).getInputStream();
+		
+		// when
+		String response = tr.readResponse(mockConnection);
+		
+		// then
+		assertNotNull(response);
+		assertTrue(response.equals("foobar"));
+	}
+	
+	@Test
+	public void testReadResponseError() throws IOException {
+		// given
+		TeleSignRequest tr = new TeleSignRequest(null, null, "", null, null);
+		
+		HttpURLConnection mockConnection = mock(HttpURLConnection.class);
+		doReturn(500).when(mockConnection).getResponseCode();
+		doReturn(new ByteArrayInputStream("segmentation fault".getBytes())).when(mockConnection).getErrorStream();
+		
+		// when
+		String response = tr.readResponse(mockConnection);
+		
+		// then
+		assertNotNull(response);
+		assertTrue(response.equals("segmentation fault"));
+	}
+	
+	@Test(expected=IOException.class)
+	public void testReadResponseWithException() throws IOException {
+		// given
+		TeleSignRequest tr = new TeleSignRequest(null, null, "", null, null);
+		
+		HttpURLConnection mockConnection = mock(HttpURLConnection.class);
+		InputStream mockInputStream = mock(InputStream.class);
+		
+		doReturn(200).when(mockConnection).getResponseCode();
+		doReturn(mockInputStream).when(mockConnection).getInputStream();
+		doThrow(new IOException()).when(mockInputStream).read();
+		
+		// when
+		tr.readResponse(mockConnection);
+	}
+	
+	@Test(expected=IOException.class)
+	public void testExecuteRequestConnectionException() throws IOException {
+		// given
+		TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY);
+		TeleSignRequest spied = spy(tr);
+		
+		doThrow(new IOException()).when(spied).connect(any());
+		
+		// when
+		spied.executeRequest();
+	}
 }
