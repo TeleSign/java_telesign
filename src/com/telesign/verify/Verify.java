@@ -10,6 +10,7 @@
 package com.telesign.verify;
 
 import com.google.gson.Gson;
+import com.telesign.GlobalConstant;
 import com.telesign.util.IpValidator;
 import com.telesign.util.TeleSignRequest;
 import com.telesign.verify.response.VerifyResponse;
@@ -123,7 +124,7 @@ public class    Verify {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/sms", "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/verify/sms", "POST", customer_id, secret_key, connectTimeout, readTimeout);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -300,7 +301,7 @@ public class    Verify {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/call", "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/verify/call", "POST", customer_id, secret_key, connectTimeout, readTimeout);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -406,7 +407,7 @@ public class    Verify {
 		
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/" + resource_id, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/verify/" + resource_id, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 
 			if (verify_code != null)
 				tr.addParam("verify_code", verify_code);
@@ -531,7 +532,7 @@ public class    Verify {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest("https://rest.telesign.com", "/v1/verify/smart", "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/verify/smart", "POST", customer_id, secret_key, connectTimeout, readTimeout);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 
 			if(null != ucid) {

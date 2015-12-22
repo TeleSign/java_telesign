@@ -32,7 +32,7 @@ public class TeleSignRequestTest {
 	public static String READ_TIMEOUT;
 	public static int readTimeout;
 	public static int connectTimeout;
-	public static boolean timeouts = false;	
+	public static boolean timeouts;
 	
 	@BeforeClass
     public static void setUp() throws IOException {
@@ -87,9 +87,9 @@ public class TeleSignRequestTest {
 	public void requestCreation() {
 		TeleSignRequest tr;
 		if(!timeouts)
-			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key");
+			tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key");
 		else
-			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout);
+			tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout);
 		assertNotNull(tr);
 		
 	}
@@ -110,9 +110,9 @@ public class TeleSignRequestTest {
 	public void addParameterTest() {
 		TeleSignRequest tr;
 		if(!timeouts)
-			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key");
+			tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key");
 		else
-			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout);
+			tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout);
 		
 		assertNull(tr.getAllParams().get("code"));
 		tr.addParam("code", "001");
@@ -123,9 +123,9 @@ public class TeleSignRequestTest {
 	public void addHeaderTest() {
 		TeleSignRequest tr;
 		if(!timeouts)
-			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key");
+			tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key");
 		else
-			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout);
+			tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout);
 		
 		assertNull(tr.getAllHeaders().get("Authorization"));
 		tr.addHeader("Authorization", "fake");
@@ -152,9 +152,9 @@ public class TeleSignRequestTest {
 		String result = null;
 		TeleSignRequest tr;
 		if(!timeouts)
-			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY);
+			tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY);
 		else
-			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+			tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
 		tr.setSigningMethod(AuthMethod.SHA256);
 		
@@ -176,9 +176,9 @@ public class TeleSignRequestTest {
 		String result = null;
 		TeleSignRequest tr;
 		if(!timeouts)
-			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY);
+			tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY);
 		else
-			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+			tr = new TeleSignRequest(GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
 		tr.setNonce(nonce);
 		

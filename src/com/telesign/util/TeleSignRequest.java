@@ -71,7 +71,7 @@ public class TeleSignRequest {
 	private String body = "";
 
 	/** A boolean value that indicates whether the <em>TeleSign-specific</em> <strong>Date</strong> Request header field is used. */
-	private boolean ts_date = false;
+	private boolean ts_date;
 
 	/** An AuthMethod enumeration value  that specifies the strength of the encryption method to use when signing the Authentication header. */
 	private AuthMethod auth = AuthMethod.SHA1;
@@ -355,20 +355,14 @@ public class TeleSignRequest {
 
 		int response = connection.getResponseCode();
 
-		BufferedReader in;
+		try (BufferedReader in = new BufferedReader(
+				new InputStreamReader((response == 200) ? connection.getInputStream() : connection.getErrorStream()))) {
 
-		try {
-
-			InputStream isr = (response == 200) ? connection.getInputStream() : connection.getErrorStream();
-			in = new BufferedReader(new InputStreamReader(isr));
 			String urlReturn;
 
 			while ((urlReturn = in.readLine()) != null) {
-
 				url_output += urlReturn;
 			}
-
-			in.close();
 		}
 		catch (IOException e) {
 			System.err.println("IOException while reading from input stream " + e.getMessage());
@@ -474,7 +468,7 @@ public class TeleSignRequest {
 	 *			 Failed to generate HMAC. IllegalArgumentException - if
 	 *			 algorithm is null or key is null or empty.
 	 */
-	private String encode(String data, String key)  throws java.security.SignatureException {
+	private String encode(String data, String key)  throws SignatureException {
 
 		String result;
 

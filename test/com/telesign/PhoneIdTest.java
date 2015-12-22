@@ -30,7 +30,7 @@ public class PhoneIdTest {
 	public static String READ_TIMEOUT;
 	public static int readTimeout;
 	public static int connectTimeout;
-	public static boolean timeouts = false;
+	public static boolean timeouts;
 	public static String ORIGINATING_IP;
 	public static String SESSION_ID;	
 	
