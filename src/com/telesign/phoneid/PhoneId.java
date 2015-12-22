@@ -10,6 +10,7 @@
 package com.telesign.phoneid;
 
 import com.google.gson.Gson;
+import com.telesign.GlobalConstant;
 import com.telesign.phoneid.response.PhoneIdContactResponse;
 import com.telesign.phoneid.response.PhoneIdLiveResponse;
 import com.telesign.phoneid.response.PhoneIdScoreResponse;
@@ -92,7 +93,7 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/standard/"
+					GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/"
 							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			result = tr.executeRequest();
 		} catch (IOException e) {
@@ -127,7 +128,7 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/score/"
+					GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/score/"
 							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 			result = tr.executeRequest();
@@ -164,7 +165,7 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/contact/"
+					GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/contact/"
 							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
@@ -204,7 +205,7 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/live/"
+					GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/live/"
 							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
@@ -243,7 +244,7 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/standard/"
+					GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/standard/"
 							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 
 			if(originating_ip != null) {
@@ -293,7 +294,7 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/score/"
+					GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/score/"
 							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
@@ -345,7 +346,7 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/contact/"
+					GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/contact/"
 							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 			
@@ -401,7 +402,7 @@ public class PhoneId {
 		try {
 
 			TeleSignRequest tr = new TeleSignRequest(
-					"https://rest.telesign.com", "/v1/phoneid/live/"
+					GlobalConstant.REST_TELESIGN_URL, "/v1/phoneid/live/"
 							+ phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 

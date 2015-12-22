@@ -9,7 +9,7 @@ import java.util.regex.PatternSyntaxException;
 
 /** This class provides methods to validate a IP address.**/
 public class IpValidator {
-	private static Pattern IPV4_PATTERN = null;	
+	private static Pattern IPV4_PATTERN;
 	private static final String ipv4Pattern = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";	
 
 	static {
