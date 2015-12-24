@@ -29,12 +29,12 @@ public class PhoneId {
 	private int connectTimeout = 30000;
 	private int readTimeout = 30000;
 	
-	private static final String apiBaseUrl = "https://rest.telesign.com";
+	private static final String API_BASE_URL = "https://rest.telesign.com";
 	
-	private static final String v1PhoneIdStandard = "/v1/phoneid/standard/";
-	private static final String v1PhoneIdScore    = "/v1/phoneid/score/";
-	private static final String v1PhoneIdContact  = "/v1/phoneid/contact/";
-	private static final String v1PhoneIdLive     = "/v1/phoneid/live/";
+	private static final String V1_PHONEID_STANDARD = "/v1/phoneid/standard/";
+	private static final String V1_PHONEID_SCORE    = "/v1/phoneid/score/";
+	private static final String V1_PHONEID_CONTACT  = "/v1/phoneid/contact/";
+	private static final String V1_PHONEID_LIVE     = "/v1/phoneid/live/";
 	
 	
 	private final Gson gson = new Gson();
@@ -99,7 +99,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1PhoneIdStandard + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_STANDARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			result = tr.executeRequest();
 		} catch (IOException e) {
 
@@ -132,7 +132,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1PhoneIdScore + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SCORE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 			result = tr.executeRequest();
 		} catch (IOException e) {
@@ -167,7 +167,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1PhoneIdContact + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CONTACT + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
 			result = tr.executeRequest();
@@ -205,7 +205,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1PhoneIdLive + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_LIVE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
 			result = tr.executeRequest();
@@ -242,7 +242,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1PhoneIdStandard + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_STANDARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 
 			if(originating_ip != null) {
 
@@ -290,7 +290,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1PhoneIdScore + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SCORE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
 			if(originating_ip != null) {
@@ -340,7 +340,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1PhoneIdContact + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CONTACT + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 			
 			if(originating_ip != null) {
@@ -394,7 +394,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1PhoneIdLive + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_LIVE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			tr.addParam("ucid", ucid);
 
 			if(originating_ip != null) {

@@ -29,17 +29,17 @@ public class Verify {
 	private int connectTimeout = 30000;
 	private int readTimeout = 30000;
 
-	private static final String apiBaseUrl   = "https://rest.telesign.com";
-	private static final String apiMobileUrl = "https://rest-mobile.telesign.com";
+	private static final String API_BASE_URL   = "https://rest.telesign.com";
+	private static final String API_MOBILE_URL = "https://rest-mobile.telesign.com";
 	
-	private static final String v1Verify      = "/v1/verify/";
-	private static final String v1VerifySms   = "/v1/verify/sms";
-	private static final String v1VerifyCall  = "/v1/verify/call"; 
-	private static final String v1VerifySmart = "/v1/verify/smart";
+	private static final String V1_VERIFY       = "/v1/verify/";
+	private static final String V1_VERIFY_SMS   = "/v1/verify/sms";
+	private static final String V1_VERIFY_CALL  = "/v1/verify/call"; 
+	private static final String V1_VERIFY_SMART = "/v1/verify/smart";
 	
-	private static final String v2VerifyPush         = "/v2/verify/push";
-	private static final String v2VerifyToken        = "/v2/verify/soft_token";
-	private static final String v2VerifyRegistration = "/v2/verify/registration/";
+	private static final String V1_VERIFY_PUSH         = "/v2/verify/push";
+	private static final String V2_VERIFY_TOKEN        = "/v2/verify/soft_token";
+	private static final String V2_VERIFY_REGISTRATION = "/v2/verify/registration/";
 	
 	private final Gson gson = new Gson();
 	
@@ -135,7 +135,7 @@ public class Verify {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1VerifySms, "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_SMS, "POST", customer_id, secret_key, connectTimeout, readTimeout);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -312,7 +312,7 @@ public class Verify {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1VerifyCall, "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_CALL, "POST", customer_id, secret_key, connectTimeout, readTimeout);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -418,7 +418,7 @@ public class Verify {
 		
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1Verify + resource_id, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY + resource_id, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 
 			if (verify_code != null)
 				tr.addParam("verify_code", verify_code);
@@ -483,7 +483,7 @@ public class Verify {
 		String result = null;
 
 		try {
-			TeleSignRequest tr = new TeleSignRequest(apiMobileUrl, v2VerifyRegistration + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_REGISTRATION + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
 			
 			if(null != bundle_id && !bundle_id.isEmpty()) {
 
@@ -543,7 +543,7 @@ public class Verify {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(apiBaseUrl, v1VerifySmart, "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_SMART, "POST", customer_id, secret_key, connectTimeout, readTimeout);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 
 			if(null != ucid) {
@@ -639,7 +639,7 @@ public class Verify {
 		String result = null;
 
 		try {			
-			TeleSignRequest tr = new TeleSignRequest(apiMobileUrl, v2VerifyPush, "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V1_VERIFY_PUSH, "POST", customer_id, secret_key, connectTimeout, readTimeout);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");			
 			
 			if(null == notification_type || notification_type.isEmpty()){
@@ -709,7 +709,7 @@ public class Verify {
 		String result = null;
 
 		try {			
-			TeleSignRequest tr = new TeleSignRequest(apiMobileUrl, v2VerifyToken, "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_TOKEN, "POST", customer_id, secret_key, connectTimeout, readTimeout);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");		
 
 			if(null != soft_token_id) {
