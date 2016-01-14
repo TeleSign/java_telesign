@@ -33,6 +33,8 @@ public class TeleSignRequestTest {
 	public static int readTimeout;
 	public static int connectTimeout;
 	public static boolean timeouts = false;	
+	public static String HTTPS_PROTOCOL;
+	public static boolean isHttpsProtocolSet = false;
 	
 	@BeforeClass
     public static void setUp() throws IOException {
@@ -50,6 +52,7 @@ public class TeleSignRequestTest {
 		PHONE_NUMBER = props.getProperty("test.phonenumber");
 		CONNECT_TIMEOUT =  props.getProperty("test.connecttimeout");
 		READ_TIMEOUT =  props.getProperty("test.readtimeout");
+		HTTPS_PROTOCOL = props.getProperty("test.httpsprotocol");
 		
 		boolean pass = true; 
 		
@@ -78,6 +81,15 @@ public class TeleSignRequestTest {
 			pass = true;
 		}
 		
+		if(null == HTTPS_PROTOCOL || HTTPS_PROTOCOL.isEmpty()) {
+			System.out.println("HTTPS_PROTOCOL is not set. Please set the \"test.httpsprotocol\" property in the properties file"
+					+ ", or default value of TLSv1.2 would be used");
+			pass = true;
+		} else {
+			isHttpsProtocolSet = true;
+			pass = true;
+		}
+		
 		if(!pass) {
 			fail("Configuration file not setup correctly!");
 		}
@@ -86,10 +98,14 @@ public class TeleSignRequestTest {
 	@Test
 	public void requestCreation() {
 		TeleSignRequest tr;
-		if(!timeouts)
+		if(!timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key");
-		else
+		else if(timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout);
+		else if(!timeouts && isHttpsProtocolSet)
+			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", HTTPS_PROTOCOL);
+		else 
+			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout, HTTPS_PROTOCOL);
 		assertNotNull(tr);
 		
 	}
@@ -97,10 +113,14 @@ public class TeleSignRequestTest {
 	@Test(expected=IOException.class)
 	public void malformedUrl() throws IOException {
 		TeleSignRequest tr;
-		if(!timeouts)
+		if(!timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest(":junk/rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "");
-		else
+		else if(timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest(":junk/rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "", connectTimeout, readTimeout);
+		else if(!timeouts && isHttpsProtocolSet)
+			tr = new TeleSignRequest(":junk/rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "", HTTPS_PROTOCOL);
+		else
+			tr = new TeleSignRequest(":junk/rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "", connectTimeout, readTimeout, HTTPS_PROTOCOL);
 		
 		assertNotNull(tr);
 		tr.executeRequest();
@@ -109,10 +129,14 @@ public class TeleSignRequestTest {
 	@Test
 	public void addParameterTest() {
 		TeleSignRequest tr;
-		if(!timeouts)
+		if(!timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key");
-		else
+		else if(timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout);
+		else if(!timeouts && isHttpsProtocolSet)
+			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", HTTPS_PROTOCOL);
+		else
+			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout, HTTPS_PROTOCOL);
 		
 		assertNull(tr.getAllParams().get("code"));
 		tr.addParam("code", "001");
@@ -122,10 +146,14 @@ public class TeleSignRequestTest {
 	@Test
 	public void addHeaderTest() {
 		TeleSignRequest tr;
-		if(!timeouts)
+		if(!timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key");
-		else
+		else if(timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout);
+		else if(!timeouts && isHttpsProtocolSet)
+			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", HTTPS_PROTOCOL);
+		else
+			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/15551234567", "GET", "customer_id", "secret_key", connectTimeout, readTimeout, HTTPS_PROTOCOL);
 		
 		assertNull(tr.getAllHeaders().get("Authorization"));
 		tr.addHeader("Authorization", "fake");
@@ -151,10 +179,14 @@ public class TeleSignRequestTest {
 	public void shaMethodTest() throws IOException {
 		String result = null;
 		TeleSignRequest tr;
-		if(!timeouts)
+		if(!timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY);
-		else
+		else if(timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		else if(!timeouts && isHttpsProtocolSet)
+			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY, HTTPS_PROTOCOL);
+		else
+			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout, HTTPS_PROTOCOL);
 		
 		tr.setSigningMethod(AuthMethod.SHA256);
 		
@@ -175,10 +207,14 @@ public class TeleSignRequestTest {
 		String nonce = "myUniqueNonce" + System.currentTimeMillis();
 		String result = null;
 		TeleSignRequest tr;
-		if(!timeouts)
+		if(!timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY);
-		else
+		else if(timeouts && !isHttpsProtocolSet)
 			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		else if(!timeouts && isHttpsProtocolSet)
+			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY, HTTPS_PROTOCOL);
+		else
+			tr = new TeleSignRequest("https://rest.telesign.com", "/v1/phoneid/standard/" + PHONE_NUMBER, "GET", CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout, HTTPS_PROTOCOL);
 		
 		tr.setNonce(nonce);
 		

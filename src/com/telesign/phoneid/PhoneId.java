@@ -28,6 +28,7 @@ public class PhoneId {
 	private final String secret_key;
 	private int connectTimeout = 30000;
 	private int readTimeout = 30000;
+	private String httpsProtocol = "TLSv1.2";
 	
 	private static final String API_BASE_URL = "https://rest.telesign.com";
 	
@@ -82,6 +83,56 @@ public class PhoneId {
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
 	}
+	
+	/**
+	 * The PhoneId class constructor. Once you instantiate a PhoneId object, you
+	 * can use it to make instance calls to <em>PhoneID Standard</em>,
+	 * <em>PhoneID Score</em>, <em>PhoneID Contact</em>, and
+	 * <em>PhoneID Live</em>.
+	 * 
+	 * @param customer_id
+	 *            [Required] A string representing your TeleSign Customer ID.
+	 *            This represents your TeleSign account number.
+	 * @param secret_key
+	 *            [Required] A string representing your TeleSign Secret Key
+	 *            (available from the TeleSign Client Portal).
+	 * @param httpsProtocol 
+	 * 			  [Optional] Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2           
+	 */
+	public PhoneId(String customer_id, String secret_key, String httpsProtocol) {
+
+		this.customer_id = customer_id;
+		this.secret_key = secret_key;
+		this.httpsProtocol = httpsProtocol;
+	}
+	
+	/**
+	 * The PhoneId class constructor. Once you instantiate a PhoneId object, you
+	 * can use it to make instance calls to <em>PhoneID Standard</em>,
+	 * <em>PhoneID Score</em>, <em>PhoneID Contact</em>, and
+	 * <em>PhoneID Live</em>.
+	 * 
+	 * @param customer_id
+	 *            [Required] A string representing your TeleSign Customer ID.
+	 *            This represents your TeleSign account number.
+	 * @param secret_key
+	 *            [Required] A string representing your TeleSign Secret Key
+	 *            (available from the TeleSign Client Portal).
+	 * @param connectTimeout 
+	 * 			[Required] A integer representing connection timeout value while connecting to Telesign api.
+	 * @param readTimeout
+	 * 			[Required] A integer representing read timeout value while reading response returned from Telesign api.
+	 * @param httpsProtocol [Optional]	Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2
+	 */
+	public PhoneId(String customer_id, String secret_key, int connectTimeout, int readTimeout, String httpsProtocol) {
+
+		this.customer_id = customer_id;
+		this.secret_key = secret_key;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
+		this.httpsProtocol = httpsProtocol;
+	}
+	
 	/**
 	 * Returns information about a specified phone number�s type, numbering
 	 * structure, cleansing details, and location details.
@@ -95,22 +146,7 @@ public class PhoneId {
 	 */
 	public PhoneIdStandardResponse standard(String phone_number) {
 
-		String result = null;
-
-		try {
-
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_STANDARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
-			result = tr.executeRequest();
-		} catch (IOException e) {
-
-			System.err.println("IOException while executing phoneid API: "
-					+ e.getMessage());
-		}
-
-		PhoneIdStandardResponse response = gson.fromJson(result,
-				PhoneIdStandardResponse.class);
-
-		return response;
+		return standard(phone_number, null, null);
 	}
 
 	/**
@@ -128,23 +164,7 @@ public class PhoneId {
 	 */
 	public PhoneIdScoreResponse score(String phone_number, String ucid) {
 
-		String result = null;
-
-		try {
-
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SCORE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
-			tr.addParam("ucid", ucid);
-			result = tr.executeRequest();
-		} catch (IOException e) {
-
-			System.err.println("IOException while executing phoneid API: "
-					+ e.getMessage());
-		}
-
-		PhoneIdScoreResponse response = gson.fromJson(result,
-				PhoneIdScoreResponse.class);
-
-		return response;
+		return score(phone_number, ucid, null, null);
 	}
 
 	/**
@@ -163,24 +183,7 @@ public class PhoneId {
 	 */
 	public PhoneIdContactResponse contact(String phone_number, String ucid) {
 
-		String result = null;
-
-		try {
-
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CONTACT + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
-			tr.addParam("ucid", ucid);
-
-			result = tr.executeRequest();
-		} catch (IOException e) {
-
-			System.err.println("IOException while executing phoneid API: "
-					+ e.getMessage());
-		}
-
-		PhoneIdContactResponse response = gson.fromJson(result,
-				PhoneIdContactResponse.class);
-
-		return response;
+		return contact(phone_number, ucid, null, null);
 	}
 
 	/**
@@ -201,24 +204,7 @@ public class PhoneId {
 	 */
 	public PhoneIdLiveResponse live(String phone_number, String ucid) {
 
-		String result = null;
-
-		try {
-
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_LIVE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
-			tr.addParam("ucid", ucid);
-
-			result = tr.executeRequest();
-		} catch (IOException e) {
-
-			System.err.println("IOException while executing phoneid API: "
-					+ e.getMessage());
-		}
-
-		PhoneIdLiveResponse response = gson.fromJson(result,
-				PhoneIdLiveResponse.class);
-
-		return response;
+		return live(phone_number, ucid, null, null);
 	}
 		
 	/**
@@ -242,7 +228,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_STANDARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_STANDARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 
 			if(originating_ip != null) {
 
@@ -290,7 +276,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SCORE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SCORE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			tr.addParam("ucid", ucid);
 
 			if(originating_ip != null) {
@@ -340,7 +326,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CONTACT + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CONTACT + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			tr.addParam("ucid", ucid);
 			
 			if(originating_ip != null) {
@@ -394,7 +380,7 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_LIVE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_LIVE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			tr.addParam("ucid", ucid);
 
 			if(originating_ip != null) {

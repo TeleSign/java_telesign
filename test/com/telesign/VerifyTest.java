@@ -41,6 +41,8 @@ public class VerifyTest {
 	public static String SOFT_TOKEN_ID;
 	public static String CALL_FORWARD_ACTION;
 	public static String BUNDLE_ID;
+	public static String HTTPS_PROTOCOL;
+	public static boolean isHttpsProtocolSet = false;
 	
 	@BeforeClass
     public static void setUp() throws IOException {
@@ -68,6 +70,7 @@ public class VerifyTest {
 		CALL_FORWARD_ACTION = props.getProperty("test.call_forward_action");
 		CALLER_ID = props.getProperty("test.caller_id");
 		BUNDLE_ID = props.getProperty("test.bundle_id");
+		HTTPS_PROTOCOL = props.getProperty("test.httpsprotocol");
 		
 		boolean pass = true; 
 		
@@ -151,6 +154,15 @@ public class VerifyTest {
 			pass = true;
 		}
 		
+		if(null == HTTPS_PROTOCOL || HTTPS_PROTOCOL.isEmpty()) {
+			System.out.println("HTTPS_PROTOCOL is not set. Please set the \"test.httpsprotocol\" property in the properties file"
+					+ ", or default value of TLSv1.2 would be used");
+			pass = true;
+		} else {
+			isHttpsProtocolSet = true;
+			pass = true;
+		}
+		
 		if(!pass) {
 			fail("Configuration file not setup correctly!");
 		}
@@ -169,17 +181,29 @@ public class VerifyTest {
 		assertNotNull(ret);
 		assertTrue(ret.errors[0].code == -30000);
 	}
-	
-	@Test
-	public void verifyRequestCall() {
+
+	private Verify initVerifyParams() {
 		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
 			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
 		}
+		
 		Verify ver;
-		if(!timeouts)
+		
+		if(!timeouts && !isHttpsProtocolSet)
 			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
+		else if(timeouts && !isHttpsProtocolSet)
 			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		else if(!timeouts && isHttpsProtocolSet)
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, HTTPS_PROTOCOL);
+		else
+			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout, HTTPS_PROTOCOL);
+		
+		return ver;
+	}
+	
+	@Test
+	public void verifyRequestCall() {
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.call(PHONE_NUMBER);
 		assertNotNull(ret);
@@ -188,14 +212,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestCallWithLanguage() {
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US");
 		assertNotNull(ret);
@@ -204,14 +221,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestCallWithCallForwardAction() {
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", ORIGINATING_IP, SESSION_ID, CALL_FORWARD_ACTION);
 		assertNotNull(ret);
@@ -220,14 +230,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyReqCallNoOptionalParams() {
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", "54321", "keypress", 1, "1234", true); 
 		assertNotNull(ret);
@@ -236,14 +239,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestCallWithAllParams() {
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true, ORIGINATING_IP, SESSION_ID, CALL_FORWARD_ACTION);
 		assertNotNull(ret);
@@ -252,14 +248,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestSMS() {
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.sms(PHONE_NUMBER);
 		assertNotNull(ret);
@@ -269,14 +258,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestSMSWithLanguage() {
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.sms(PHONE_NUMBER, "en-US");
 		assertNotNull(ret);
@@ -285,14 +267,7 @@ public class VerifyTest {
 	}
 	@Test
 	public void verifyRequestSMSAllParams() {
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.sms(PHONE_NUMBER, "en-US", "12345", "Thanks! Custom code template pass! Code: $$CODE$$", ORIGINATING_IP, SESSION_ID);
 		assertNotNull(ret);
@@ -302,14 +277,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestCallwithResult() {
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.call(PHONE_NUMBER);
 		assertNotNull(ret);
@@ -325,14 +293,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestSMSwithResult() {
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.sms(PHONE_NUMBER);
 		assertNotNull(ret);
@@ -347,16 +308,9 @@ public class VerifyTest {
 
 	@Test
 	public void verifyRequestSMSwithVerifyCode() {
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
+		Verify ver = initVerifyParams();
 		
 		String verify_code = "12345";
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
 		
 		VerifyResponse ret = ver.sms(PHONE_NUMBER, null, verify_code, null, ORIGINATING_IP, SESSION_ID);
 		assertNotNull(ret);
@@ -372,15 +326,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestPush(){
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.push(PHONE_NUMBER,BUNDLE_ID);		
 		assertNotNull(ret);
@@ -389,15 +335,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestPushWithAllParams(){
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.push(PHONE_NUMBER, PUSH_NOTIFICATION_TYPE, PUSH_NOTIFICATION_VALUE, BUNDLE_ID, "Verify request push", ORIGINATING_IP, SESSION_ID);
 		assertNotNull(ret);
@@ -406,15 +344,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestSoftToken(){
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.softToken(PHONE_NUMBER, SOFT_TOKEN_ID, "571591", BUNDLE_ID);
 		assertNotNull(ret);
@@ -423,15 +353,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestSoftTokenWithAllParams(){
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		VerifyResponse ret = ver.softToken(PHONE_NUMBER, SOFT_TOKEN_ID, "928417", BUNDLE_ID, ORIGINATING_IP, SESSION_ID);
 		System.out.println("verifyRequestSoftTokenWithAllParams response: " + ret.toString()); // To Be removed
 		assertNotNull(ret);
@@ -440,15 +362,7 @@ public class VerifyTest {
 	
 	@Test
 	public void vertifyRequestRegistration(){
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.registration(PHONE_NUMBER, BUNDLE_ID);
 		assertNotNull(ret);
@@ -457,15 +371,7 @@ public class VerifyTest {
 	
 	@Test
 	public void verifyRequestRegistrationWithAllParams(){
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.registration(PHONE_NUMBER, BUNDLE_ID, ORIGINATING_IP, SESSION_ID);
 		assertNotNull(ret);
@@ -474,15 +380,7 @@ public class VerifyTest {
 	
 	@Test
 	public void smartVerify(){
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.smartVerify(PHONE_NUMBER,"BACS", CALLER_ID, "en-US", null, SMART_VERIFY_PREFERENCE, SMART_VERIFY_IGNORE_RISK);
 		assertNotNull(ret);
@@ -491,15 +389,7 @@ public class VerifyTest {
 	
 	@Test
 	public void smartVerifyWithAllParams(){
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty() || PHONE_NUMBER.isEmpty()) {
-			fail("CUSTOMER_ID, SECRET_KEY and PHONE_NUMBER must be set to pass this test");
-		}
-		
-		Verify ver;
-		if(!timeouts)
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY);
-		else
-			ver = new Verify(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
+		Verify ver = initVerifyParams();
 		
 		VerifyResponse ret = ver.smartVerify(PHONE_NUMBER,"BACS", CALLER_ID, "en-US", null, SMART_VERIFY_PREFERENCE, SMART_VERIFY_IGNORE_RISK , ORIGINATING_IP, SESSION_ID);
 		assertNotNull(ret);

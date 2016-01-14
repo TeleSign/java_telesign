@@ -81,6 +81,8 @@ public class TeleSignRequest {
 
     /** Setting default Integer value that specifies the HttpConnection read timeout value. Having default value as 30000 **/
     private int readTimeout = 30000;
+    
+    private String httpsProtocol = "TLSv1.2";
 
 
 	/**
@@ -157,6 +159,93 @@ public class TeleSignRequest {
 		this.secret_key = secret_key;
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
+
+		post = (method.toLowerCase().equals("post"));
+
+		ts_headers = new TreeMap<String, String>();
+		headers = new TreeMap<String, String>();
+		params = new HashMap<String, String>();
+	}
+	
+	/**
+	 * The TeleSitgnRequest class constructor. A TeleSitgnRequest object
+	 * contains all of the information required to call any/all of the TeleSign
+	 * web services.
+	 *
+	 * @param base
+	 *			[Required] A string representing the Base URI. For TeleSign
+	 *			web services, this is https://rest.telesign.com/.
+	 * @param resource
+	 *			[Required] A string representing the name of the network
+	 *			resource. Each of the TeleSign web services is identified by
+	 *			its resource specifier.
+	 * @param method
+	 *			[Required] A string representing the method to be performed on
+	 *			the resource. For TeleSign web services, this is either GET or
+	 *			POST.
+	 * @param customer_id
+	 *			[Required] A string representing your TeleSign Customer ID.
+	 *			This represents your TeleSign account number.
+	 * @param secret_key
+	 *			[Required] A string representing your TeleSign Secret Shared
+	 *			Key (available from the TeleSign Client Portal).
+	 * @param httpsProtocol 
+	 * 			[Optional]	Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2
+	 */
+	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key, String httpsProtocol) {
+
+		this.base = base;
+		this.resource = resource;
+		this.customer_id = customer_id;
+		this.secret_key = secret_key;
+		this.httpsProtocol = httpsProtocol;
+
+		post = (method.toLowerCase().equals("post"));
+
+		ts_headers = new TreeMap<String, String>();
+		headers = new TreeMap<String, String>();
+		params = new HashMap<String, String>();
+	}
+	/**
+	 * The TeleSitgnRequest class constructor. A TeleSitgnRequest object
+	 * contains all of the information required to call any/all of the TeleSign
+	 * web services.
+	 *
+	 * @param base
+	 *			[Required] A string representing the Base URI. For TeleSign
+	 *			web services, this is https://rest.telesign.com/.
+	 * @param resource
+	 *			[Required] A string representing the name of the network
+	 *			resource. Each of the TeleSign web services is identified by
+	 *			its resource specifier.
+	 * @param method
+	 *			[Required] A string representing the method to be performed on
+	 *			the resource. For TeleSign web services, this is either GET or
+	 *			POST.
+	 * @param customer_id
+	 *			[Required] A string representing your TeleSign Customer ID.
+	 *			This represents your TeleSign account number.
+	 * @param secret_key
+	 *			[Required] A string representing your TeleSign Secret Shared
+	 *			Key (available from the TeleSign Client Portal).
+	 * @param connectTimeout
+	 * 			[Required] A integer representing connection timeout
+	 *			connecting to Telesign api.
+	 * @param readTimeout
+	 * 			[Required] A integer representing read timeout
+	 *			while reading response returned from Telesign api.
+	 * @param httpsProtocol 
+	 * 			[Optional]	Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2
+	 */
+	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key, int connectTimeout, int readTimeout, String httpsProtocol) {
+
+		this.base = base;
+		this.resource = resource;
+		this.customer_id = customer_id;
+		this.secret_key = secret_key;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
+		this.httpsProtocol = httpsProtocol;
 
 		post = (method.toLowerCase().equals("post"));
 
@@ -509,8 +598,8 @@ public class TeleSignRequest {
 	private void setTLSProtocol() {
 		SSLContext sslContext;
 		try {			
-			// setting ssl instance to TLSv1.2
-			sslContext = SSLContext.getInstance("TLSv1.2");
+			// setting ssl instance to TLSv1.x
+			sslContext = SSLContext.getInstance(httpsProtocol);
 			
 			// sslContext initialize
 			sslContext.init(null,null,new SecureRandom());
