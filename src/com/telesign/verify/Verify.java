@@ -28,6 +28,7 @@ public class Verify {
 	private final String secret_key;
 	private int connectTimeout = 30000;
 	private int readTimeout = 30000;
+	private String httpsProtocol = "TLSv1.2";
 
 	private static final String API_BASE_URL   = "https://rest.telesign.com";
 	private static final String API_MOBILE_URL = "https://rest-mobile.telesign.com";
@@ -60,6 +61,20 @@ public class Verify {
 	 * Once you instantiate a Verify object, you can use it to make instance calls to <em>Verify SMS</em> and <em>Verify Call</em>.
 	 * @param customer_id	[Required]	A string containing your TeleSign Customer ID (your TeleSign account number).
 	 * @param secret_key	[Required]	A string containing your TeleSign Secret Key (a bese64-encoded string valu, available from the TeleSign Client Portal).
+	 * @param httpsProtocol [Optional]	Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2
+	 */
+	public Verify(String customer_id, String secret_key, String httpsProtocol) {
+
+		this.customer_id = customer_id;
+		this.secret_key = secret_key;
+		this.httpsProtocol = httpsProtocol;
+	}
+	
+	/**
+	 * The Verify class constructor.
+	 * Once you instantiate a Verify object, you can use it to make instance calls to <em>Verify SMS</em> and <em>Verify Call</em>.
+	 * @param customer_id	[Required]	A string containing your TeleSign Customer ID (your TeleSign account number).
+	 * @param secret_key	[Required]	A string containing your TeleSign Secret Key (a bese64-encoded string valu, available from the TeleSign Client Portal).
 	 * @param connectTimeout 
 	 * 			[Required] A integer representing connection timeout value while connecting to Telesign api.
 	 * @param readTimeout
@@ -71,6 +86,26 @@ public class Verify {
 		this.secret_key = secret_key;
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
+	}
+	
+	/**
+	 * The Verify class constructor.
+	 * Once you instantiate a Verify object, you can use it to make instance calls to <em>Verify SMS</em> and <em>Verify Call</em>.
+	 * @param customer_id	[Required]	A string containing your TeleSign Customer ID (your TeleSign account number).
+	 * @param secret_key	[Required]	A string containing your TeleSign Secret Key (a bese64-encoded string valu, available from the TeleSign Client Portal).
+	 * @param connectTimeout 
+	 * 			[Required] A integer representing connection timeout value while connecting to Telesign api.
+	 * @param readTimeout
+	 * 			[Required] A integer representing read timeout value while reading response returned from Telesign api.
+	 * @param httpsProtocol [Optional]	Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2
+	 */
+	public Verify(String customer_id, String secret_key, int connectTimeout, int readTimeout, String httpsProtocol) {
+
+		this.customer_id = customer_id;
+		this.secret_key = secret_key;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
+		this.httpsProtocol = httpsProtocol;
 	}
 
 	/**
@@ -135,7 +170,7 @@ public class Verify {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_SMS, "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_SMS, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -312,7 +347,7 @@ public class Verify {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_CALL, "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_CALL, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -418,7 +453,7 @@ public class Verify {
 		
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY + resource_id, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY + resource_id, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 
 			if (verify_code != null)
 				tr.addParam("verify_code", verify_code);
@@ -483,7 +518,7 @@ public class Verify {
 		String result = null;
 
 		try {
-			TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_REGISTRATION + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_REGISTRATION + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			
 			if(null != bundle_id && !bundle_id.isEmpty()) {
 
@@ -543,7 +578,7 @@ public class Verify {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_SMART, "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_SMART, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 
 			if(null != ucid) {
@@ -639,7 +674,7 @@ public class Verify {
 		String result = null;
 
 		try {			
-			TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V1_VERIFY_PUSH, "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V1_VERIFY_PUSH, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");			
 			
 			if(null == notification_type || notification_type.isEmpty()){
@@ -709,7 +744,7 @@ public class Verify {
 		String result = null;
 
 		try {			
-			TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_TOKEN, "POST", customer_id, secret_key, connectTimeout, readTimeout);
+			TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_TOKEN, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");		
 
 			if(null != soft_token_id) {
