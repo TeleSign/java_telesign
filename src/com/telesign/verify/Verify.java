@@ -206,6 +206,7 @@ public class Verify {
 		catch (IOException e) {
 
 			System.err.println("IOException while executing Verify SMS API: " + e.getMessage());
+			throw new RuntimeException(e);
 		}
 		
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
@@ -404,6 +405,7 @@ public class Verify {
 		catch (IOException e) {
 
 			System.err.println("IOException while executing verify call API: " + e.getMessage());
+			throw new RuntimeException(e);
 		}
 		
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
@@ -473,6 +475,7 @@ public class Verify {
 		catch (IOException e) {
 
 			System.err.println("IOException while executing Verify status API: " + e.getMessage());
+			throw new RuntimeException(e);
 		}
 		
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
@@ -540,6 +543,7 @@ public class Verify {
 		catch (IOException e) {
 
 			System.err.println("IOException while executing verify registration API: " + e.getMessage());
+			throw new RuntimeException(e);
 		}
 			
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
@@ -626,6 +630,7 @@ public class Verify {
 		catch (IOException e) {
 
 			System.err.println("IOException while executing smart verify API: " + e.getMessage());
+			throw new RuntimeException(e);
 		}	
 		
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
@@ -713,6 +718,7 @@ public class Verify {
 		catch (IOException e) {
 
 			System.err.println("IOException while executing Verify push API: " + e.getMessage());
+			throw new RuntimeException(e);
 		}		
 		
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
@@ -777,6 +783,7 @@ public class Verify {
 		}
 		catch (IOException e) {
 			System.err.println("IOException while executing Verify soft token API: " + e.getMessage());
+			throw new RuntimeException(e);
 			}
 		
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);

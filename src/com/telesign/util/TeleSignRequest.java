@@ -461,6 +461,7 @@ public class TeleSignRequest {
 		}
 		catch (IOException e) {
 			System.err.println("IOException while reading from input stream " + e.getMessage());
+			throw new RuntimeException(e);
 		}
 
 		return url_output;

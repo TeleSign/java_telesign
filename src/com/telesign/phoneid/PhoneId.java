@@ -243,8 +243,9 @@ public class PhoneId {
 			result = tr.executeRequest();
 		} catch (IOException e) {
 
-			System.err.println("IOException while executing phoneid API: "
+			System.err.println("IOException while executing phoneid standard API: "
 					+ e.getMessage());
+			throw new RuntimeException(e);
 		}
 
 		PhoneIdStandardResponse response = gson.fromJson(result,
@@ -292,8 +293,9 @@ public class PhoneId {
 			result = tr.executeRequest();
 		} catch (IOException e) {
 
-			System.err.println("IOException while executing phoneid API: "
+			System.err.println("IOException while executing phoneid score API: "
 					+ e.getMessage());
+			throw new RuntimeException(e);
 		}
 
 		PhoneIdScoreResponse response = gson.fromJson(result,
@@ -342,8 +344,9 @@ public class PhoneId {
 			result = tr.executeRequest();
 		} catch (IOException e) {
 
-			System.err.println("IOException while executing phoneid API: "
+			System.err.println("IOException while executing phoneid contact API: "
 					+ e.getMessage());
+			throw new RuntimeException(e);
 		}
 
 		PhoneIdContactResponse response = gson.fromJson(result,
@@ -396,8 +399,9 @@ public class PhoneId {
 			result = tr.executeRequest();
 		} catch (IOException e) {
 
-			System.err.println("IOException while executing phoneid API: "
+			System.err.println("IOException while executing phoneid live API: "
 					+ e.getMessage());
+			throw new RuntimeException(e);
 		}
 
 		PhoneIdLiveResponse response = gson.fromJson(result,
