@@ -83,6 +83,9 @@ public class TeleSignRequest {
     private int readTimeout = 30000;
     
     private String httpsProtocol = "TLSv1.2";
+    
+    /** User-Agent to track TeleSignJavaSDK and version being used **/
+    private final String USER_AGENT = "TeleSignJavaSDK/1.0"; 
 
 
 	/**
@@ -371,9 +374,10 @@ public class TeleSignRequest {
 	 */
 	public String executeRequest() throws IOException {
 
-		String signingString = getSigningString(customer_id);
+		String signingString = getSigningString();
 		String signature;
 		String url_output = "";
+		addHeader("User-Agent", USER_AGENT);
 
 		// Create the absolute form of the resource URI, and place it in a string buffer.
 		StringBuffer full_url = new StringBuffer(base).append(resource);
@@ -494,13 +498,10 @@ public class TeleSignRequest {
 	/**
 	 * This method is used internally by the {@link com.telesign.util.TeleSignRequest#executeRequest()} method.
 	 *
-	 * @param customer_id
-	 *			[Required] A string representing your TeleSign Customer ID.
-	 *			This represents your TeleSign account number.
 	 * @return A string representing the signing string used to create a
 	 *		 Signature object, for the authenticate the REST request.
 	 */
-	private String getSigningString(String customer_id) {
+	private String getSigningString() {
 
 		String stringToSign = post ? "POST\n" : "GET\n";
 		String content_type = post ? "application/x-www-form-urlencoded\n" : "\n";
