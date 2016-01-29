@@ -2,20 +2,21 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.telesign</groupId>
 	<artifactId>telesign</artifactId>
-	<packaging>pom</packaging>
-	<version>0.5.0</version>
+	<packaging>jar</packaging>
+	<version>0.6.0</version>
 	<name>telesign</name>
 	<url>https://github.com/TeleSign/java_telesign</url>
 	<inceptionYear>2010</inceptionYear>
 	<organization>
-		<name>Telesign</name>
+		<name>Telesign Corp</name>
+		<url>https://www.telesign.com/</url>
 	</organization>
 	<description>The TeleSign Java SDK is a Java library that provides an interface to TeleSign Web Services. TeleSign Web Services conform to the REST Web Service Design Model. Services are exposed as URI-addressable resources through the set of RESTful procedures in our TeleSign REST API.</description>
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>7</version>
+		<version>9</version>
 	</parent>
 
 	<licenses>
@@ -57,41 +58,63 @@
 	</scm>
 
 	<properties>
+		<jdk.version>1.7</jdk.version>
 		<java.version>1.7</java.version>
-		<jarprefix>../build/release/${project.artifactId}-${project.version}</jarprefix>
+		<jarprefix>${project.artifactId}-${project.version}</jarprefix>
+		<junit.version>4.11</junit.version>
+		<hamcrest.version>1.3</hamcrest.version>
+		<gson.version>2.5</gson.version>
+		<commons-codec.version>1.10</commons-codec.version>
 	</properties>
 
 	<build>
+		<directory>target/release</directory>
+		<outputDirectory>target/classes</outputDirectory>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+
+		<sourceDirectory>src/main/java</sourceDirectory>		
+		<testSourceDirectory>src/test/java</testSourceDirectory>		
+		<testOutputDirectory>target/test-classes</testOutputDirectory>		
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>		
+
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.8</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+
+					<finalName>${jarprefix}</finalName>
+					<attach>true</attach>
+				</configuration>
 				<executions>
 					<execution>
-						<id>attach-artifacts</id>
-						<phase>package</phase>
+						<id>attach-sources</id>
 						<goals>
-							<goal>attach-artifact</goal>
+							<goal>jar</goal>
 						</goals>
-						<configuration>
-							<artifacts>
-								<artifact>
-									<file>${jarprefix}.jar</file>
-									<type>jar</type>
-								</artifact>
-								<artifact>
-									<file>${jarprefix}-javadoc.jar</file>
-									<type>jar</type>
-									<classifier>javadoc</classifier>
-								</artifact>
-								<artifact>
-									<file>${jarprefix}-sources.jar</file>
-									<type>jar</type>
-									<classifier>sources</classifier>
-								</artifact>
-							</artifacts>
-						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.3</version>
+				<configuration>
+					<reportOutputDirectory>${project.build.directory}/javadocs</reportOutputDirectory>					
+					<finalName>${jarprefix}</finalName>
+					<attach>true</attach>					
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -124,4 +147,27 @@
 			</properties>			
 		</profile>
 	</profiles>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>		
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<version>${hamcrest.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${commons-codec.version}</version>
+		</dependency>
+	</dependencies>
 </project>
