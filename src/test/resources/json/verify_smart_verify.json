@@ -1,0 +1,1 @@
+{"reference_id":"3152D606029F0900D01E96A4390E6950","resource_uri":"/v1/verify/3152D606029F0900D01E96A4390E6950","sub_resource":"call","errors":[],"status":{"updated_on":"2016-02-12T15:07:44.223415Z","code":103,"description":"Call in progress"},"verify":{"code_state":"UNKNOWN","code_entered":""}}

@@ -10,9 +10,12 @@
 package com.telesign.phoneid;
 
 import com.google.gson.Gson;
+import com.telesign.phoneid.response.PhoneIdCallForwardResponse;
 import com.telesign.phoneid.response.PhoneIdContactResponse;
 import com.telesign.phoneid.response.PhoneIdLiveResponse;
+import com.telesign.phoneid.response.PhoneIdNumberDeactivationResponse;
 import com.telesign.phoneid.response.PhoneIdScoreResponse;
+import com.telesign.phoneid.response.PhoneIdSimSwapCheckResponse;
 import com.telesign.phoneid.response.PhoneIdStandardResponse;
 import com.telesign.util.TeleSignRequest;
 import java.io.IOException;
@@ -30,13 +33,17 @@ public class PhoneId {
 	private int readTimeout = 30000;
 	private String httpsProtocol = "TLSv1.2";
 	
-	private static final String API_BASE_URL = "https://rest.telesign.com";
+	private String API_BASE_URL = "https://rest.telesign.com";
+	private static final String BASE_URI_REST_ND_TELESIGN = "https://rest-nd.telesign.com";
 	
 	private static final String V1_PHONEID_STANDARD = "/v1/phoneid/standard/";
 	private static final String V1_PHONEID_SCORE    = "/v1/phoneid/score/";
 	private static final String V1_PHONEID_CONTACT  = "/v1/phoneid/contact/";
-	private static final String V1_PHONEID_LIVE     = "/v1/phoneid/live/";
-	
+	private static final String V1_PHONEID_LIVE     = "/v1/phoneid/live/";	
+
+	private static final String V1_PHONEID_SIM_SWAP_CHECK = "/v1/phoneid/sim_swap/check/";
+	private static final String V1_PHONEID_CALL_FORWARD = "/v1/phoneid/call_forward/";
+	private static final String V1_PHONEID_NUMBER_DEACTIVATION = "/v1/phoneid/number_deactivation/";
 	
 	private final Gson gson = new Gson();
 
@@ -187,7 +194,7 @@ public class PhoneId {
 	}
 
 	/**
-	 * Returns information about a specified phone number�s
+	 * Returns information about a specified phone number
 	 * <em>state of operation</em>. You can use it to find out if:
 	 * <ul>
 	 * <li>the line is in service,</li>
@@ -409,4 +416,133 @@ public class PhoneId {
 
 		return response;
 	}
+
+	/**
+	 * @param phone_number
+	 * @param ucid				[Required] A string specifying one of the Use Case Codes.
+	 * @param originating_ip	[Optional] The end users IP Address. This value must be in the format of IPv4 and IPv6 Addresses.
+	 * @param session_id		[Optional] A free-form string (up to 64 ASCII characters) that indicates an ID (either raw or hashed) 
+	 * 										that is unique to the users session with the customer. 
+	 * 										The session_id links multiple calls and other TeleSign services that are associated with the current session.
+	 * @return PhoneIdSimSwapCheckResponse
+	 */
+	public PhoneIdSimSwapCheckResponse simSwap(String phone_number, String ucid, String originating_ip, String session_id) {
+		String result = null;
+
+		try {
+
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SIM_SWAP_CHECK + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			tr.addParam("ucid", ucid);
+
+			if(originating_ip != null) {
+
+				tr.addParam("originating_ip", originating_ip);
+			}
+			
+			if(session_id != null) {
+
+				tr.addParam("session_id", session_id);
+			}
+
+			result = tr.executeRequest();
+		} catch (IOException e) {
+
+			System.err.println("IOException while executing phoneid sim-swap API: "
+					+ e.getMessage());
+			throw new RuntimeException(e);
+		}
+
+		PhoneIdSimSwapCheckResponse response = gson.fromJson(result,
+				PhoneIdSimSwapCheckResponse.class);
+
+		return response;
+	}
+	
+	/**
+	 * The PhoneID Call Forward web service provides call forwarding information for the specified mobile number.
+	 * You can use it to find:
+	 * <ul><li>Call Forwarding status</li><li>Forwarded to number</li></ul>
+	 * @param phone_number
+	 * @param ucid				[Required] A string specifying one of the Use Case Codes.
+	 * @param originating_ip	[Optional] The end users IP Address. This value must be in the format of IPv4 and IPv6 Addresses.
+	 * @param session_id		[Optional] A free-form string (up to 64 ASCII characters) that indicates an ID (either raw or hashed) 
+	 * 										that is unique to the users session with the customer. 
+	 * 										The session_id links multiple calls and other TeleSign services that are associated with the current session.
+	 * @return PhoneIdCallForwardResponse
+	 */
+	public PhoneIdCallForwardResponse callForward(String phone_number, String ucid, String originating_ip, String session_id) {
+		String result = null;
+
+		try {
+
+			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CALL_FORWARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			tr.addParam("ucid", ucid);
+
+			if(originating_ip != null) {
+
+				tr.addParam("originating_ip", originating_ip);
+			}
+			
+			if(session_id != null) {
+
+				tr.addParam("session_id", session_id);
+			}
+
+			result = tr.executeRequest();
+		} catch (IOException e) {
+
+			System.err.println("IOException while executing phoneid call forward API: "
+					+ e.getMessage());
+			throw new RuntimeException(e);
+		}
+
+		PhoneIdCallForwardResponse response = gson.fromJson(result,
+				PhoneIdCallForwardResponse.class);
+
+		return response;
+	}
+	
+	/**
+	 * The <em>PhoneID Number Deactivation</em> web service provides status information for phone numbers that have been deactivated 
+	 * due to various reasons. Reasons include, but are not limited to, contract termination, SIM card expiration, and so on.
+	 * @param phone_number		[Required] A string representing the phone number you want information about.
+	 * @param ucid				[Required] A string specifying one of the Use Case Codes.
+	 * @param originating_ip	[Optional] The end users IP Address. This value must be in the format of IPv4 and IPv6 Addresses.
+	 * @param session_id		[Optional] A free-form string (up to 64 ASCII characters) that indicates an ID (either raw or hashed) 
+	 * 										that is unique to the users session with the customer. 
+	 * 										The session_id links multiple calls and other TeleSign services that are associated with the current session.
+	 * @return PhoneIdCallForwardResponse
+	 */
+	public PhoneIdNumberDeactivationResponse deactivation(String phone_number, String ucid, String originating_ip, String session_id) {
+		String result = null;
+
+		try {
+
+			TeleSignRequest tr = new TeleSignRequest(BASE_URI_REST_ND_TELESIGN, V1_PHONEID_NUMBER_DEACTIVATION + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			tr.addParam("ucid", ucid);
+
+			if(originating_ip != null) {
+
+				tr.addParam("originating_ip", originating_ip);
+			}
+			
+			if(session_id != null) {
+
+				tr.addParam("session_id", session_id);
+			}
+
+			result = tr.executeRequest();
+		} catch (IOException e) {
+
+			System.err.println("IOException while executing phoneid number deactivation API: "
+					+ e.getMessage());
+			throw new RuntimeException(e);
+		}
+
+		PhoneIdNumberDeactivationResponse response = gson.fromJson(result,
+				PhoneIdNumberDeactivationResponse.class);
+
+		return response;
+	}
+	
 }

@@ -1,0 +1,1 @@
+{"resource_uri":"/v2/verify/registration","sub_resource":"","errors":[{"code":-10001,"description":"Invalid Request: bundle_id Parameter: com.telesign.m.test.v2.authid"}],"status":{"updated_on":"2016-02-12T15:02:30.951231Z","code":0,"description":"unknown"},"device":{"phone_number":"9023051078","operating_system":"","language":""},"app":{}}

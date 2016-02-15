@@ -1,0 +1,1 @@
+{"reference_id":"454B55D8FA9C0F2890050DED184A02E0","resource_uri":"/v2/verify/454B55D8FA9C0F2890050DED184A02E0","sub_resource":"push","errors":[],"status":{"updated_on":"2016-02-12T12:30:42.397669Z","code":1190,"description":"Transaction in progress"},"verify":{"code_expected":"123456"},"user_response":{}}

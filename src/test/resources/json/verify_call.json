@@ -1,0 +1,1 @@
+{"reference_id":"354B55701518050090472981CC704972","resource_uri":"/v1/verify/354B55701518050090472981CC704972","sub_resource":"call","errors":[],"status":{"updated_on":"2016-02-12T12:02:03.776224Z","code":103,"description":"Call in progress"},"verify":{"code_state":"UNKNOWN","code_entered":""}}

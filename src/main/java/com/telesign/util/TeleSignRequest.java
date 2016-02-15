@@ -21,6 +21,8 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.SignatureException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,8 +32,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -86,6 +92,11 @@ public class TeleSignRequest {
     
     /** User-Agent to track TeleSignJavaSDK and version being used **/
     private final String USER_AGENT = "TeleSignJavaSDK/1.0"; 
+    
+    public static String RESOURCE_DIR = "src/test/resources/";
+    
+    /** Enable test based settings **/
+    public static boolean isTest = false;
 
 
 	/**
@@ -414,7 +425,7 @@ public class TeleSignRequest {
 
 		String auth_header = "TSA " + customer_id + ":" + signature;
 
-		connection = (HttpURLConnection) url.openConnection();
+		connection = (HttpsURLConnection) url.openConnection();
 		connection.setConnectTimeout(connectTimeout);
 		connection.setReadTimeout(readTimeout);
 		connection.setRequestProperty("Authorization", auth_header);
@@ -602,17 +613,53 @@ public class TeleSignRequest {
 		try {			
 			// setting ssl instance to TLSv1.x
 			sslContext = SSLContext.getInstance(httpsProtocol);
-			
-			// sslContext initialize
-			sslContext.init(null,null,new SecureRandom());
+			if(isTest){
+				TrustManager[] trustAllCerts = trustCertificates();
+				sslContext.init(null,trustAllCerts,new SecureRandom());
+			}else {				
+				// sslContext initialize
+				sslContext.init(null,null,new SecureRandom());
+			}
 
 			// typecasting ssl with HttpsUrlConnection and setting sslcontext
-			((HttpsURLConnection)connection).setSSLSocketFactory(sslContext.getSocketFactory());			
+			((HttpsURLConnection)connection).setSSLSocketFactory(sslContext.getSocketFactory());
+	        
+	        
 		} catch (NoSuchAlgorithmException e1) {
 			System.err.println("Received No Such Alogorithm Exception " + e1.getMessage());
 		}
 		catch (KeyManagementException e) {
 			System.err.println("Key Management Exception received " + e.getMessage());
 		}
+	}
+	
+	public static TrustManager[] trustCertificates() {
+		TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+ 
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                        return;
+                    }
+ 
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                        return;
+                    }
+                }
+        };
+		return trustAllCerts;
+	}
+	
+	static {
+		if(isTest)
+	    HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier()
+	        {
+	            public boolean verify(String hostname, SSLSession session)
+	            {	                
+	                return true;	                
+	            }
+	        });
 	}
 }

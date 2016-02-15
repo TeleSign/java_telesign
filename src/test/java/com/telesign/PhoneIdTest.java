@@ -7,14 +7,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.telesign.phoneid.PhoneId;
+import com.telesign.phoneid.response.PhoneIdCallForwardResponse;
 import com.telesign.phoneid.response.PhoneIdContactResponse;
 import com.telesign.phoneid.response.PhoneIdLiveResponse;
+import com.telesign.phoneid.response.PhoneIdNumberDeactivationResponse;
 import com.telesign.phoneid.response.PhoneIdScoreResponse;
+import com.telesign.phoneid.response.PhoneIdSimSwapCheckResponse;
 import com.telesign.phoneid.response.PhoneIdStandardResponse;
+import com.telesign.testUtil.TestUtil;
 
 /**
  *	Copyright (c) TeleSign Corporation 2012.
@@ -23,97 +28,25 @@ import com.telesign.phoneid.response.PhoneIdStandardResponse;
  *	Author: jweatherford
  */
 public class PhoneIdTest {
-	public static String CUSTOMER_ID;
-	public static String SECRET_KEY;
-	public static String PHONE_NUMBER;
-	public static String CONNECT_TIMEOUT;
-	public static String READ_TIMEOUT;
-	public static int readTimeout;
-	public static int connectTimeout;
-	public static boolean timeouts = false;
-	public static String ORIGINATING_IP;
-	public static String SESSION_ID;
-	public static String HTTPS_PROTOCOL;
-	public static boolean isHttpsProtocolSet = false;
-	public static String RESOURCE_DIR = "src/test/resources/";
+	
 	@BeforeClass
     public static void setUp() throws IOException {
-		Properties props = new Properties();
-		try {
-		props.load(new FileInputStream(RESOURCE_DIR + "test.properties"));
-		} catch (FileNotFoundException fne) {
-			fail("Please create a \"test.properties\" file at the root project directory " +
-					"and include your telesign customerid, secretkey and your phone number. " +
-					"If you need assistance, please contact telesign support at support@telesign.com");
-		}
-		
-		CUSTOMER_ID = props.getProperty("test.customerid");
-		SECRET_KEY =  props.getProperty("test.secretkey");
-		PHONE_NUMBER = props.getProperty("test.phonenumber");
-		CONNECT_TIMEOUT =  props.getProperty("test.connecttimeout");
-		READ_TIMEOUT =  props.getProperty("test.readtimeout");
-		ORIGINATING_IP = props.getProperty("test.originating_ip");
-		SESSION_ID = props.getProperty("test.session_id");
-		HTTPS_PROTOCOL = props.getProperty("test.httpsprotocol");
-		
-		boolean pass = true; 
-		
-		if(CUSTOMER_ID == null || CUSTOMER_ID.isEmpty()) {
-			System.out.println("CUSTOMER_ID is not set. Please set the \"test.customerid\" property in the properties file");
-			pass = false;
-		}
-		
-		if(SECRET_KEY == null || SECRET_KEY.isEmpty()) {
-			System.out.println("SECRET_KEY is not set. Please set the \"test.secretkey\" property in the properties file");
-			pass = false;
-		}
-		if(PHONE_NUMBER == null || PHONE_NUMBER.isEmpty()) {
-			System.out.println("PHONE_NUMBER is not set. Please set the \"test.phonenumber\" property in the properties file");
-			pass = false;
-		}
-		
-		if(CONNECT_TIMEOUT == null || CONNECT_TIMEOUT.isEmpty() || READ_TIMEOUT == null || READ_TIMEOUT.isEmpty()) {
-			System.out.println("Either of CONNECT_TIMEOUT or READ_TIMEOUT is not set. Please set the \"test.connecttimeout\" & \"test.readtimeout\" property in the properties file. " +
-					"Or default connect & read timeout values would be used");
-			pass = true;
-		} else {
-			connectTimeout = Integer.parseInt(CONNECT_TIMEOUT);
-			readTimeout = Integer.parseInt(READ_TIMEOUT);
-			timeouts = true;
-			pass = true;
-		}		
+		TestUtil.initProperties();
+		TestUtil.startServer();
+	}
 
-		if(ORIGINATING_IP == null || ORIGINATING_IP.isEmpty()) {
-			System.out.println("ORIGINATING_IP not set. Please set the \"test.originating_ip\" property in the properties file");
-			pass = true;
-		}
-		
-		if(SESSION_ID == null || SESSION_ID.isEmpty()) {
-			System.out.println("SESSION_ID not set. Please set the \"test.session_id\" property in the properties file");
-			pass = true;
-		}
-		
-		if(null == HTTPS_PROTOCOL || HTTPS_PROTOCOL.isEmpty()) {
-			System.out.println("HTTPS_PROTOCOL is not set. Please set the \"test.httpsprotocol\" property in the properties file"
-					+ ", or default value of TLSv1.2 would be used");
-			pass = true;
-		} else {
-			isHttpsProtocolSet = true;
-			pass = true;
-		}
-		
-		if(!pass) {
-			fail("Configuration file not setup correctly!");
-		}
+	@AfterClass
+	public static void close(){
+		TestUtil.stopServer();
 	}
 	
 	@Test
 	public void phoneIdError() {
 		PhoneId pid;
-		if(!timeouts)
+		if(!TestUtil.timeouts)
 			pid = new PhoneId("Junk" , "Fake");
 		else 
-			pid = new PhoneId("Junk" , "Fake", connectTimeout, readTimeout);
+			pid = new PhoneId("Junk" , "Fake", TestUtil.connectTimeout, TestUtil.readTimeout);
 		
 		PhoneIdStandardResponse ret = pid.standard("13102224444");
 		assertNotNull(ret);
@@ -133,20 +66,20 @@ public class PhoneIdTest {
 	}
 	
 	private PhoneId initPhoneIdParams() {
-		if(CUSTOMER_ID.isEmpty() || SECRET_KEY.isEmpty()) {
-			fail("CUSTOMER_ID and SECRET_KEY must be set to pass this test");
+		if(TestUtil.CUSTOMER_ID.isEmpty() || TestUtil.SECRET_KEY.isEmpty()) {
+			fail("TestUtil.CUSTOMER_ID and TestUtil.SECRET_KEY must be set to pass this test");
 		}
 		
 		PhoneId pid;
 		
-		if(!timeouts && !isHttpsProtocolSet)
-			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY);
-		else if(timeouts && !isHttpsProtocolSet)
-			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout);
-		else if(!timeouts && isHttpsProtocolSet)
-			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY, HTTPS_PROTOCOL);
+		if(!TestUtil.timeouts && !TestUtil.isHttpsProtocolSet)
+			pid = new PhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
+		else if(TestUtil.timeouts && !TestUtil.isHttpsProtocolSet)
+			pid = new PhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY, TestUtil.connectTimeout, TestUtil.readTimeout);
+		else if(!TestUtil.timeouts && TestUtil.isHttpsProtocolSet)
+			pid = new PhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY, TestUtil.HTTPS_PROTOCOL);
 		else
-			pid = new PhoneId(CUSTOMER_ID, SECRET_KEY, connectTimeout, readTimeout, HTTPS_PROTOCOL);
+			pid = new PhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY, TestUtil.connectTimeout, TestUtil.readTimeout, TestUtil.HTTPS_PROTOCOL);
 		return pid;
 	}
 	
@@ -165,7 +98,7 @@ public class PhoneIdTest {
 	public void phoneIdScore() {
 		PhoneId pid = initPhoneIdParams();
 		
-		PhoneIdScoreResponse ret = pid.score("13105551234", "BACS");
+		PhoneIdScoreResponse ret = pid.score(TestUtil.PHONE_NUMBER, "BACS");
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		assertTrue(ret.status.code == 300);
@@ -195,12 +128,12 @@ public class PhoneIdTest {
 	
 	@Test
 	public void phoneIdLiveReal() {		
-		if(PHONE_NUMBER.isEmpty()) {
+		if(TestUtil.PHONE_NUMBER.isEmpty()) {
 			fail("For this test we require a valid phone number to test against");
 		}
 		PhoneId pid = initPhoneIdParams();
 		
-		PhoneIdLiveResponse ret2 = pid.live(PHONE_NUMBER , "BACS");
+		PhoneIdLiveResponse ret2 = pid.live(TestUtil.PHONE_NUMBER , "BACS");
 		
 		assertTrue(ret2.status.code == 300); 
 		assertNotNull(ret2.live);
@@ -209,15 +142,15 @@ public class PhoneIdTest {
 	
 	@Test
 	public void responseToString() {
-		if(PHONE_NUMBER.isEmpty()) {
+		if(TestUtil.PHONE_NUMBER.isEmpty()) {
 			fail("For this test we require a valid phone number to test against");
 		}
 		PhoneId pid = initPhoneIdParams();
 		
-		PhoneIdStandardResponse ret1 = pid.standard(PHONE_NUMBER, ORIGINATING_IP, SESSION_ID);
-		PhoneIdContactResponse ret2 = pid.contact(PHONE_NUMBER , "BACS", ORIGINATING_IP, SESSION_ID);
-		PhoneIdScoreResponse ret3 = pid.score(PHONE_NUMBER , "BACS", ORIGINATING_IP, SESSION_ID);
-		PhoneIdLiveResponse ret4 = pid.live(PHONE_NUMBER , "BACS", ORIGINATING_IP, SESSION_ID);
+		PhoneIdStandardResponse ret1 = pid.standard(TestUtil.PHONE_NUMBER, TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
+		PhoneIdContactResponse ret2 = pid.contact(TestUtil.PHONE_NUMBER , "BACS", TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
+		PhoneIdScoreResponse ret3 = pid.score(TestUtil.PHONE_NUMBER , "BACS", TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
+		PhoneIdLiveResponse ret4 = pid.live(TestUtil.PHONE_NUMBER , "BACS", TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
 		
 		//all the successful responses should contain a json formatted reference_id at the start
 		String json1 = ret1.toString();
@@ -235,7 +168,41 @@ public class PhoneIdTest {
 		
 	}
 	
+	@Test
+	public void phoneIdSimSwap() {
+		PhoneId pid = initPhoneIdParams();
+		
+		PhoneIdSimSwapCheckResponse ret = pid.simSwap(TestUtil.PHONE_NUMBER, "BACS", "10.11.132.9", "session_id");
+		assertNotNull(ret);System.out.println(ret.toString());
+		assertTrue(ret.errors.length == 0);
+		assertTrue(ret.status.code == 300);
+		//assertTrue(ret.risk.level.length() > 0);
+		
+	}
 	
+	@Test
+	public void phoneIdCallForward() {
+		PhoneId pid = initPhoneIdParams();
+		
+		PhoneIdCallForwardResponse ret = pid.callForward(TestUtil.PHONE_NUMBER, "BACS", "10.11.132.9", "session_id");
+		assertNotNull(ret);//System.out.println(ret.toString());
+		assertTrue(ret.standardResponse.errors.length == 0);
+		assertTrue(ret.standardResponse.status.code == 300);
+		//assertTrue(ret.risk.level.length() > 0);
+		
+	}
+	
+	@Test
+	public void phoneIdNoDeactivation() {
+		PhoneId pid = initPhoneIdParams();
+		
+		PhoneIdNumberDeactivationResponse ret = pid.deactivation(TestUtil.PHONE_NUMBER, "BACS", "10.11.132.9", "session_id");
+		assertNotNull(ret);//System.out.println(ret.toString());
+		assertTrue(ret.standardResponse.errors.length == 0);
+		assertTrue(ret.standardResponse.status.code == 300);
+		//assertTrue(ret.risk.level.length() > 0);
+		
+	}
 	
 	
 }
