@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.HostnameVerifier;
@@ -41,22 +42,24 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.codec.binary.Base64;
 
+
+
 /** The TeleSignRequest class is an abstraction for creating and sending HTTP 1.1 REST Requests for TeleSign web services. */
 public class TeleSignRequest {
 	/** A boolean value that indicates the Request Method. <em>True</em> for <strong>POST</strong>, and <em>False</em> for <strong>GET</strong>. */
 	private boolean post;
 
 	/** The web service's Base URI. For TeleSign web services, this is <em>https://rest.telesign.com/</em>. */
-	private final String base;
+	private final String baseUrl;
 
 	/** The name that identifies the network resource. Each of the TeleSign web services is identified by its resource specifier. */
-	private final String resource;
+	private final String subResource;
 
 	/** Your TeleSign Customer ID. This represents your TeleSign account number. */
-	private final String customer_id;
+	private final String customerId;
 
 	/** Your TeleSign Secret Shared Key (available from the TeleSign Client Portal). */
-	private final String secret_key;
+	private final String secretKey;
 
 	/** The set of HTTP 1.1 Request header field/value pairs. */
 	private TreeMap<String, String> headers;
@@ -66,6 +69,69 @@ public class TeleSignRequest {
 
 	/** The set of HTTP 1.1 Request parameter attribute/value pairs. */
 	private HashMap<String, String> params;
+
+	/**
+	 * @return the baseUrl
+	 */
+	public String getBaseUrl() {
+		return baseUrl;
+	}
+
+	/**
+	 * @return the subResource
+	 */
+	public String getSubResource() {
+		return subResource;
+	}
+
+	/**
+	 * @return the customerId
+	 */
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	/**
+	 * @return the secretKey
+	 */
+	public String getSecretKey() {
+		return secretKey;
+	}
+
+	/**
+	 * @return the connectTimeout
+	 */
+	public int getConnectTimeout() {
+		return connectTimeout;
+	}
+
+	/**
+	 * @return the readTimeout
+	 */
+	public int getReadTimeout() {
+		return readTimeout;
+	}
+
+	/**
+	 * @return the httpsProtocol
+	 */
+	public String getHttpsProtocol() {
+		return httpsProtocol;
+	}
+
+	/**
+	 * @return the runTests
+	 */
+	public static boolean isRunTests() {
+		return runTests;
+	}
+
+	/**
+	 * @return the httpMethod
+	 */
+	public String getHttpMethod() {
+		return httpMethod;
+	}
 
 	/** The <em>absolute form</em> of the Resource URI */
 	private URL url;
@@ -83,10 +149,10 @@ public class TeleSignRequest {
 	private AuthMethod auth = AuthMethod.SHA1;
 
 	/** Setting default Integer value that specifies the HttpConnection connect timeout value. Having default value as 30000 **/
-    private int connectTimeout = 30000;
+    private int connectTimeout;
 
     /** Setting default Integer value that specifies the HttpConnection read timeout value. Having default value as 30000 **/
-    private int readTimeout = 30000;
+    private int readTimeout;
     
     private String httpsProtocol = "TLSv1.2";
     
@@ -95,10 +161,13 @@ public class TeleSignRequest {
     
     public static String RESOURCE_DIR = "src/test/resources/";
     
-    /** Enable test based settings **/
-    public static boolean isTest = false;
-
-
+    private final String TEST_URL = "https://localhost:1443";
+    
+    /** Enable test based settings, if set to true requests will be sent to embedded server. **/
+    public static boolean runTests;
+    
+    private final String httpMethod;
+    
 	/**
 	 * The TeleSitgnRequest class constructor. A TeleSitgnRequest object
 	 * contains all of the information required to call any/all of the TeleSign
@@ -122,14 +191,15 @@ public class TeleSignRequest {
 	 *			[Required] A string representing your TeleSign Secret Shared
 	 *			Key (available from the TeleSign Client Portal).
 	 */
+	@Deprecated
 	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key) {
 
-		this.base = base;
-		this.resource = resource;
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
-
-		post = (method.toLowerCase().equals("post"));
+		this.baseUrl = base;
+		this.subResource = resource;
+		this.customerId = customer_id;
+		this.secretKey = secret_key;
+		this.httpMethod = method;
+		post = (method.equalsIgnoreCase("post"));
 
 		ts_headers = new TreeMap<String, String>();
 		headers = new TreeMap<String, String>();
@@ -165,16 +235,19 @@ public class TeleSignRequest {
 	 * 			[Required] A integer representing read timeout
 	 *			while reading response returned from Telesign api.
 	 */
+	@Deprecated
 	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key, int connectTimeout, int readTimeout) {
 
-		this.base = base;
-		this.resource = resource;
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
+		this.baseUrl = base;
+		this.subResource = resource;
+		this.customerId = customer_id;
+		this.secretKey = secret_key;
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
 
-		post = (method.toLowerCase().equals("post"));
+		this.httpMethod = method;
+		post = (method.equalsIgnoreCase("post"));
+
 
 		ts_headers = new TreeMap<String, String>();
 		headers = new TreeMap<String, String>();
@@ -206,15 +279,18 @@ public class TeleSignRequest {
 	 * @param httpsProtocol 
 	 * 			[Optional]	Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2
 	 */
+	@Deprecated
 	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key, String httpsProtocol) {
 
-		this.base = base;
-		this.resource = resource;
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
+		this.baseUrl = base;
+		this.subResource = resource;
+		this.customerId = customer_id;
+		this.secretKey = secret_key;
 		this.httpsProtocol = httpsProtocol;
 
-		post = (method.toLowerCase().equals("post"));
+		this.httpMethod = method;
+		post = (method.equalsIgnoreCase("post"));
+
 
 		ts_headers = new TreeMap<String, String>();
 		headers = new TreeMap<String, String>();
@@ -251,21 +327,40 @@ public class TeleSignRequest {
 	 * @param httpsProtocol 
 	 * 			[Optional]	Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2
 	 */
+	@Deprecated
 	public TeleSignRequest(String base, String resource, String method, String customer_id, String secret_key, int connectTimeout, int readTimeout, String httpsProtocol) {
 
-		this.base = base;
-		this.resource = resource;
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
+		this.baseUrl = base;
+		this.subResource = resource;
+		this.customerId = customer_id;
+		this.secretKey = secret_key;
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
 		this.httpsProtocol = httpsProtocol;
 
-		post = (method.toLowerCase().equals("post"));
+		this.httpMethod = method;
+		post = (method.equalsIgnoreCase("post"));
+
 
 		ts_headers = new TreeMap<String, String>();
 		headers = new TreeMap<String, String>();
 		params = new HashMap<String, String>();
+	}
+	
+	public TeleSignRequest(RequestBuilder builder){
+		this.customerId = builder.customerId;
+		this.secretKey = builder.secretKey;
+		this.httpsProtocol = builder.httpsProtocol;
+		this.connectTimeout = builder.connectTimeout;
+		this.readTimeout = builder.readTimeout;
+		runTests = builder.runTests;
+		if (runTests) {
+			this.baseUrl = TEST_URL;
+			runTests();
+		} else
+			this.baseUrl = builder.baseUrl;
+		this.subResource = builder.subResource;
+		this.httpMethod = builder.httpMethod;
 	}
 
 	/**
@@ -391,7 +486,7 @@ public class TeleSignRequest {
 		addHeader("User-Agent", USER_AGENT);
 
 		// Create the absolute form of the resource URI, and place it in a string buffer.
-		StringBuffer full_url = new StringBuffer(base).append(resource);
+		StringBuffer full_url = new StringBuffer(baseUrl).append(subResource);
 
 		if (params.size() > 0) {
 
@@ -414,7 +509,7 @@ public class TeleSignRequest {
 		// Create the Signature using the formula: Signature = Base64(HMAC-SHA( YourTeleSignAPIKey, UTF-8-Encoding-Of( StringToSign )).
 		try {
 
-			signature = encode(signingString, secret_key);
+			signature = encode(signingString, secretKey);
 		}
 		catch (SignatureException e) {
 
@@ -423,7 +518,7 @@ public class TeleSignRequest {
 			return null;
 		}
 
-		String auth_header = "TSA " + customer_id + ":" + signature;
+		String auth_header = "TSA " + customerId + ":" + signature;
 
 		connection = (HttpsURLConnection) url.openConnection();
 		connection.setConnectTimeout(connectTimeout);
@@ -554,7 +649,7 @@ public class TeleSignRequest {
 			stringToSign += body + "\n";
 		}
 
-		stringToSign += resource;
+		stringToSign += subResource;
 
 		return stringToSign;
 	}
@@ -613,7 +708,7 @@ public class TeleSignRequest {
 		try {			
 			// setting ssl instance to TLSv1.x
 			sslContext = SSLContext.getInstance(httpsProtocol);
-			if(isTest){
+			if(runTests){
 				TrustManager[] trustAllCerts = trustCertificates();
 				sslContext.init(null,trustAllCerts,new SecureRandom());
 			}else {				
@@ -652,8 +747,9 @@ public class TeleSignRequest {
 		return trustAllCerts;
 	}
 	
-	static {
-		if(isTest)
+	//static {
+	public void runTests(){
+		if(runTests)
 	    HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier()
 	        {
 	            public boolean verify(String hostname, SSLSession session)
@@ -661,5 +757,62 @@ public class TeleSignRequest {
 	                return true;	                
 	            }
 	        });
+	}
+	
+	public static class RequestBuilder{
+		private final String customerId, secretKey;
+		private String baseUrl, subResource, httpMethod;
+		private String httpsProtocol = "TLSv1.2";
+		private int connectTimeout = 30000, readTimeout = 30000;
+		private boolean runTests = false;
+		
+		public RequestBuilder(String customerId, String secretKey){
+			this.customerId = customerId;
+			this.secretKey = secretKey;
+		}
+		
+		public RequestBuilder httpsProtocol(String httpsProtocol){
+			this.httpsProtocol = httpsProtocol;
+			return this;
+		}
+		
+		public RequestBuilder connectTimeout(int connectTimeout){
+			this.connectTimeout = connectTimeout;
+			return this;
+		}
+		
+		public RequestBuilder readTimeout(int readTimeout){
+			this.readTimeout = readTimeout;
+			return this;
+		}
+		
+		public RequestBuilder runTests(boolean runTests){
+			this.runTests = runTests;
+			return this;
+		}
+		
+		public RequestBuilder baseUrl(String baseUrl){
+			this.baseUrl = baseUrl;
+			return this;
+		}
+		
+		public RequestBuilder subResource(String subResource){
+			this.subResource = subResource;
+			return this;
+		}
+		
+		public RequestBuilder httpMethod(String httpMethod){
+			this.httpMethod = httpMethod;
+			return this;
+		}
+		
+		public TeleSignRequest create(){
+			TeleSignRequest reqParam = new TeleSignRequest(this);
+			reqParam.post = reqParam.httpMethod.equalsIgnoreCase("post");
+			reqParam.ts_headers = new TreeMap<String, String>();
+			reqParam.headers = new TreeMap<String, String>();
+			reqParam.params = new HashMap<String, String>();
+			return reqParam;
+		}		
 	}
 }

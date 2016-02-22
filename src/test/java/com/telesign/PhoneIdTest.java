@@ -175,7 +175,7 @@ public class PhoneIdTest {
 		PhoneIdSimSwapCheckResponse ret = pid.simSwap(TestUtil.PHONE_NUMBER, "BACS", "10.11.132.9", "session_id");
 		assertNotNull(ret);System.out.println(ret.toString());
 		assertTrue(ret.errors.length == 0);
-		assertTrue(ret.status.code == 300);
+		assertTrue(ret.status.code == 2204);
 		//assertTrue(ret.risk.level.length() > 0);
 		
 	}
@@ -185,7 +185,7 @@ public class PhoneIdTest {
 		PhoneId pid = initPhoneIdParams();
 		
 		PhoneIdCallForwardResponse ret = pid.callForward(TestUtil.PHONE_NUMBER, "BACS", "10.11.132.9", "session_id");
-		assertNotNull(ret);//System.out.println(ret.toString());
+		assertNotNull(ret);System.out.println(ret.toString());
 		assertTrue(ret.standardResponse.errors.length == 0);
 		assertTrue(ret.standardResponse.status.code == 300);
 		//assertTrue(ret.risk.level.length() > 0);
@@ -199,7 +199,7 @@ public class PhoneIdTest {
 		PhoneIdNumberDeactivationResponse ret = pid.deactivation(TestUtil.PHONE_NUMBER, "BACS", "10.11.132.9", "session_id");
 		assertNotNull(ret);//System.out.println(ret.toString());
 		assertTrue(ret.standardResponse.errors.length == 0);
-		assertTrue(ret.standardResponse.status.code == 300);
+		assertTrue(ret.standardResponse.status.code == 2300);
 		//assertTrue(ret.risk.level.length() > 0);
 		
 	}

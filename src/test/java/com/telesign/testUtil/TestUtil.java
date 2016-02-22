@@ -34,24 +34,24 @@ public final class TestUtil {
 	public static String BUNDLE_ID;
 	
 	// Verify api url path
-	private static final String V1_VERIFY       = "/v1/verify/";
+	/*private static final String V1_VERIFY       = "/v1/verify/";
 	private static final String V1_VERIFY_SMS   = "/v1/verify/sms";
 	private static final String V1_VERIFY_CALL  = "/v1/verify/call"; 
 	private static final String V1_VERIFY_SMART = "/v1/verify/smart";
 	
 	private static final String V2_VERIFY_PUSH         = "/v2/verify/push";
 	private static final String V2_VERIFY_TOKEN        = "/v2/verify/soft_token";
-	private static final String V2_VERIFY_REGISTRATION = "/v2/verify/registration/";
+	private static final String V2_VERIFY_REGISTRATION = "/v2/verify/registration/";*/
 	// PhoneID url path
-	private static final String V1_PHONEID_STANDARD = "/v1/phoneid/standard/";
+	/*private static final String V1_PHONEID_STANDARD = "/v1/phoneid/standard/";
 	private static final String V1_PHONEID_SCORE    = "/v1/phoneid/score/";
 	private static final String V1_PHONEID_CONTACT  = "/v1/phoneid/contact/";
-	private static final String V1_PHONEID_LIVE     = "/v1/phoneid/live/";
+	private static final String V1_PHONEID_LIVE     = "/v1/phoneid/live/";*/
 	
 	public static void initProperties() throws IOException {
 		Properties props = new Properties();
 		try {
-		props.load(new FileInputStream(TestUtil.RESOURCE_DIR + "test.properties"));
+		props.load(new FileInputStream(RESOURCE_DIR + "test.properties"));
 		} catch (FileNotFoundException fne) {
 			fail("Please create a \"test.properties\" file at the root project directory " +
 					"and include your telesign customerid, secretkey and your phone number. " +
@@ -80,47 +80,47 @@ public final class TestUtil {
 		
 		boolean pass = true; 
 		
-		if(TestUtil.CUSTOMER_ID == null || TestUtil.CUSTOMER_ID.isEmpty()) {
-			System.out.println("TestUtil.CUSTOMER_ID is not set. Please set the \"test.customerid\" property in the properties file");
+		if(CUSTOMER_ID == null || CUSTOMER_ID.isEmpty()) {
+			System.out.println("CUSTOMER_ID is not set. Please set the \"test.customerid\" property in the properties file");
 			pass = false;
 		}
 		
-		if(TestUtil.SECRET_KEY == null || TestUtil.SECRET_KEY.isEmpty()) {
-			System.out.println("TestUtil.SECRET_KEY is not set. Please set the \"test.secretkey\" property in the properties file");
+		if(SECRET_KEY == null || SECRET_KEY.isEmpty()) {
+			System.out.println("SECRET_KEY is not set. Please set the \"test.secretkey\" property in the properties file");
 			pass = false;
 		}
-		if(TestUtil.PHONE_NUMBER == null || TestUtil.PHONE_NUMBER.isEmpty()) {
+		if(PHONE_NUMBER == null || PHONE_NUMBER.isEmpty()) {
 			System.out.println("PHONE_NUMBER is not set. Please set the \"test.phonenumber\" property in the properties file");
 			pass = false;
 		}
 		
-		if(TestUtil.CONNECT_TIMEOUT == null || TestUtil.CONNECT_TIMEOUT.isEmpty() || TestUtil.READ_TIMEOUT == null || TestUtil.READ_TIMEOUT.isEmpty()) {
+		if(CONNECT_TIMEOUT == null || CONNECT_TIMEOUT.isEmpty() || READ_TIMEOUT == null || READ_TIMEOUT.isEmpty()) {
 			System.out.println("Either of CONNECT_TIMEOUT or READ_TIMEOUT is not set. Please set the \"test.connecttimeout\" & \"test.readtimeout\" property in the properties file. " +
 					"Or default connect & read timeout values would be used");
 			pass = true;
 		} else {
-			TestUtil.connectTimeout = Integer.parseInt(TestUtil.CONNECT_TIMEOUT);
-			TestUtil.readTimeout = Integer.parseInt(TestUtil.READ_TIMEOUT);
-			TestUtil.timeouts = true;
+			connectTimeout = Integer.parseInt(CONNECT_TIMEOUT);
+			readTimeout = Integer.parseInt(READ_TIMEOUT);
+			timeouts = true;
 			pass = true;
 		}		
 
-		if(TestUtil.ORIGINATING_IP == null || TestUtil.ORIGINATING_IP.isEmpty()) {
+		if(ORIGINATING_IP == null || ORIGINATING_IP.isEmpty()) {
 			System.out.println("ORIGINATING_IP not set. Please set the \"test.originating_ip\" property in the properties file");
 			pass = true;
 		}
 		
-		if(TestUtil.SESSION_ID == null || TestUtil.SESSION_ID.isEmpty()) {
+		if(SESSION_ID == null || SESSION_ID.isEmpty()) {
 			System.out.println("SESSION_ID not set. Please set the \"test.session_id\" property in the properties file");
 			pass = true;
 		}
 		
-		if(null == TestUtil.HTTPS_PROTOCOL || TestUtil.HTTPS_PROTOCOL.isEmpty()) {
+		if(null == HTTPS_PROTOCOL || HTTPS_PROTOCOL.isEmpty()) {
 			System.out.println("HTTPS_PROTOCOL is not set. Please set the \"test.httpsprotocol\" property in the properties file"
 					+ ", or default value of TLSv1.2 would be used");
 			pass = true;
 		} else {
-			TestUtil.isHttpsProtocolSet = true;
+			isHttpsProtocolSet = true;
 			pass = true;
 		}
 		
@@ -204,6 +204,9 @@ public final class TestUtil {
 		path.put ("/v1/phoneid/score/","V1_PHONEID_SCORE");
 		path.put ("/v1/phoneid/contact/","V1_PHONEID_CONTACT");
 		path.put ("/v1/phoneid/live/","V1_PHONEID_LIVE");
+		path.put ("/v1/phoneid/sim_swap/check/", "V1_PHONEID_SIM_SWAP_CHECK");
+		path.put ("/v1/phoneid/call_forward/", "V1_PHONEID_CALL_FORWARD");
+		path.put ("/v1/phoneid/number_deactivation/", "V1_PHONEID_NUMBER_DEACTIVATION");
 	} 
 	public static enum Path{
 		V1_VERIFY ,
@@ -218,6 +221,9 @@ public final class TestUtil {
 		V1_PHONEID_STANDARD ,
 		V1_PHONEID_SCORE,
 		V1_PHONEID_CONTACT,
-		V1_PHONEID_LIVE;	
+		V1_PHONEID_LIVE,
+		V1_PHONEID_SIM_SWAP_CHECK,
+		V1_PHONEID_CALL_FORWARD,
+		V1_PHONEID_NUMBER_DEACTIVATION;	
 	}
 }

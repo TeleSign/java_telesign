@@ -18,6 +18,8 @@ import com.telesign.phoneid.response.PhoneIdScoreResponse;
 import com.telesign.phoneid.response.PhoneIdSimSwapCheckResponse;
 import com.telesign.phoneid.response.PhoneIdStandardResponse;
 import com.telesign.util.TeleSignRequest;
+import com.telesign.util.TeleSignRequest.RequestBuilder;
+
 import java.io.IOException;
 
 /**
@@ -29,9 +31,9 @@ public class PhoneId {
 
 	private final String customer_id;
 	private final String secret_key;
-	private int connectTimeout = 30000;
-	private int readTimeout = 30000;
-	private String httpsProtocol = "TLSv1.2";
+	private int connectTimeout;
+	private int readTimeout;
+	private String httpsProtocol;
 	
 	private String API_BASE_URL = "https://rest.telesign.com";
 	private static final String BASE_URI_REST_ND_TELESIGN = "https://rest-nd.telesign.com";
@@ -235,8 +237,9 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_STANDARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-
+			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_STANDARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_STANDARD + phone_number).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			if(originating_ip != null) {
 
 				tr.addParam("originating_ip", originating_ip);
@@ -284,7 +287,11 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SCORE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SCORE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			
+			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_SCORE + phone_number).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			
 			tr.addParam("ucid", ucid);
 
 			if(originating_ip != null) {
@@ -335,7 +342,11 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CONTACT + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CONTACT + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			
+			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_CONTACT + phone_number).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			
 			tr.addParam("ucid", ucid);
 			
 			if(originating_ip != null) {
@@ -390,7 +401,11 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_LIVE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_LIVE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			
+			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_LIVE + phone_number).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			
 			tr.addParam("ucid", ucid);
 
 			if(originating_ip != null) {
@@ -431,7 +446,11 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SIM_SWAP_CHECK + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SIM_SWAP_CHECK + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			
+			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_SIM_SWAP_CHECK + phone_number).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			
 			tr.addParam("ucid", ucid);
 
 			if(originating_ip != null) {
@@ -475,7 +494,11 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CALL_FORWARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CALL_FORWARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			
+			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_CALL_FORWARD + phone_number).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			
 			tr.addParam("ucid", ucid);
 
 			if(originating_ip != null) {
@@ -518,7 +541,11 @@ public class PhoneId {
 
 		try {
 
-			TeleSignRequest tr = new TeleSignRequest(BASE_URI_REST_ND_TELESIGN, V1_PHONEID_NUMBER_DEACTIVATION + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			//TeleSignRequest tr = new TeleSignRequest(BASE_URI_REST_ND_TELESIGN, V1_PHONEID_NUMBER_DEACTIVATION + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			
+			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(BASE_URI_REST_ND_TELESIGN).subResource(V1_PHONEID_NUMBER_DEACTIVATION + phone_number).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			
 			tr.addParam("ucid", ucid);
 
 			if(originating_ip != null) {

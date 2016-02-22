@@ -79,6 +79,15 @@ public class TelesignTestServer implements Container {
 			case V1_PHONEID_SCORE:
 				jsonFilePath = jsonFilePath.append("phoneId_score.json");
 				break;
+			case V1_PHONEID_SIM_SWAP_CHECK:
+				jsonFilePath = jsonFilePath.append("phoneId_sim_swap.json");
+				break;
+			case V1_PHONEID_CALL_FORWARD:
+				jsonFilePath = jsonFilePath.append("phoneId_call_forward.json");
+				break;
+			case V1_PHONEID_NUMBER_DEACTIVATION:
+				jsonFilePath = jsonFilePath.append("phoneId_number_deactivation.json");
+				break;
 			case V1_VERIFY_CALL:
 				jsonFilePath = jsonFilePath.append("verify_call.json");
 				break;
