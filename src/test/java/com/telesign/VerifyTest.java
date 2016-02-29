@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import com.telesign.testUtil.TestUtil;
 import com.telesign.verify.Verify;
+import com.telesign.verify.Verify.VerifyBuilder;
 import com.telesign.verify.response.VerifyResponse;
 
 /**
@@ -57,14 +58,8 @@ public class VerifyTest {
 		
 		Verify ver;
 		
-		if(!TestUtil.timeouts && !TestUtil.isHttpsProtocolSet)
-			ver = new Verify(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
-		else if(TestUtil.timeouts && !TestUtil.isHttpsProtocolSet)
-			ver = new Verify(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY, TestUtil.connectTimeout, TestUtil.readTimeout);
-		else if(!TestUtil.timeouts && TestUtil.isHttpsProtocolSet)
-			ver = new Verify(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY, TestUtil.HTTPS_PROTOCOL);
-		else
-			ver = new Verify(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY, TestUtil.connectTimeout, TestUtil.readTimeout, TestUtil.HTTPS_PROTOCOL);
+		VerifyBuilder verifyBuilder = Verify.init(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
+		ver = verifyBuilder.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL).runTests(true).create();		
 		
 		return ver;
 	}

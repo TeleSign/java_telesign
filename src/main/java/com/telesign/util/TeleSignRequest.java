@@ -69,70 +69,7 @@ public class TeleSignRequest {
 
 	/** The set of HTTP 1.1 Request parameter attribute/value pairs. */
 	private HashMap<String, String> params;
-
-	/**
-	 * @return the baseUrl
-	 */
-	public String getBaseUrl() {
-		return baseUrl;
-	}
-
-	/**
-	 * @return the subResource
-	 */
-	public String getSubResource() {
-		return subResource;
-	}
-
-	/**
-	 * @return the customerId
-	 */
-	public String getCustomerId() {
-		return customerId;
-	}
-
-	/**
-	 * @return the secretKey
-	 */
-	public String getSecretKey() {
-		return secretKey;
-	}
-
-	/**
-	 * @return the connectTimeout
-	 */
-	public int getConnectTimeout() {
-		return connectTimeout;
-	}
-
-	/**
-	 * @return the readTimeout
-	 */
-	public int getReadTimeout() {
-		return readTimeout;
-	}
-
-	/**
-	 * @return the httpsProtocol
-	 */
-	public String getHttpsProtocol() {
-		return httpsProtocol;
-	}
-
-	/**
-	 * @return the runTests
-	 */
-	public static boolean isRunTests() {
-		return runTests;
-	}
-
-	/**
-	 * @return the httpMethod
-	 */
-	public String getHttpMethod() {
-		return httpMethod;
-	}
-
+	
 	/** The <em>absolute form</em> of the Resource URI */
 	private URL url;
 
@@ -772,17 +709,20 @@ public class TeleSignRequest {
 		}
 		
 		public RequestBuilder httpsProtocol(String httpsProtocol){
-			this.httpsProtocol = httpsProtocol;
+			if(null != httpsProtocol && !httpsProtocol.isEmpty())
+				this.httpsProtocol = httpsProtocol;
 			return this;
 		}
 		
 		public RequestBuilder connectTimeout(int connectTimeout){
-			this.connectTimeout = connectTimeout;
+			if(connectTimeout > 0)
+				this.connectTimeout = connectTimeout;
 			return this;
 		}
 		
 		public RequestBuilder readTimeout(int readTimeout){
-			this.readTimeout = readTimeout;
+			if(readTimeout > 0)
+				this.readTimeout = readTimeout;
 			return this;
 		}
 		

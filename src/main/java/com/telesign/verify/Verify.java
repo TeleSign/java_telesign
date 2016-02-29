@@ -25,11 +25,12 @@ import java.util.regex.Pattern;
  */
 public class Verify {
 
-	private final String customer_id;
-	private final String secret_key;
+	private final String customerId;
+	private final String secretKey;
 	private int connectTimeout;
 	private int readTimeout;
 	private String httpsProtocol;
+	private boolean runTests;
 
 	private static final String API_BASE_URL   = "https://rest.telesign.com";
 	private static final String API_MOBILE_URL = "https://rest-mobile.telesign.com";
@@ -45,16 +46,62 @@ public class Verify {
 	
 	private final Gson gson = new Gson();
 	
+
+	public Verify(VerifyBuilder builder) {
+		this.customerId = builder.customerId;
+		this.secretKey = builder.secretKey;
+		this.connectTimeout = builder.connectTimeout;
+		this.readTimeout = builder.readTimeout;
+		this.httpsProtocol = builder.httpsProtocol;
+		this.runTests = builder.runTests;		
+	}
+	
+	public static class VerifyBuilder{
+		private final String customerId;
+		private final String secretKey;
+		private int connectTimeout;
+		private int readTimeout;
+		private String httpsProtocol;
+		private boolean runTests = false;
+
+		public VerifyBuilder(String customerId, String secretKey){
+			this.customerId = customerId;
+			this.secretKey = secretKey;
+		}		
+		public VerifyBuilder connectTimeout(int connectTimeout) {
+			this.connectTimeout = connectTimeout;
+			return this;
+		}
+		public VerifyBuilder readTimeout(int readTimeout) {
+			this.readTimeout = readTimeout;
+			return this;
+		}
+		public VerifyBuilder httpsProtocol(String httpsProtocol) {
+			this.httpsProtocol = httpsProtocol;
+			return this;
+		}
+		public VerifyBuilder runTests(boolean runTests) {
+			this.runTests = runTests;
+			return this;
+		}
+		public Verify create(){
+			Verify verifyObj = new Verify(this);
+			return verifyObj;
+		}
+		
+	}
+	
 	/**
 	 * The Verify class constructor.
 	 * Once you instantiate a Verify object, you can use it to make instance calls to <em>Verify SMS</em> and <em>Verify Call</em>.
 	 * @param customer_id	[Required]	A string containing your TeleSign Customer ID (your TeleSign account number).
 	 * @param secret_key	[Required]	A string containing your TeleSign Secret Key (a bese64-encoded string valu, available from the TeleSign Client Portal).
 	 */
+	@Deprecated
 	public Verify(String customer_id, String secret_key) {
 
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
+		this.customerId = customer_id;
+		this.secretKey = secret_key;
 	}
 	
 	/**
@@ -64,10 +111,11 @@ public class Verify {
 	 * @param secret_key	[Required]	A string containing your TeleSign Secret Key (a bese64-encoded string valu, available from the TeleSign Client Portal).
 	 * @param httpsProtocol [Optional]	Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2
 	 */
+	@Deprecated
 	public Verify(String customer_id, String secret_key, String httpsProtocol) {
 
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
+		this.customerId = customer_id;
+		this.secretKey = secret_key;
 		this.httpsProtocol = httpsProtocol;
 	}
 	
@@ -81,10 +129,11 @@ public class Verify {
 	 * @param readTimeout
 	 * 			[Required] A integer representing read timeout value while reading response returned from Telesign api.
 	 */
+	@Deprecated
 	public Verify(String customer_id, String secret_key, int connectTimeout, int readTimeout) {
 
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
+		this.customerId = customer_id;
+		this.secretKey = secret_key;
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
 	}
@@ -100,10 +149,11 @@ public class Verify {
 	 * 			[Required] A integer representing read timeout value while reading response returned from Telesign api.
 	 * @param httpsProtocol [Optional]	Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2
 	 */
+	@Deprecated
 	public Verify(String customer_id, String secret_key, int connectTimeout, int readTimeout, String httpsProtocol) {
 
-		this.customer_id = customer_id;
-		this.secret_key = secret_key;
+		this.customerId = customer_id;
+		this.secretKey = secret_key;
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
 		this.httpsProtocol = httpsProtocol;
@@ -172,8 +222,8 @@ public class Verify {
 		try {
 			
 			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_SMS, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_VERIFY_SMS).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_VERIFY_SMS).
+					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -352,8 +402,8 @@ public class Verify {
 		try {
 
 			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_CALL, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_VERIFY_CALL).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_VERIFY_CALL).
+					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -461,8 +511,8 @@ public class Verify {
 		try {
 
 			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY + resource_id, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_VERIFY + resource_id).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_VERIFY + resource_id).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 
 			if (verify_code != null)
 				tr.addParam("verify_code", verify_code);
@@ -529,8 +579,8 @@ public class Verify {
 
 		try {
 			//TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_REGISTRATION + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_MOBILE_URL).subResource(V2_VERIFY_REGISTRATION + phone_number).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_MOBILE_URL).subResource(V2_VERIFY_REGISTRATION + phone_number).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			
 			if(null != bundle_id && !bundle_id.isEmpty()) {
 
@@ -592,8 +642,8 @@ public class Verify {
 		try {
 
 			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_SMART, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_VERIFY_SMART).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_VERIFY_SMART).
+					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 
 			if(null != ucid) {
@@ -691,8 +741,8 @@ public class Verify {
 
 		try {			
 			//TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_PUSH, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_MOBILE_URL).subResource(V2_VERIFY_PUSH).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_MOBILE_URL).subResource(V2_VERIFY_PUSH).
+					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");			
 			
 			if(null == notification_type || notification_type.isEmpty()){
@@ -764,8 +814,8 @@ public class Verify {
 
 		try {			
 			//TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_TOKEN, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_MOBILE_URL).subResource(V2_VERIFY_TOKEN).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_MOBILE_URL).subResource(V2_VERIFY_TOKEN).
+					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");		
 
 			if(null != soft_token_id) {
@@ -816,5 +866,9 @@ public class Verify {
 			return m.matches();
 		} else 
 			return false;
+	}
+	
+	public static VerifyBuilder init(String customerId, String secretKey){
+		return new VerifyBuilder(customerId, secretKey);
 	}
 }

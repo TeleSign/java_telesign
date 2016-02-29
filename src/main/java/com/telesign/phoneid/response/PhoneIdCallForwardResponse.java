@@ -1,9 +1,37 @@
 package com.telesign.phoneid.response;
 
 import com.google.gson.Gson;
+import com.telesign.phoneid.response.PhoneIdStandardResponse.Error;
+import com.telesign.phoneid.response.PhoneIdStandardResponse.Location;
+import com.telesign.phoneid.response.PhoneIdStandardResponse.Numbering;
+import com.telesign.phoneid.response.PhoneIdStandardResponse.PhoneType;
+import com.telesign.phoneid.response.PhoneIdStandardResponse.Status;
 
 public class PhoneIdCallForwardResponse {
-	public PhoneIdStandardResponse standardResponse;
+	/** A String containing a <em>reference identifier</em> that uniquely identifies the Request message that initiated this Response. */
+	public String reference_id;
+	
+	/** A String containing the URI for accesses the PhoneID resource. */
+	public String resource_uri;
+
+	/** A String containing the name of the subresource that was accessed. For example, "standard". */
+	public String sub_resource;
+	
+	/** An object containing details about the request status. */
+	public Status status;
+	
+	/** An array of {@link Error} objects. Each Error object contains information about an error condition that might have resulted from the Request. */	
+	public Error[] errors;
+
+	/** An object containing details about the numbering attributes of the specified phone number. */
+	public Numbering numbering;
+
+	/** An object containing geographical location information associated with the phone number. */
+	public Location location; 
+	
+	/** An object that contains details about the phone type. */
+	public PhoneType phone_type;
+	
 	/**
 	 * An object containing the call forwarding information associated with the phone number.
 	 */

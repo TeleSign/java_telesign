@@ -34,6 +34,7 @@ public class PhoneId {
 	private int connectTimeout;
 	private int readTimeout;
 	private String httpsProtocol;
+	private boolean runTests;
 	
 	private String API_BASE_URL = "https://rest.telesign.com";
 	private static final String BASE_URI_REST_ND_TELESIGN = "https://rest-nd.telesign.com";
@@ -48,6 +49,47 @@ public class PhoneId {
 	private static final String V1_PHONEID_NUMBER_DEACTIVATION = "/v1/phoneid/number_deactivation/";
 	
 	private final Gson gson = new Gson();
+	
+	public static class PhoneIdBuilder{
+		
+		private final String customerId;
+		private final String secretKey;
+		private int connectTimeout;
+		private int readTimeout;		
+		private String httpsProtocol;
+		private boolean runTests = false;
+		
+		public PhoneIdBuilder connectTimeout(int connectTimeout) {
+			this.connectTimeout = connectTimeout;
+			return this;
+		}
+
+		public PhoneIdBuilder readTimeout(int readTimeout) {
+			this.readTimeout = readTimeout;
+			return this;
+		}
+
+		public PhoneIdBuilder httpsProtocol(String httpsProtocol) {
+			this.httpsProtocol = httpsProtocol;
+			return this;
+		}
+
+		public PhoneIdBuilder runTests(boolean runTests) {
+			this.runTests = runTests;
+			return this;
+		}
+		
+		public PhoneIdBuilder(String customerId, String secretKey){
+			this.customerId = customerId;
+			this.secretKey = secretKey;
+		}
+		
+		public PhoneId create(){
+			PhoneId phoneIdObj = new PhoneId(this); 
+			return phoneIdObj;
+		}
+		
+	}
 
 	/**
 	 * The PhoneId class constructor. Once you instantiate a PhoneId object, you
@@ -62,6 +104,7 @@ public class PhoneId {
 	 *            [Required] A string representing your TeleSign Secret Key
 	 *            (available from the TeleSign Client Portal).
 	 */
+	@Deprecated
 	public PhoneId(String customer_id, String secret_key) {
 
 		this.customer_id = customer_id;
@@ -85,6 +128,7 @@ public class PhoneId {
 	 * @param readTimeout
 	 * 			[Required] A integer representing read timeout value while reading response returned from Telesign api.
 	 */
+	@Deprecated
 	public PhoneId(String customer_id, String secret_key, int connectTimeout, int readTimeout) {
 
 		this.customer_id = customer_id;
@@ -108,6 +152,7 @@ public class PhoneId {
 	 * @param httpsProtocol 
 	 * 			  [Optional] Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2           
 	 */
+	@Deprecated
 	public PhoneId(String customer_id, String secret_key, String httpsProtocol) {
 
 		this.customer_id = customer_id;
@@ -133,6 +178,7 @@ public class PhoneId {
 	 * 			[Required] A integer representing read timeout value while reading response returned from Telesign api.
 	 * @param httpsProtocol [Optional]	Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2
 	 */
+	@Deprecated
 	public PhoneId(String customer_id, String secret_key, int connectTimeout, int readTimeout, String httpsProtocol) {
 
 		this.customer_id = customer_id;
@@ -142,6 +188,15 @@ public class PhoneId {
 		this.httpsProtocol = httpsProtocol;
 	}
 	
+	public PhoneId(PhoneIdBuilder builder) {
+		this.customer_id = builder.customerId;
+		this.secret_key = builder.secretKey;
+		this.connectTimeout = builder.connectTimeout;
+		this.httpsProtocol = builder.httpsProtocol;
+		this.readTimeout = builder.readTimeout;
+		this.runTests = builder.runTests;
+	}
+
 	/**
 	 * Returns information about a specified phone number�s type, numbering
 	 * structure, cleansing details, and location details.
@@ -239,7 +294,7 @@ public class PhoneId {
 
 			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_STANDARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_STANDARD + phone_number).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			if(originating_ip != null) {
 
 				tr.addParam("originating_ip", originating_ip);
@@ -290,7 +345,7 @@ public class PhoneId {
 			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SCORE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			
 			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_SCORE + phone_number).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			
 			tr.addParam("ucid", ucid);
 
@@ -345,7 +400,7 @@ public class PhoneId {
 			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CONTACT + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			
 			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_CONTACT + phone_number).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			
 			tr.addParam("ucid", ucid);
 			
@@ -404,7 +459,7 @@ public class PhoneId {
 			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_LIVE + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			
 			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_LIVE + phone_number).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			
 			tr.addParam("ucid", ucid);
 
@@ -449,7 +504,7 @@ public class PhoneId {
 			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_SIM_SWAP_CHECK + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			
 			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_SIM_SWAP_CHECK + phone_number).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			
 			tr.addParam("ucid", ucid);
 
@@ -497,7 +552,7 @@ public class PhoneId {
 			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_PHONEID_CALL_FORWARD + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			
 			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(API_BASE_URL).subResource(V1_PHONEID_CALL_FORWARD + phone_number).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			
 			tr.addParam("ucid", ucid);
 
@@ -544,7 +599,7 @@ public class PhoneId {
 			//TeleSignRequest tr = new TeleSignRequest(BASE_URI_REST_ND_TELESIGN, V1_PHONEID_NUMBER_DEACTIVATION + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			
 			TeleSignRequest tr = new RequestBuilder(customer_id, secret_key).baseUrl(BASE_URI_REST_ND_TELESIGN).subResource(V1_PHONEID_NUMBER_DEACTIVATION + phone_number).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			
 			tr.addParam("ucid", ucid);
 
@@ -572,4 +627,7 @@ public class PhoneId {
 		return response;
 	}
 	
+	public static PhoneIdBuilder initPhoneId(String customerId, String secretKey){
+		return new PhoneIdBuilder(customerId, secretKey);
+	}
 }

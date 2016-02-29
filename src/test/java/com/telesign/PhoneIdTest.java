@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.telesign.phoneid.PhoneId;
+import com.telesign.phoneid.PhoneId.PhoneIdBuilder;
 import com.telesign.phoneid.response.PhoneIdCallForwardResponse;
 import com.telesign.phoneid.response.PhoneIdContactResponse;
 import com.telesign.phoneid.response.PhoneIdLiveResponse;
@@ -70,16 +71,11 @@ public class PhoneIdTest {
 			fail("TestUtil.CUSTOMER_ID and TestUtil.SECRET_KEY must be set to pass this test");
 		}
 		
-		PhoneId pid;
+		PhoneIdBuilder pidb = PhoneId.initPhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);		
+		pidb.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL).runTests(true);
 		
-		if(!TestUtil.timeouts && !TestUtil.isHttpsProtocolSet)
-			pid = new PhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
-		else if(TestUtil.timeouts && !TestUtil.isHttpsProtocolSet)
-			pid = new PhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY, TestUtil.connectTimeout, TestUtil.readTimeout);
-		else if(!TestUtil.timeouts && TestUtil.isHttpsProtocolSet)
-			pid = new PhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY, TestUtil.HTTPS_PROTOCOL);
-		else
-			pid = new PhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY, TestUtil.connectTimeout, TestUtil.readTimeout, TestUtil.HTTPS_PROTOCOL);
+		PhoneId pid = pidb.create();
+				
 		return pid;
 	}
 	
@@ -176,8 +172,6 @@ public class PhoneIdTest {
 		assertNotNull(ret);System.out.println(ret.toString());
 		assertTrue(ret.errors.length == 0);
 		assertTrue(ret.status.code == 2204);
-		//assertTrue(ret.risk.level.length() > 0);
-		
 	}
 	
 	@Test
@@ -186,10 +180,8 @@ public class PhoneIdTest {
 		
 		PhoneIdCallForwardResponse ret = pid.callForward(TestUtil.PHONE_NUMBER, "BACS", "10.11.132.9", "session_id");
 		assertNotNull(ret);System.out.println(ret.toString());
-		assertTrue(ret.standardResponse.errors.length == 0);
-		assertTrue(ret.standardResponse.status.code == 300);
-		//assertTrue(ret.risk.level.length() > 0);
-		
+		assertTrue(ret.errors.length == 0);
+		assertTrue(ret.status.code == 300);		
 	}
 	
 	@Test
@@ -197,11 +189,9 @@ public class PhoneIdTest {
 		PhoneId pid = initPhoneIdParams();
 		
 		PhoneIdNumberDeactivationResponse ret = pid.deactivation(TestUtil.PHONE_NUMBER, "BACS", "10.11.132.9", "session_id");
-		assertNotNull(ret);//System.out.println(ret.toString());
-		assertTrue(ret.standardResponse.errors.length == 0);
-		assertTrue(ret.standardResponse.status.code == 2300);
-		//assertTrue(ret.risk.level.length() > 0);
-		
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+		assertTrue(ret.status.code == 2300);		
 	}
 	
 	
