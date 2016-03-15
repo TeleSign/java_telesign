@@ -32,22 +32,8 @@ public final class TestUtil {
 	public static String SOFT_TOKEN_ID;
 	public static String CALL_FORWARD_ACTION;
 	public static String BUNDLE_ID;
-	
-	// Verify api url path
-	/*private static final String V1_VERIFY       = "/v1/verify/";
-	private static final String V1_VERIFY_SMS   = "/v1/verify/sms";
-	private static final String V1_VERIFY_CALL  = "/v1/verify/call"; 
-	private static final String V1_VERIFY_SMART = "/v1/verify/smart";
-	
-	private static final String V2_VERIFY_PUSH         = "/v2/verify/push";
-	private static final String V2_VERIFY_TOKEN        = "/v2/verify/soft_token";
-	private static final String V2_VERIFY_REGISTRATION = "/v2/verify/registration/";*/
-	// PhoneID url path
-	/*private static final String V1_PHONEID_STANDARD = "/v1/phoneid/standard/";
-	private static final String V1_PHONEID_SCORE    = "/v1/phoneid/score/";
-	private static final String V1_PHONEID_CONTACT  = "/v1/phoneid/contact/";
-	private static final String V1_PHONEID_LIVE     = "/v1/phoneid/live/";*/
-	
+	public static boolean runTests;
+		
 	public static void initProperties() throws IOException {
 		Properties props = new Properties();
 		try {
@@ -77,6 +63,7 @@ public final class TestUtil {
 		CALLER_ID = props.getProperty("test.caller_id");
 		BUNDLE_ID = props.getProperty("test.bundle_id");
 		
+		runTests = Boolean.parseBoolean(props.getProperty("test.runTests", "true"));
 		
 		boolean pass = true; 
 		
@@ -172,8 +159,7 @@ public final class TestUtil {
 		
 		if(!pass) {
 			fail("Configuration file not setup correctly!");
-		}
-		//startServer();
+		}		
 	}
 	
 	public static void startServer(){
@@ -212,8 +198,7 @@ public final class TestUtil {
 		V1_VERIFY ,
 		V1_VERIFY_SMS ,
 		V1_VERIFY_CALL, 
-		V1_VERIFY_SMART,
-		
+		V1_VERIFY_SMART,		
 		V2_VERIFY_PUSH ,
 		V2_VERIFY_TOKEN ,
 		V2_VERIFY_REGISTRATION ,

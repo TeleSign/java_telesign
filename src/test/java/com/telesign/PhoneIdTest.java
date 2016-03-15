@@ -72,7 +72,7 @@ public class PhoneIdTest {
 		}
 		
 		PhoneIdBuilder pidb = PhoneId.initPhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);		
-		pidb.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL).runTests(true);
+		pidb.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL).runTests(TestUtil.runTests);
 		
 		PhoneId pid = pidb.create();
 				
