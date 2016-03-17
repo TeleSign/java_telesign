@@ -36,7 +36,7 @@ public class PhoneId {
 	private String httpsProtocol;
 	private boolean runTests;
 	
-	private String API_BASE_URL = "https://rest.telesign.com";	
+	private static final String API_BASE_URL = "https://rest.telesign.com";	
 	
 	private static final String V1_PHONEID_STANDARD = "/v1/phoneid/standard/";
 	private static final String V1_PHONEID_SCORE    = "/v1/phoneid/score/";
