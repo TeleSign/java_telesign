@@ -74,7 +74,7 @@ public class TeleSignRequest {
 	private boolean ts_date = false;
 
 	/** An AuthMethod enumeration value  that specifies the strength of the encryption method to use when signing the Authentication header. */
-	private AuthMethod auth = AuthMethod.SHA1;
+	private AuthMethod auth = AuthMethod.SHA256;
 
 	/** Setting default Integer value that specifies the HttpConnection connect timeout value. Having default value as 30000 **/
     private int connectTimeout = 30000;
