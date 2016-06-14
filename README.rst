@@ -15,12 +15,12 @@ TeleSign Web Services: Java SDK
 
 **TeleSign Web Services** conform to the `REST Web Service Design Model <http://en.wikipedia.org/wiki/Representational_state_transfer>`_. Services are exposed as URI-addressable resources through the set of *RESTful* procedures in our **TeleSign REST API**.
 
-The **TeleSign Java SDK** is a Java library that provides an interface to `TeleSign Web Services <http://www.telesign.com/products-demos/>`_. 
+The **TeleSign Java SDK** is a Java library that provides an interface to `TeleSign Web Services <https://developer.telesign.com/docs/getting-started-with-the-rest-api>`_. 
 
 Authentication
 --------------
 
-**You will need a Customer ID and API Key in order to use TeleSign’s REST API**.  If you are already a customer and need an API Key, you can generate one in the `Client Portal <https://portal.telesign.com>`_.  If you are not a customer and would like to get an API Key, please contact `support@telesign.com <mailto:support@telesign.com>`_
+**You will need a Customer ID and API Key in order to use TeleSign’s REST API**.  If you are already a customer and need an API Key, you can generate one in the `Client Portal <https://teleportal.telesign.com>`_.  If you are not a customer and would like to get an API Key, please contact `support@telesign.com <mailto:support@telesign.com>`_
 
 You supply your credentials to the API by passing them in during class initialization.
 
@@ -110,7 +110,7 @@ doc**. Generated documentation can be found in the
 *doc/build/* directory.
 
 Detailed documentation for TeleSign™ REST APIs is available in the
-`Client Portal <https://portal.telesign.com>`_
+`Developer Portal <https://developer.telesign.com/>`_
 
 Testing
 -------
