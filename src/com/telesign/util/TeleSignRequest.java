@@ -370,7 +370,7 @@ public class TeleSignRequest {
 	 *			 error occurred while attempting to sign the Request.
 	 */
 	public String executeRequest() throws IOException {
-
+		setSigningMethod(auth);
 		String signingString = getSigningString(customer_id);
 		String signature;
 		String url_output = "";
