@@ -2,13 +2,10 @@
 TeleSign
 ========
 
-:Info:
-    For more information, visit the `TeleSign web site <http://www.TeleSign.com>`_ or the `TeleSign Developer Portal <https://developer.telesign.com/>`.
-    
-:Author:
-    Telesign Corp.
+**Information**: For more information, visit the `TeleSign website <http://www.TeleSign.com>`_ or the `TeleSign Developer Portal <https://developer.telesign.com/>`_.
 
----------------------------------
+**Author**: Telesign Corp.
+
 TeleSign Web Services: Java SDK
 ---------------------------------
 
@@ -36,21 +33,22 @@ With just two classes, **telesign.api** abstracts much of the complexity of the 
 +------------------------------+--------------------------------------------------------------------------+ 
 | Java Class                   | Description                                                              | 
 +==============================+==========================================================================+ 
-| com.telesign.phoneid.PhoneId | The **PhoneId** class exposes three services that each provide           | 
+| com.telesign.phoneid.PhoneId | The **PhoneId** class exposes four services that each provide            | 
 |                              | information about a specified phone number.                              | 
 |                              |                                                                          | 
 |                              | *standard*                                                               | 
 |                              |     Retrieves the standard set of details about the specified phone      | 
-|                              |     number. This includes the type of phone (e.g., land line or mobile), | 
-|                              |     and it's approximate geographic location.                            | 
+|                              |     number. This includes the type of phone (for example, land line      | 
+|                              |     or mobile), and its approximate geographic location.                 | 
 |                              | *score*                                                                  | 
 |                              |     Retrieves a score for the specified phone number. This ranks the     | 
 |                              |     phone number's "risk level" on a scale from 0 to 1000, so you can    | 
-|                              |     code your web application to handle particular use cases (e.g., to   | 
-|                              |     stop things like chargebacks, identity theft, fraud, and spam).      | 
+|                              |     code your web application to handle particular use cases (for        | 
+|                              |     example, to stop things like chargebacks, identity theft, fraud,     |
+|                              |     and spam).                                                           |
 |                              | *contact*                                                                | 
 |                              |     In addition to the information retrieved by *standard*, this service | 
-|                              |     provides the Name & Address associated with the specified phone      | 
+|                              |     provides the name and address associated with the specified phone    | 
 |                              |     number.                                                              | 
 |                              | *live*                                                                   |
 |                              |     In addition to the information retrieved by *standard*, this         |
@@ -58,23 +56,23 @@ With just two classes, **telesign.api** abstracts much of the complexity of the 
 |                              |     number.                                                              |
 |                              |                                                                          |
 +------------------------------+--------------------------------------------------------------------------+ 
-| com.telesign.verify.Verify   | The **Verify** class exposes two services for sending users a            | 
+| com.telesign.verify.Verify   | The **Verify** class exposes three services for sending users a          | 
 |                              | verification token (a three to five-digit number). You can use this      | 
-|                              | mechanism to simply test whether you can reach users at the phone number | 
+|                              | mechanism to test whether you can reach users at the phone number        | 
 |                              | they supplied, or you can have them use the token to authenticate        | 
 |                              | themselves with your web application. In addition, this class also       | 
 |                              | exposes a service that allows you to confirm the result of the           | 
 |                              | authentication.                                                          | 
 |                              |                                                                          | 
 |                              | You can use this verification factor in combination with *username*      | 
-|                              | & *password* to provide *two-factor* authentication for higher           | 
+|                              | and *password* to provide *two-factor* authentication for higher         | 
 |                              | security.                                                                | 
 |                              |                                                                          | 
 |                              | *call*                                                                   | 
-|                              |     Calls the specified phone number, and using speech synthesis—speaks  | 
+|                              |     Calls the specified phone number and uses speech synthesis to speak  | 
 |                              |     the verification code to the user.                                   | 
 |                              | *sms*                                                                    | 
-|                              |     Send a text message containing the verification code to the          | 
+|                              |     Sends a text message containing the verification code to the         | 
 |                              |     specified phone number (supported for mobile phones only).           | 
 |                              | *status*                                                                 | 
 |                              |     Retrieves the verification result. You make this call in your web    | 
@@ -93,12 +91,11 @@ Here's a basic code example.
   String secret_key = "SECRECT_KEY_GOES_HERE";
   Verify verify = new Verify(customer_id, secret_key);
   VerifyResponse ret = verify.call("13103409700");
-   
   {"reference_id":"013C8CC050DF040BE4D412D700002101","resource_uri":"/v1/verify/013C8CC050DF040BE4D412D700002101","sub_resource":"call","errors":[],"status":{"updated_on":"2013-01-30T18:37:59.444100Z","code":103,"description":"Call in progress"},"verify":{"code_state":"UNKNOWN","code_entered":""}}
 
 Builds
 -------------
-Build the jar using **ant jar**. Generated jar
+Build the jar using **ant jar**. The generated jar
 can be found in the *build/jar/* directory.
 
 Documentation
@@ -114,12 +111,12 @@ Detailed documentation for TeleSign™ REST APIs is available in the
 Testing
 -------
 
-You will need junit_ installed to generate run
+You will need junit_ installed to generate and run
 the tests. You can execute the test by running **ant
 junit**. 
  
 The easiest way to run the tests is to install `junit
-<http://junit.org/>`_ Tests are located in the *test/* directory.
+<http://junit.org/>`_. Tests are located in the *test/* directory.
 
 Support and Feedback
 --------------------
