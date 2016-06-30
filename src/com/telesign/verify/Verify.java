@@ -38,7 +38,7 @@ public class Verify {
 	private static final String V1_VERIFY_CALL  = "/v1/verify/call"; 
 	private static final String V1_VERIFY_SMART = "/v1/verify/smart";
 	
-	private static final String V1_VERIFY_PUSH         = "/v2/verify/push";
+	private static final String V2_VERIFY_PUSH         = "/v2/verify/push";
 	private static final String V2_VERIFY_TOKEN        = "/v2/verify/soft_token";
 	private static final String V2_VERIFY_REGISTRATION = "/v2/verify/registration/";
 	
@@ -679,7 +679,7 @@ public class Verify {
 		String result = null;
 
 		try {			
-			TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V1_VERIFY_PUSH, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+			TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_PUSH, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");			
 			
 			if(null == notification_type || notification_type.isEmpty()){
