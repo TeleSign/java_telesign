@@ -33,12 +33,14 @@ public class PhoneIdTest {
 	@BeforeClass
     public static void setUp() throws IOException {
 		TestUtil.initProperties();
-		TestUtil.startServer();
+		if(TestUtil.runTests)
+			TestUtil.startServer();
 	}
 
 	@AfterClass
 	public static void close(){
-		TestUtil.stopServer();
+		if(TestUtil.runTests)
+			TestUtil.stopServer();
 	}
 	
 	@Test
@@ -192,7 +194,6 @@ public class PhoneIdTest {
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		assertTrue(ret.status.code == 2300);		
-	}
-	
-	
+	}	
+
 }

@@ -31,6 +31,10 @@ public class Verify {
 	private int readTimeout;
 	private String httpsProtocol;
 	private boolean runTests;
+	private String url; // Not used yet
+	private String mobileUrl;
+	
+	private String sessionId, originatingId;
 
 	private static final String API_BASE_URL   = "https://rest.telesign.com";
 	private static final String API_MOBILE_URL = "https://rest-mobile.telesign.com";
@@ -53,7 +57,12 @@ public class Verify {
 		this.connectTimeout = builder.connectTimeout;
 		this.readTimeout = builder.readTimeout;
 		this.httpsProtocol = builder.httpsProtocol;
-		this.runTests = builder.runTests;		
+		this.runTests = builder.runTests;
+		// newly added
+		this.url = builder.url;
+		this.mobileUrl = builder.mobileUrl;
+		this.originatingId = builder.originatingId;
+		this.sessionId = builder.sessionId;
 	}
 	
 	public static class VerifyBuilder{
@@ -63,7 +72,10 @@ public class Verify {
 		private int readTimeout;
 		private String httpsProtocol;
 		private boolean runTests = false;
-
+		private String url = "https://rest.telesign.com";
+		private String mobileUrl = "https://rest-mobile.telesign.com";
+		private String sessionId, originatingId;
+				
 		public VerifyBuilder(String customerId, String secretKey){
 			this.customerId = customerId;
 			this.secretKey = secretKey;
@@ -82,6 +94,22 @@ public class Verify {
 		}
 		public VerifyBuilder runTests(boolean runTests) {
 			this.runTests = runTests;
+			return this;
+		}
+		public VerifyBuilder url(String url){
+			this.url = url;
+			return this;
+		}
+		public VerifyBuilder mobileUrl(String mobileUrl){
+			this.mobileUrl = mobileUrl;
+			return this;
+		}
+		public VerifyBuilder sessionId(String sessionId){
+			this.sessionId = sessionId;
+			return this;
+		}
+		public VerifyBuilder originatingId(String originatingId){
+			this.originatingId = originatingId;
 			return this;
 		}
 		public Verify create(){
@@ -219,9 +247,8 @@ public class Verify {
 
 		String result = null;
 
-		try {
+		try {			
 			
-			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_SMS, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_VERIFY_SMS).
 					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");

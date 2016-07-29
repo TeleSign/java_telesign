@@ -13,6 +13,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -125,7 +128,7 @@ public class TelesignTestServer implements Container {
 			resp.setInteger("Content-Length", jsonObject.toString().length());
 			resp.setValue("Connection", "keep-alive");
 			resp.setDate("Date", System.currentTimeMillis());
-			resp.setValue("Last-Modified", "Fri, 12 Feb 2016 11:20:54 GMT");
+			resp.setValue("Last-Modified", new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").format(Calendar.getInstance().getTime()));
 			resp.setStatus(Status.OK);
 
 			body.println(jsonObject.toString());

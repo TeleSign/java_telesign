@@ -19,7 +19,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -644,17 +643,23 @@ public class TeleSignRequest {
 		SSLContext sslContext;
 		try {			
 			// setting ssl instance to TLSv1.x
+			/*
 			sslContext = SSLContext.getInstance(httpsProtocol);
 			if(runTests){
+				
 				TrustManager[] trustAllCerts = trustCertificates();
 				sslContext.init(null,trustAllCerts,new SecureRandom());
 			}else {				
 				// sslContext initialize
 				sslContext.init(null,null,new SecureRandom());
 			}
-
+			runTests();
 			// typecasting ssl with HttpsUrlConnection and setting sslcontext
-			((HttpsURLConnection)connection).setSSLSocketFactory(sslContext.getSocketFactory());
+			//((HttpsURLConnection)connection).setSSLSocketFactory(sslContext.getSocketFactory());
+			 * 			 
+			 */
+			TLSSocketFactory.URL_HOST = connection.getURL().getHost();
+			((HttpsURLConnection)connection).setSSLSocketFactory(new TLSSocketFactory());			
 	        
 	        
 		} catch (NoSuchAlgorithmException e1) {
@@ -662,6 +667,9 @@ public class TeleSignRequest {
 		}
 		catch (KeyManagementException e) {
 			System.err.println("Key Management Exception received " + e.getMessage());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -686,7 +694,7 @@ public class TeleSignRequest {
 	
 	//static {
 	public void runTests(){
-		if(runTests)
+		//if(runTests)
 	    HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier()
 	        {
 	            public boolean verify(String hostname, SSLSession session)

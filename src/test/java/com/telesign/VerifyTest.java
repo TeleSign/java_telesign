@@ -68,7 +68,7 @@ public class VerifyTest {
 	public void verifyRequestCall() {
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER); System.out.println(ret.toString());
+		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}

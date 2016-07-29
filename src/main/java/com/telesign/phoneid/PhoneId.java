@@ -9,6 +9,8 @@
  */
 package com.telesign.phoneid;
 
+import java.io.IOException;
+
 import com.google.gson.Gson;
 import com.telesign.phoneid.response.PhoneIdCallForwardResponse;
 import com.telesign.phoneid.response.PhoneIdContactResponse;
@@ -19,8 +21,6 @@ import com.telesign.phoneid.response.PhoneIdSimSwapCheckResponse;
 import com.telesign.phoneid.response.PhoneIdStandardResponse;
 import com.telesign.util.TeleSignRequest;
 import com.telesign.util.TeleSignRequest.RequestBuilder;
-
-import java.io.IOException;
 
 /**
  * The PhoneId class abstracts your interactions with the
@@ -35,6 +35,8 @@ public class PhoneId {
 	private int readTimeout;
 	private String httpsProtocol;
 	private boolean runTests;
+	private String url; // Not used yet
+	private String sessionId, originatingId;
 	
 	private static final String API_BASE_URL = "https://rest.telesign.com";	
 	
@@ -57,6 +59,13 @@ public class PhoneId {
 		private int readTimeout;		
 		private String httpsProtocol;
 		private boolean runTests = false;
+		private String url = "https://rest.telesign.com";
+		private String sessionId, originatingId;
+		
+		public PhoneIdBuilder url(String url){
+			this.url = url;
+			return this;
+		}
 		
 		public PhoneIdBuilder connectTimeout(int connectTimeout) {
 			this.connectTimeout = connectTimeout;
@@ -81,6 +90,16 @@ public class PhoneId {
 		public PhoneIdBuilder(String customerId, String secretKey){
 			this.customerId = customerId;
 			this.secretKey = secretKey;
+		}
+		
+		public PhoneIdBuilder sessionId(String sessionId){
+			this.sessionId = sessionId;
+			return this;
+		}
+		
+		public PhoneIdBuilder originatingId(String originatingId){
+			this.originatingId = originatingId;
+			return this;
 		}
 		
 		public PhoneId create(){
@@ -194,6 +213,9 @@ public class PhoneId {
 		this.httpsProtocol = builder.httpsProtocol;
 		this.readTimeout = builder.readTimeout;
 		this.runTests = builder.runTests;
+		this.url = builder.url;
+		this.originatingId = builder.originatingId;
+		this.sessionId = builder.sessionId;
 	}
 
 	/**
