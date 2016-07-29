@@ -29,7 +29,10 @@ public class VerifyTest {
 	@BeforeClass
     public static void setUp() throws IOException {
 		TestUtil.initProperties();
-		TestUtil.startServer();
+		if(TestUtil.runTests)
+			TestUtil.startServer();
+		else
+			TestUtil.testUrl = "https://rest.telesign.com";
 	}
 	
 	@AfterClass
@@ -59,7 +62,8 @@ public class VerifyTest {
 		Verify ver;
 		
 		VerifyBuilder verifyBuilder = Verify.init(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
-		ver = verifyBuilder.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL).runTests(TestUtil.runTests).create();		
+		verifyBuilder.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL);
+		ver = verifyBuilder.url(TestUtil.testUrl).create();
 		
 		return ver;
 	}
@@ -86,7 +90,7 @@ public class VerifyTest {
 	public void verifyRequestCallWithCallForwardAction() {
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER, "en-US", TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID, TestUtil.CALL_FORWARD_ACTION);
+		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER, "en-US", TestUtil.CALL_FORWARD_ACTION);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}
@@ -104,7 +108,7 @@ public class VerifyTest {
 	public void verifyRequestCallWithAllParams() {
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true, TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID, TestUtil.CALL_FORWARD_ACTION);
+		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true, TestUtil.CALL_FORWARD_ACTION);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}
@@ -132,7 +136,7 @@ public class VerifyTest {
 	public void verifyRequestSMSAllParams() {
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.sms(TestUtil.PHONE_NUMBER, "en-US", "12345", "Thanks! Custom code template pass! Code: $$CODE$$", TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
+		VerifyResponse ret = ver.sms(TestUtil.PHONE_NUMBER, "en-US", "12345", "Thanks! Custom code template pass! Code: $$CODE$$");
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		
@@ -175,13 +179,13 @@ public class VerifyTest {
 		
 		String verify_code = "12345";
 		
-		VerifyResponse ret = ver.sms(TestUtil.PHONE_NUMBER, null, verify_code, null, TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
+		VerifyResponse ret = ver.sms(TestUtil.PHONE_NUMBER, null, verify_code, null);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		
 		String reference_id = ret.reference_id;
 		
-		VerifyResponse ret2 = ver.status(reference_id, verify_code, TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
+		VerifyResponse ret2 = ver.status(reference_id, verify_code);
 		assertNotNull(ret2);
 		assertTrue(ret2.errors.length == 0);
 		assertTrue(ret2.verify.code_state.equals("VALID"));
@@ -200,7 +204,7 @@ public class VerifyTest {
 	public void verifyRequestPushWithAllParams(){
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.push(TestUtil.PHONE_NUMBER, TestUtil.PUSH_NOTIFICATION_TYPE, TestUtil.PUSH_NOTIFICATION_VALUE, TestUtil.BUNDLE_ID, "Verify request push", TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
+		VerifyResponse ret = ver.push(TestUtil.PHONE_NUMBER, TestUtil.PUSH_NOTIFICATION_TYPE, TestUtil.PUSH_NOTIFICATION_VALUE, TestUtil.BUNDLE_ID, "Verify request push");
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}
@@ -215,31 +219,13 @@ public class VerifyTest {
 	}
 	
 	@Test
-	public void verifyRequestSoftTokenWithAllParams(){
-		Verify ver = initVerifyParams();
-		
-		VerifyResponse ret = ver.softToken(TestUtil.PHONE_NUMBER, TestUtil.SOFT_TOKEN_ID, "928417", TestUtil.BUNDLE_ID, TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);		
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
-	}
-	
-	@Test
 	public void vertifyRequestRegistration(){
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.registration(TestUtil.PHONE_NUMBER, TestUtil.BUNDLE_ID);System.out.println(ret.toString());
+		VerifyResponse ret = ver.registration(TestUtil.PHONE_NUMBER, TestUtil.BUNDLE_ID);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
-	}
-	
-	@Test
-	public void verifyRequestRegistrationWithAllParams(){
-		Verify ver = initVerifyParams();
-		
-		VerifyResponse ret = ver.registration(TestUtil.PHONE_NUMBER, TestUtil.BUNDLE_ID, TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
-	}
+	}	
 	
 	@Test
 	public void smartVerify(){
@@ -248,14 +234,5 @@ public class VerifyTest {
 		VerifyResponse ret = ver.smartVerify(TestUtil.PHONE_NUMBER,"BACS", TestUtil.CALLER_ID, "en-US", null, TestUtil.SMART_VERIFY_PREFERENCE, TestUtil.SMART_VERIFY_IGNORE_RISK);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
-	}
-	
-	@Test
-	public void smartVerifyWithAllParams(){
-		Verify ver = initVerifyParams();
-		
-		VerifyResponse ret = ver.smartVerify(TestUtil.PHONE_NUMBER,"BACS", TestUtil.CALLER_ID, "en-US", null, TestUtil.SMART_VERIFY_PREFERENCE, TestUtil.SMART_VERIFY_IGNORE_RISK , TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
-	}
+	}	
 }

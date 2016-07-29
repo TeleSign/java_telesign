@@ -33,6 +33,7 @@ public final class TestUtil {
 	public static String CALL_FORWARD_ACTION;
 	public static String BUNDLE_ID;
 	public static boolean runTests;
+	public static String testUrl = "https://localhost:1443";
 		
 	public static void initProperties() throws IOException {
 		Properties props = new Properties();

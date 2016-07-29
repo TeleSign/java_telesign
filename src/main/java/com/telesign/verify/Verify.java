@@ -30,11 +30,11 @@ public class Verify {
 	private int connectTimeout;
 	private int readTimeout;
 	private String httpsProtocol;
-	private boolean runTests;
+	//private boolean runTests;
 	private String url; // Not used yet
 	private String mobileUrl;
 	
-	private String sessionId, originatingId;
+	private String sessionId, originatingIp;
 
 	private static final String API_BASE_URL   = "https://rest.telesign.com";
 	private static final String API_MOBILE_URL = "https://rest-mobile.telesign.com";
@@ -57,11 +57,10 @@ public class Verify {
 		this.connectTimeout = builder.connectTimeout;
 		this.readTimeout = builder.readTimeout;
 		this.httpsProtocol = builder.httpsProtocol;
-		this.runTests = builder.runTests;
-		// newly added
+		//this.runTests = builder.runTests;
 		this.url = builder.url;
 		this.mobileUrl = builder.mobileUrl;
-		this.originatingId = builder.originatingId;
+		this.originatingIp = builder.originatingIp;
 		this.sessionId = builder.sessionId;
 	}
 	
@@ -71,10 +70,10 @@ public class Verify {
 		private int connectTimeout;
 		private int readTimeout;
 		private String httpsProtocol;
-		private boolean runTests = false;
+		//private boolean runTests = false;
 		private String url = "https://rest.telesign.com";
 		private String mobileUrl = "https://rest-mobile.telesign.com";
-		private String sessionId, originatingId;
+		private String sessionId, originatingIp;
 				
 		public VerifyBuilder(String customerId, String secretKey){
 			this.customerId = customerId;
@@ -92,10 +91,10 @@ public class Verify {
 			this.httpsProtocol = httpsProtocol;
 			return this;
 		}
-		public VerifyBuilder runTests(boolean runTests) {
+		/*public VerifyBuilder runTests(boolean runTests) {
 			this.runTests = runTests;
 			return this;
-		}
+		}*/
 		public VerifyBuilder url(String url){
 			this.url = url;
 			return this;
@@ -108,8 +107,8 @@ public class Verify {
 			this.sessionId = sessionId;
 			return this;
 		}
-		public VerifyBuilder originatingId(String originatingId){
-			this.originatingId = originatingId;
+		public VerifyBuilder originatingIp(String originatingIp){
+			this.originatingIp = originatingIp;
 			return this;
 		}
 		public Verify create(){
@@ -209,20 +208,6 @@ public class Verify {
 
 		return sms(phone_number, language, null, null);
 	}
-	
-	/**
-	 * Delivers a verification code to the end user by sending it in a text message.
-	 * Use this overload when the user's native written language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
-	 * @param phone_number	[Required]	A string containing the user�s phone number.
-	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default). This value is used in applying predefined text message templates.
-	 * @param verify_code	[Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
-	 * @param template		[Optional]	A string containing a text message to override the predefined text message template. Your text message must incorporate a $$CODE$$ placeholder to integrate the verify_code field. Set this value to null (the default) to use the predefined template.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse sms(String phone_number, String language, String verify_code, String template) {
-		
-		return sms(phone_number, language, verify_code, template, null, null);
-	}
 
 	/**
 	 * Delivers a verification code to the end user by sending it in a text message.
@@ -237,20 +222,16 @@ public class Verify {
 	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default). This value is used in applying predefined text message templates.
 	 * @param verify_code	[Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
 	 * @param template		[Optional]	A string containing a text message to override the predefined text message template. Your text message must incorporate a $$CODE$$ placeholder to integrate the verify_code field. Set this value to null (the default) to use the predefined template.
-	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
-	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse sms(String phone_number, String language, String verify_code, String template, String originating_ip, String session_id) {
+	public VerifyResponse sms(String phone_number, String language, String verify_code, String template) {
 
 		String result = null;
 
 		try {			
 			
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_VERIFY_SMS).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_VERIFY_SMS).
+					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -268,14 +249,14 @@ public class Verify {
 				body += "&template=" + URLEncoder.encode(template, "UTF-8");
 			}
 			
-			if(originating_ip != null && !originating_ip.isEmpty() && IpValidator.isValidIpAddress(originating_ip)) {
+			if(originatingIp != null && !originatingIp.isEmpty() && IpValidator.isValidIpAddress(originatingIp)) {
 
-				body += "&originating_ip=" + URLEncoder.encode(originating_ip, "UTF-8");
+				body += "&originating_ip=" + URLEncoder.encode(originatingIp, "UTF-8");
 			}
 			
-			if(session_id != null && !session_id.isEmpty()) {
+			if(sessionId != null && !sessionId.isEmpty()) {
 
-				body += "&session_id=" + URLEncoder.encode(session_id, "UTF-8");
+				body += "&session_id=" + URLEncoder.encode(sessionId, "UTF-8");
 			}
 			
 			
@@ -302,9 +283,9 @@ public class Verify {
 	 */
 	public VerifyResponse call(String phone_number) {
 
-		return call(phone_number, null, null, null, 0, null, true, null, null, null);
-	}
-	
+		return call(phone_number, null);
+	}	
+		
 	/**
 	 * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
 	 * Use this overload when the user's native spoken language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
@@ -314,23 +295,7 @@ public class Verify {
 	 */
 	public VerifyResponse call(String phone_number, String language) {
 
-		return call(phone_number, language, null, null, 0, null, true, null, null, null);
-	}
-		
-	/**
-	 * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
-	 * Use this overload when the user's native spoken language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
-	 * @param phone_number	[Required] A string containing the user�s phone number.
-	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
-	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
-	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse call(String phone_number, String language, String originating_ip, String session_id) {
-
-		return call(phone_number, language, null, null, 0, null, true, originating_ip, session_id, null);
+		return call(phone_number, language, null);
 	}
 	
 	/**
@@ -338,40 +303,14 @@ public class Verify {
 	 * Use this overload when the user's native spoken language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
 	 * @param phone_number	[Required] A string containing the user�s phone number.
 	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
-	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
-	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @param call_forward_action 	[Optional]	A string containing call forward action
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse call(String phone_number, String language, String originating_ip, String session_id, String call_forward_action) {
+	public VerifyResponse call(String phone_number, String language, String call_forward_action) {
 
-		return call(phone_number, language, null, null, 0, null, true, originating_ip, session_id, call_forward_action);
+		return call(phone_number, language, null, null, 0, null, true);
 	}
-	
-	/**
-	 * Delivers a verification code to the end user - with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
-	 * Use this overload when:
-	 * <ul>
-	 * 	<li>the end user's spoken language is not the default language (English), or</li>
-	 * 	<li>when you want to send them a verification code that you create, or </li>
-	 * 	<li>when you need to specify a method for handling automated interactions with a PBX.</li>
-	 * </ul>
-	 * 
-	 * @param phone_number			[Required]	A string containing the user's phone number.
-	 * @param language				[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
-	 * @param verify_code			[Optional]	A string containing the verification code that you want to send to the end user. When you set this value to "null", TeleSign automatically generates the verification code (the default behavior).
-	 * @param verify_method			[Optional]	A string containing the input method you want the end user to use when returning the verification code. Use a value of "keypress" when you want the user to use their phone to dial the code. Set this value to null when you want the user to enter the code into your web aplication (the default). 
-	 * @param extension_type		[Optional]	An Integer value representing the type of response to use when dialing into a Private Branch Exchange (PBX). Use a value of 1 to have TeleSign use Dual-Tone Multi-Frequency (DTMF) tones to dail the user's extension. Use a value of 2 to have TeleSign use voice automation to request the user's extension. Use a value of 0 (the default) when the user isn't behind a PBX. 
-	 * @param extension_template	[Optional]	A numerical string specifying the user's PBX extension number. Since this value is used in the call string, you can include one second pauses by adding commas before the extension number.  Set this value to null (the default) if not used. 
-	 * @param redial				[Optional]	A boolean value that enables/disables redialing. Set this value to "true" (the default) when you want TeleSign to re-attempt the call after a failed attempt. Set this value to "false" when you don't.	
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse call(String phone_number, String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial) {
-		
-		return call(phone_number , language, verify_code, verify_method, extension_type, extension_template, redial, null, null);
-	}
+
 	/**
 	 * Delivers a verification code to the end user - with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
 	 * Use this overload when:
@@ -388,14 +327,10 @@ public class Verify {
 	 * @param extension_type		[Optional]	An Integer value representing the type of response to use when dialing into a Private Branch Exchange (PBX). Use a value of 1 to have TeleSign use Dual-Tone Multi-Frequency (DTMF) tones to dail the user's extension. Use a value of 2 to have TeleSign use voice automation to request the user's extension. Use a value of 0 (the default) when the user isn't behind a PBX. 
 	 * @param extension_template	[Optional]	A numerical string specifying the user's PBX extension number. Since this value is used in the call string, you can include one second pauses by adding commas before the extension number.  Set this value to null (the default) if not used. 
 	 * @param redial				[Optional]	A boolean value that enables/disables redialing. Set this value to "true" (the default) when you want TeleSign to re-attempt the call after a failed attempt. Set this value to "false" when you don't.
-	 * @param originating_ip 		[Optional]  Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   		    Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
-	 * 								 		    Set it to null if not sending originating ip.
-	 * @param session_id			[Optional]  Your end users session id. Set it to "null" if not sending session id.	 
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse call(String phone_number , String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial, String originating_ip, String session_id) {
-		return call(phone_number , language, verify_code, verify_method, extension_type, extension_template, redial, originating_ip, session_id, null);
+	public VerifyResponse call(String phone_number , String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial) {
+		return call(phone_number , language, verify_code, verify_method, extension_type, extension_template, redial, null);
 	}
 	
 	/**
@@ -414,23 +349,17 @@ public class Verify {
 	 * @param extension_type		[Optional]	An Integer value representing the type of response to use when dialing into a Private Branch Exchange (PBX). Use a value of 1 to have TeleSign use Dual-Tone Multi-Frequency (DTMF) tones to dail the user's extension. Use a value of 2 to have TeleSign use voice automation to request the user's extension. Use a value of 0 (the default) when the user isn't behind a PBX. 
 	 * @param extension_template	[Optional]	A numerical string specifying the user's PBX extension number. Since this value is used in the call string, you can include one second pauses by adding commas before the extension number.  Set this value to null (the default) if not used. 
 	 * @param redial				[Optional]	A boolean value that enables/disables redialing. Set this value to "true" (the default) when you want TeleSign to re-attempt the call after a failed attempt. Set this value to "false" when you don't.
-	 * @param originating_ip 		[Optional]  Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   		    Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
-	 * 								 		    Set it to null if not sending originating ip.
-	 * @param session_id			[Optional]  Your end users session id. Set it to "null" if not sending session id.
 	 * @param call_forward_action 	[Optional]	A string containing call forward action
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse call(String phone_number , String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial, 
-			String originating_ip, String session_id, String call_forward_action) {
+			String call_forward_action) {
 
 		String result = null;
 
 		try {
-
-			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_CALL, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_VERIFY_CALL).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_VERIFY_CALL).
+					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 			
 			if(language != null) {
@@ -456,13 +385,13 @@ public class Verify {
 
 				body += "&extension_template=" + URLEncoder.encode(extension_template, "UTF-8");
 			}
-			if(originating_ip != null && !originating_ip.isEmpty() && IpValidator.isValidIpAddress(originating_ip)) {
+			if(originatingIp != null && !originatingIp.isEmpty() && IpValidator.isValidIpAddress(originatingIp)) {
 
-				body += "&originating_ip=" + URLEncoder.encode(originating_ip, "UTF-8");
+				body += "&originating_ip=" + URLEncoder.encode(originatingIp, "UTF-8");
 			}
-			if(session_id != null && !session_id.isEmpty()) {
+			if(sessionId != null && !sessionId.isEmpty()) {
 
-				body += "&session_id=" + URLEncoder.encode(session_id, "UTF-8");
+				body += "&session_id=" + URLEncoder.encode(sessionId, "UTF-8");
 			}
 			if(!redial) {
 
@@ -506,52 +435,34 @@ public class Verify {
 
 		return status(resource_id, null);
 	}
-	
-	/**
-	 * Requests the verification result from TeleSign.
-	 * After sending an end user a verification code, wait a minute or two to allow them to receive it and then respond, and then call this method to find out if the end user passed the code challenge.
-	 * This method takes only one parameter�the ID of this particular web service transaction.
-	 * @param resource_id	[Required]	The string returned in the Response Message that TeleSign sends upon receipt of your HTTP 1.1 Request Message - for either {@link com.telesign.verify#sms()} or {@link com.telesign.verify#call()}.
-	 * @param verify_code	[Required]	The verification code received from the user.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse status(String resource_id, String verify_code) {
-		return status(resource_id, verify_code, null, null);
-	}
 
 	/**
 	 * Requests the verification result from TeleSign.
 	 * After sending an end user a verification code, wait a minute or two to allow them to receive it and then respond, and then call this method to find out if the end user passed the code challenge.
 	 * This method takes only one parameter�the ID of this particular web service transaction.
 	 * @param resource_id	[Required]	The string returned in the Response Message that TeleSign sends upon receipt of your HTTP 1.1 Request Message - for either {@link com.telesign.verify#sms()} or {@link com.telesign.verify#call()}.
-	 * @param verify_code	[Required]	The verification code received from the user.
-	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
-	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
+	 * @param verify_code	[Required]	The verification code received from the user.	
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse status(String resource_id, String verify_code, String originating_ip, String session_id) {
+	public VerifyResponse status(String resource_id, String verify_code) {
 
 		String result = null;
 		
 		try {
-
-			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY + resource_id, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_VERIFY + resource_id).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_VERIFY + resource_id).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 
 			if (verify_code != null)
 				tr.addParam("verify_code", verify_code);
 			
-			if(originating_ip != null && !originating_ip.isEmpty() && IpValidator.isValidIpAddress(originating_ip)) {
+			if(originatingIp != null && !originatingIp.isEmpty() && IpValidator.isValidIpAddress(originatingIp)) {
 
-				tr.addParam("originating_ip", originating_ip);
+				tr.addParam("originating_ip", originatingIp);
 			}
 			
-			if(session_id != null && !session_id.isEmpty()) {
+			if(sessionId != null && !sessionId.isEmpty()) {
 
-				tr.addParam("session_id", session_id);
+				tr.addParam("session_id", sessionId);
 			}
 
 			result = tr.executeRequest();
@@ -565,63 +476,33 @@ public class Verify {
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
 		
 		return response;
-	}
-	
-	/**
-	 * Requests the verification result from TeleSign.
-	 * After sending an end user a verification code, wait a minute or two to allow them to receive it and then respond, and then call this method to find out if the end user passed the code challenge.
-	 * This method takes only one parameter�the ID of this particular web service transaction.
-	 * @param resource_id	[Required]	The string returned in the Response Message that TeleSign sends upon receipt of your HTTP 1.1 Request Message - for either {@link com.telesign.verify#sms()} or {@link com.telesign.verify#call()}.
-	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
-	 * 								   Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse status(String resource_id, String originating_ip, String session_id) {
-
-		return status(resource_id, null, originating_ip, session_id);
-	}
-
-	/**
-	 * @param phone_number [Required] Your end user's phone number, including the country code.
-	 * @param bundle_id    [Required]
-	 * @return  A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse registration(String phone_number, String bundle_id){
-		return registration(phone_number, bundle_id, null, null);
-	}
+	}	
 
 	/**
 	 * @param phone_number 		   [Required] Your end user's phone number, including the country code.
 	 * @param bundle_id 		   [optional] The identifier associated with your whitelabel app (your customized/branded version of the AuthID application).
-	 * @param originating_ip       [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								          Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
-	 * 								          Set it to null if not sending originating ip.
-	 * @param session_id	       [Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return  A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse registration(String phone_number, String bundle_id, String originating_ip, String session_id){
+	public VerifyResponse registration(String phone_number, String bundle_id){
 		String result = null;
 
 		try {
-			//TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_REGISTRATION + phone_number, "GET", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_MOBILE_URL).subResource(V2_VERIFY_REGISTRATION + phone_number).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(mobileUrl).subResource(V2_VERIFY_REGISTRATION + phone_number).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			if(null != bundle_id && !bundle_id.isEmpty()) {
 
 				tr.addParam("bundle_id", bundle_id);
 			}
 
-			if(originating_ip != null && !originating_ip.isEmpty() && IpValidator.isValidIpAddress(originating_ip)) {
+			if(originatingIp != null && !originatingIp.isEmpty() && IpValidator.isValidIpAddress(originatingIp)) {
 
-				tr.addParam("originating_ip", originating_ip);
+				tr.addParam("originating_ip", originatingIp);
 			}
 			
-			if(session_id != null && !session_id.isEmpty()) {
+			if(sessionId != null && !sessionId.isEmpty()) {
 
-				tr.addParam("session_id", session_id);
+				tr.addParam("session_id", sessionId);
 			}
 			
 			result = tr.executeRequest();
@@ -636,15 +517,6 @@ public class Verify {
 		
 		return response;
 	}
-	
-	/**
-	 * @param phone_number [Required] Your end user's phone number, including the country code.
-	 * @param ucid		   [Required] A string the specifies one of the <a href="http://docs.telesign.com/rest/content/xt/xt-use-case-codes.html#xref-use-case-codes">Use Case Codes</a>.
-	 * @return	A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse smartVerify(String phone_number, String ucid, String caller_id, String language, String verify_code, String preference, String ignore_risk){
-		return smartVerify(phone_number, ucid, caller_id, language, verify_code, preference, ignore_risk, null, null);
-	}
 		
 	/**
 	 * @param phone_number [Required] Your end user's phone number, including the country code.
@@ -657,20 +529,15 @@ public class Verify {
 	 *     							  </br>Leading zeros are recognized, and therefore should be used accordingly.
 	 * @param preference   [Optional] Allows customers to override the Smart Verify method selection. Customers can specify either "call", "sms" or "push" to be the recommended method to attempt. 
 	 * 								  </br>Since not all methods are supported on all devices, TeleSign may ignore the selected override method, in order to provide the method that is most appropriate, in which case Telesign selects the method in the order of "push", "sms", and "call".
-	 * @param ignore_risk  [Optional] If set to "true", allows customers to bypass blocking the request if the score is above the threshold value configured in the customer account.
-	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. 
-	 * 									</br>Ex: originating_ip=192.168.123.456. </br>Set it to null if not sending originating ip.
-	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
+	 * @param ignore_risk  [Optional] If set to "true", allows customers to bypass blocking the request if the score is above the threshold value configured in the customer account.	 
 	 * @return	A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse smartVerify(String phone_number, String ucid, String caller_id, String language, String verify_code, String preference, String ignore_risk, String originating_ip, String session_id){
+	public VerifyResponse smartVerify(String phone_number, String ucid, String caller_id, String language, String verify_code, String preference, String ignore_risk){
 		String result = null;
 
 		try {
-
-			//TeleSignRequest tr = new TeleSignRequest(API_BASE_URL, V1_VERIFY_SMART, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_VERIFY_SMART).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_VERIFY_SMART).
+					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 
 			if(null != ucid) {
@@ -703,13 +570,13 @@ public class Verify {
 				body += "&ignore_risk=" + URLEncoder.encode(ignore_risk, "UTF-8");
 			}
 						
-			if(null != originating_ip && !originating_ip.isEmpty() && IpValidator.isValidIpAddress(originating_ip)) {
+			if(null != originatingIp && !originatingIp.isEmpty() && IpValidator.isValidIpAddress(originatingIp)) {
 
-				body += "&originating_ip=" + URLEncoder.encode(originating_ip, "UTF-8");
+				body += "&originating_ip=" + URLEncoder.encode(originatingIp, "UTF-8");
 			}
-			if(null != session_id && !session_id.isEmpty()) {
+			if(null != sessionId && !sessionId.isEmpty()) {
 
-				body += "&session_id=" + URLEncoder.encode(session_id, "UTF-8");
+				body += "&session_id=" + URLEncoder.encode(sessionId, "UTF-8");
 			}
 
 			tr.setPostBody(body);			
@@ -736,7 +603,7 @@ public class Verify {
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse push(String phone_number, String bundle_id){
-		return push(phone_number, null, null, bundle_id, null, null, null);
+		return push(phone_number, null, null, bundle_id, null);
 	}
 	
 	/**
@@ -755,24 +622,15 @@ public class Verify {
 	 * 							  			[Examples] template=mobile_2fa, or template=Outlook-2FA
 	 * @param message 			 [Optional] The message to display to the end user, in the body of the notification. 
 	 * 							 			If you don't include this parameter, then TeleSign automatically supplies the default message.
-	 * 							 			[Example] message=Enter the code displayed on our web site.[Default] is <i>null</i>.
-	 * @param originating_ip 	 [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   		Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
-	 * 								   		Set it to null if not sending originating ip.
-	 * @param session_id		 [Optional] Your end users session id. Set it to "null" if not sending session id.
+	 * 							 			[Example] message=Enter the code displayed on our web site.[Default] is <i>null</i>.	 
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse push(String phone_number, String notification_type, String notification_value, String bundle_id, String message, 
-			String originating_ip, String session_id){
+	public VerifyResponse push(String phone_number, String notification_type, String notification_value, String bundle_id, String message){
 		String result = null;
 
-		try {			
-
-			//TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_PUSH, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_MOBILE_URL).subResource(V2_VERIFY_PUSH).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
-
-			//TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_PUSH, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+		try {
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(mobileUrl).subResource(V2_VERIFY_PUSH).
+					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");			
 			
@@ -797,13 +655,13 @@ public class Verify {
 				body += "&message=" + URLEncoder.encode(message, "UTF-8");
 			}
 			
-			if(null != originating_ip && !originating_ip.isEmpty() && IpValidator.isValidIpAddress(originating_ip)) {
+			if(null != originatingIp && !originatingIp.isEmpty() && IpValidator.isValidIpAddress(originatingIp)) {
 
-				body += "&originating_ip=" + URLEncoder.encode(originating_ip, "UTF-8");
+				body += "&originating_ip=" + URLEncoder.encode(originatingIp, "UTF-8");
 			}
-			if(null != session_id && !session_id.isEmpty()) {
+			if(null != sessionId && !sessionId.isEmpty()) {
 
-				body += "&session_id=" + URLEncoder.encode(session_id, "UTF-8");
+				body += "&session_id=" + URLEncoder.encode(sessionId, "UTF-8");
 			}
 			
 			tr.setPostBody(body);
@@ -818,36 +676,26 @@ public class Verify {
 		VerifyResponse response = gson.fromJson(result, VerifyResponse.class);
 		
 		return response;
-	}
-	
-	/**
-	 * @param phone_number [Required] The phone number for the Verify Soft Token request, including country code. For example, phone_number=13105551212.	 
-	 * @param verify_code  [Required] The verification code received from the end user.
-	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
-	public VerifyResponse softToken(String phone_number, String soft_token_id, String verify_code, String bundle_id){
-		return softToken( phone_number, soft_token_id, verify_code, bundle_id, null, null);
-	}
+	}	
 	
 	/**
 	 * @param phone_number   [Required] The phone number for the Verify Soft Token request, including country code. For example, phone_number=13105551212.
 	 * @param soft_token_id  [Optional] The alphanumeric string that uniquely identifies your TeleSign soft token subscription.
 	 * @param verify_code    [Required] The verification code received from the end user.
 	 * @param bundle_id		 [Optional]
-	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
+	 * @param originatingIp [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
 	 * 								    Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
 	 * 								    Set it to null if not sending originating ip.
-	 * @param session_id	 [Optional] Your end users session id. Set it to "null" if not sending session id.
+	 * @param sessionId	 [Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse softToken(String phone_number, String soft_token_id, String verify_code, String bundle_id, String originating_ip, String session_id){
+	public VerifyResponse softToken(String phone_number, String soft_token_id, String verify_code, String bundle_id){
 		String result = null;
 
-		try {			
-			//TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_TOKEN, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_MOBILE_URL).subResource(V2_VERIFY_TOKEN).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
-			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");		
+		try {
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(mobileUrl).subResource(V2_VERIFY_TOKEN).
+					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");
 
 			if(null != soft_token_id) {
 
@@ -864,14 +712,14 @@ public class Verify {
 				body += "&bundle_id=" + URLEncoder.encode(bundle_id, "UTF-8");
 			}
 			
-			if(null != originating_ip && !originating_ip.isEmpty() && IpValidator.isValidIpAddress(originating_ip)) {
+			if(null != originatingIp && !originatingIp.isEmpty() && IpValidator.isValidIpAddress(originatingIp)) {
 
-				body += "&originating_ip=" + URLEncoder.encode(originating_ip, "UTF-8");
+				body += "&originating_ip=" + URLEncoder.encode(originatingIp, "UTF-8");
 			}
 			
-			if(null != session_id && !session_id.isEmpty()) {
+			if(null != sessionId && !sessionId.isEmpty()) {
 
-				body += "&session_id=" + URLEncoder.encode(session_id, "UTF-8");
+				body += "&session_id=" + URLEncoder.encode(sessionId, "UTF-8");
 			}
 			
 			tr.setPostBody(body);
@@ -886,6 +734,7 @@ public class Verify {
 		
 		return response;
 		}
+	
 	/**
 	 * Matches the notification_value for a string having 6-8 digits 
 	 * @param notification_value

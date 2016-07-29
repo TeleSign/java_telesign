@@ -19,6 +19,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -92,6 +93,8 @@ public class TeleSignRequest {
     
     private String httpsProtocol = "TLSv1.2";
     
+    private String ciphers = "";
+    
     /** User-Agent to track TeleSignJavaSDK and version being used **/
     private final String USER_AGENT = "TeleSignJavaSDK/1.0"; 
     
@@ -100,7 +103,7 @@ public class TeleSignRequest {
     private final String TEST_URL = "https://localhost:1443";
     
     /** Enable test based settings, if set to true requests will be sent to embedded server. **/
-    public static boolean runTests;
+    //public static boolean runTests;
     
     private final String httpMethod;
     
@@ -287,16 +290,14 @@ public class TeleSignRequest {
 		this.customerId = builder.customerId;
 		this.secretKey = builder.secretKey;
 		this.httpsProtocol = builder.httpsProtocol;
+		this.ciphers = builder.ciphers;
 		this.connectTimeout = builder.connectTimeout;
-		this.readTimeout = builder.readTimeout;
-		runTests = builder.runTests;
-		if (runTests) {
-			this.baseUrl = TEST_URL;
-			runTests();
-		} else
-			this.baseUrl = builder.baseUrl;
+		this.readTimeout = builder.readTimeout;		
+		this.baseUrl = builder.baseUrl;
 		this.subResource = builder.subResource;
 		this.httpMethod = builder.httpMethod;
+		if(baseUrl.contains("localhost"))
+			runTests();
 	}
 
 	/**
@@ -643,23 +644,10 @@ public class TeleSignRequest {
 	private void setTLSProtocol() {
 		SSLContext sslContext;
 		try {			
-			// setting ssl instance to TLSv1.x
-			/*
-			sslContext = SSLContext.getInstance(httpsProtocol);
-			if(runTests){
-				
-				TrustManager[] trustAllCerts = trustCertificates();
-				sslContext.init(null,trustAllCerts,new SecureRandom());
-			}else {				
-				// sslContext initialize
-				sslContext.init(null,null,new SecureRandom());
-			}
-			runTests();
-			// typecasting ssl with HttpsUrlConnection and setting sslcontext
-			//((HttpsURLConnection)connection).setSSLSocketFactory(sslContext.getSocketFactory());
-			 * 			 
-			 */
 			TLSSocketFactory.URL_HOST = connection.getURL().getHost();
+			TLSSocketFactory.ciphers = ciphers;
+			TLSSocketFactory.protocols = httpsProtocol;
+			
 			((HttpsURLConnection)connection).setSSLSocketFactory(new TLSSocketFactory());			
 	        
 	        
@@ -669,31 +657,10 @@ public class TeleSignRequest {
 		catch (KeyManagementException e) {
 			System.err.println("Key Management Exception received " + e.getMessage());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	public static TrustManager[] trustCertificates() {
-		TrustManager[] trustAllCerts = new TrustManager[]{
-                new X509TrustManager() {
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return null;
-                    }
- 
-                    public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
-                        return;
-                    }
- 
-                    public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
-                        return;
-                    }
-                }
-        };
-		return trustAllCerts;
-	}
-	
-	//static {
+	}	
+
 	public void runTests(){
 		//if(runTests)
 	    HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier()
@@ -708,9 +675,9 @@ public class TeleSignRequest {
 	public static class RequestBuilder{
 		private final String customerId, secretKey;
 		private String baseUrl, subResource, httpMethod;
-		private String httpsProtocol = "TLSv1.2";
+		private String httpsProtocol = "TLSv1.2", ciphers = "";
 		private int connectTimeout = 30000, readTimeout = 30000;
-		private boolean runTests = false;
+		//private boolean runTests = false;
 		
 		public RequestBuilder(String customerId, String secretKey){
 			this.customerId = customerId;
@@ -720,6 +687,11 @@ public class TeleSignRequest {
 		public RequestBuilder httpsProtocol(String httpsProtocol){
 			if(null != httpsProtocol && !httpsProtocol.isEmpty())
 				this.httpsProtocol = httpsProtocol;
+			return this;
+		}
+		
+		public RequestBuilder ciphers(String ciphers){
+			this.ciphers = ciphers;
 			return this;
 		}
 		
@@ -735,10 +707,10 @@ public class TeleSignRequest {
 			return this;
 		}
 		
-		public RequestBuilder runTests(boolean runTests){
+		/*public RequestBuilder runTests(boolean runTests){
 			this.runTests = runTests;
 			return this;
-		}
+		}*/
 		
 		public RequestBuilder baseUrl(String baseUrl){
 			this.baseUrl = baseUrl;

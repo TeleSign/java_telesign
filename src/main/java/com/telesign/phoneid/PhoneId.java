@@ -9,8 +9,6 @@
  */
 package com.telesign.phoneid;
 
-import java.io.IOException;
-
 import com.google.gson.Gson;
 import com.telesign.phoneid.response.PhoneIdCallForwardResponse;
 import com.telesign.phoneid.response.PhoneIdContactResponse;
@@ -21,6 +19,8 @@ import com.telesign.phoneid.response.PhoneIdSimSwapCheckResponse;
 import com.telesign.phoneid.response.PhoneIdStandardResponse;
 import com.telesign.util.TeleSignRequest;
 import com.telesign.util.TeleSignRequest.RequestBuilder;
+
+import java.io.IOException;
 
 /**
  * The PhoneId class abstracts your interactions with the
@@ -34,9 +34,9 @@ public class PhoneId {
 	private int connectTimeout;
 	private int readTimeout;
 	private String httpsProtocol;
-	private boolean runTests;
+	//private boolean runTests;
 	private String url; // Not used yet
-	private String sessionId, originatingId;
+	private String sessionId, originatingIp;
 	
 	private static final String API_BASE_URL = "https://rest.telesign.com";	
 	
@@ -58,9 +58,9 @@ public class PhoneId {
 		private int connectTimeout;
 		private int readTimeout;		
 		private String httpsProtocol;
-		private boolean runTests = false;
+		//private boolean runTests = false; // To be removed
 		private String url = "https://rest.telesign.com";
-		private String sessionId, originatingId;
+		private String sessionId, originatingIp;
 		
 		public PhoneIdBuilder url(String url){
 			this.url = url;
@@ -82,10 +82,10 @@ public class PhoneId {
 			return this;
 		}
 
-		public PhoneIdBuilder runTests(boolean runTests) {
+		/*public PhoneIdBuilder runTests(boolean runTests) {
 			this.runTests = runTests;
 			return this;
-		}
+		}*/
 		
 		public PhoneIdBuilder(String customerId, String secretKey){
 			this.customerId = customerId;
@@ -97,8 +97,8 @@ public class PhoneId {
 			return this;
 		}
 		
-		public PhoneIdBuilder originatingId(String originatingId){
-			this.originatingId = originatingId;
+		public PhoneIdBuilder originatingIp(String originatingIp){
+			this.originatingIp = originatingIp;
 			return this;
 		}
 		
@@ -212,14 +212,14 @@ public class PhoneId {
 		this.connectTimeout = builder.connectTimeout;
 		this.httpsProtocol = builder.httpsProtocol;
 		this.readTimeout = builder.readTimeout;
-		this.runTests = builder.runTests;
+		//this.runTests = builder.runTests;
 		this.url = builder.url;
-		this.originatingId = builder.originatingId;
+		this.originatingIp = builder.originatingIp;
 		this.sessionId = builder.sessionId;
 	}
 
 	/**
-	 * Returns information about a specified phone number�s type, numbering
+	 * Returns information about a specified phone numberï¿½s type, numbering
 	 * structure, cleansing details, and location details.
 	 * 
 	 * @param phoneNo
@@ -231,86 +231,11 @@ public class PhoneId {
 	 */
 	public PhoneIdStandardResponse standard(String phoneNo) {
 
-		return standard(phoneNo, null, null);
-	}
+		return standard(phoneNo, null);
+	}	
+	
 	/**
-	 * Returns information about a specified phone number�s type, numbering
-	 * structure, cleansing details, and location details.
-	 * 
-	 * @param phoneNo
-	 *            [Required] A string representing the phone number you want
-	 *            information about.
-	 * @param originatingIp [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originatingIp=192.168.123.456.
-	 * 								   Set it to null if not sending originating ip.
-	 * @param sessionId	[Optional] Your end users session id. Set it to "null" if not sending session id.
-	 * @return A {@link com.telesign.phoneid.response.PhoneIdStandardResponse}
-	 *         object, which contains the JSON-formatted response body from the
-	 *         TeleSign server.
-	 */
-	public PhoneIdStandardResponse standard(String phoneNo, String originatingIp, String sessionId) {
-		return standard(phoneNo, null, originatingIp, sessionId);
-	}
-	/**
-	 * Returns risk information about a specified phone number, including a
-	 * real-time risk score, threat level, and recommendation for action.
-	 * 
-	 * @param phoneNo
-	 *            [Required] A string representing the phone number you want
-	 *            information about.
-	 * @param ucid
-	 *            [Required] A string specifying one of the Use Case Codes.
-	 * @return A {@link com.telesign.phoneid.response.PhoneIdScoreResponse}
-	 *         object, which contains the JSON-formatted response body from the
-	 *         TeleSign server.
-	 */
-	public PhoneIdScoreResponse score(String phoneNo, String ucid) {
-
-		return score(phoneNo, ucid, null, null);
-	}
-
-	/**
-	 * Returns contact details for a specified phone number�s subscriber. This
-	 * includes the subscriber's First Name, Last Name, Street Address, City,
-	 * State (or Province), Country, and ZIP (Postal) Code.
-	 * 
-	 * @param phoneNo
-	 *            [Required] A string representing the phone number you want
-	 *            information about.
-	 * @param ucid
-	 *            [Required] A string specifying one of the Use Case Codes.
-	 * @return A {@link com.telesign.phoneid.response.PhoneIdContactResponse}
-	 *         object, which contains the JSON-formatted response body from the
-	 *         TeleSign server.
-	 */
-	public PhoneIdContactResponse contact(String phoneNo, String ucid) {
-
-		return contact(phoneNo, ucid, null, null);
-	}
-
-	/**
-	 * Returns information about a specified phone number
-	 * <em>state of operation</em>. You can use it to find out if:
-	 * <ul>
-	 * <li>the line is in service,</li>
-	 * <li>the number is reachable,</li>
-	 * <li>the mobile phone is roaming, and if so, in which country.</li>
-	 * </ul>
-	 * 
-	 * @param phoneNo
-	 *            [Required] A string representing the phone number you want
-	 *            information about.
-	 * @return A {@link com.telesign.phoneid.response.PhoneIdContactResponse}
-	 *         object, which contains the JSON-formatted response body from the
-	 *         TeleSign server.
-	 */
-	public PhoneIdLiveResponse live(String phoneNo, String ucid) {
-
-		return live(phoneNo, ucid, null, null);
-	}
-		
-	/**
-	 * Returns information about a specified phone number�s type, numbering
+	 * Returns information about a specified phone numberï¿½s type, numbering
 	 * structure, cleansing details, and location details.
 	 * 
 	 * @param phoneNo
@@ -326,14 +251,14 @@ public class PhoneId {
 	 *         object, which contains the JSON-formatted response body from the
 	 *         TeleSign server.
 	 */
-	public PhoneIdStandardResponse standard(String phoneNo, String ucid, String originatingIp, String sessionId) {
+	public PhoneIdStandardResponse standard(String phoneNo, String ucid) {
 
 		String result = null;
 
 		try {
 			
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_PHONEID_STANDARD + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_STANDARD + phoneNo).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			if(null != ucid && !ucid.isEmpty())
 				tr.addParam("ucid", ucid);
 			
@@ -370,22 +295,18 @@ public class PhoneId {
 	 *            information about.
 	 * @param ucid
 	 *            [Required] A string specifying one of the Use Case Codes.
-	 * @param originatingIp [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originatingIp=192.168.123.456.
-	 * 								   Set it to null if not sending originating ip.
-	 * @param sessionId	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.phoneid.response.PhoneIdScoreResponse}
 	 *         object, which contains the JSON-formatted response body from the
 	 *         TeleSign server.
 	 */
-	public PhoneIdScoreResponse score(String phoneNo, String ucid, String originatingIp, String sessionId) {
+	public PhoneIdScoreResponse score(String phoneNo, String ucid) {
 
 		String result = null;
 
 		try {
 			
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_PHONEID_SCORE + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_SCORE + phoneNo).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
 
@@ -414,7 +335,7 @@ public class PhoneId {
 	}
 
 	/**
-	 * Returns contact details for a specified phone number�s subscriber. This
+	 * Returns contact details for a specified phone numberï¿½s subscriber. This
 	 * includes the subscriber's First Name, Last Name, Street Address, City,
 	 * State (or Province), Country, and ZIP (Postal) Code.
 	 * 
@@ -423,22 +344,18 @@ public class PhoneId {
 	 *            information about.
 	 * @param ucid
 	 *            [Required] A string specifying one of the Use Case Codes.
-	 * @param originatingIp [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originatingIp=192.168.123.456.
-	 * 								   Set it to null if not sending originating ip.
-	 * @param sessionId	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.phoneid.response.PhoneIdContactResponse}
 	 *         object, which contains the JSON-formatted response body from the
 	 *         TeleSign server.
 	 */
-	public PhoneIdContactResponse contact(String phoneNo, String ucid, String originatingIp, String sessionId) {
+	public PhoneIdContactResponse contact(String phoneNo, String ucid) {
 
 		String result = null;
 
 		try {
 			
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_PHONEID_CONTACT + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_CONTACT + phoneNo).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
 			
@@ -467,7 +384,7 @@ public class PhoneId {
 	}
 
 	/**
-	 * Returns information about a specified phone number�s
+	 * Returns information about a specified phone number
 	 * <em>state of operation</em>. You can use it to find out if:
 	 * <ul>
 	 * <li>the line is in service,</li>
@@ -478,24 +395,18 @@ public class PhoneId {
 	 * @param phoneNo
 	 *            [Required] A string representing the phone number you want
 	 *            information about.
-	 * @param ucid
-	 *            [Required] A string specifying one of the Use Case Codes.
-	 * @param originatingIp [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
-	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originatingIp=192.168.123.456.
-	 * 								   Set it to null if not sending originating ip.
-	 * @param sessionId	[Optional] Your end users session id. Set it to "null" if not sending session id.
 	 * @return A {@link com.telesign.phoneid.response.PhoneIdContactResponse}
 	 *         object, which contains the JSON-formatted response body from the
 	 *         TeleSign server.
 	 */
-	public PhoneIdLiveResponse live(String phoneNo, String ucid, String originatingIp, String sessionId) {
+	public PhoneIdLiveResponse live(String phoneNo, String ucid) {
 
 		String result = null;
 
 		try {
 			
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_PHONEID_LIVE + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_LIVE + phoneNo).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
 
@@ -532,13 +443,13 @@ public class PhoneId {
 	 * 										The sessionId links multiple calls and other TeleSign services that are associated with the current session.
 	 * @return PhoneIdSimSwapCheckResponse
 	 */
-	public PhoneIdSimSwapCheckResponse simSwap(String phoneNo, String ucid, String originatingIp, String sessionId) {
+	public PhoneIdSimSwapCheckResponse simSwap(String phoneNo, String ucid) {
 		String result = null;
 
 		try {
 			
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_PHONEID_SIM_SWAP_CHECK + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_SIM_SWAP_CHECK + phoneNo).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
 
@@ -578,13 +489,13 @@ public class PhoneId {
 	 * 										The sessionId links multiple calls and other TeleSign services that are associated with the current session.
 	 * @return PhoneIdCallForwardResponse
 	 */
-	public PhoneIdCallForwardResponse callForward(String phoneNo, String ucid, String originatingIp, String sessionId) {
+	public PhoneIdCallForwardResponse callForward(String phoneNo, String ucid) {
 		String result = null;
 
 		try {
 			
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_PHONEID_CALL_FORWARD + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_CALL_FORWARD + phoneNo).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
 
@@ -623,13 +534,13 @@ public class PhoneId {
 	 * 										The sessionId links multiple calls and other TeleSign services that are associated with the current session.
 	 * @return PhoneIdCallForwardResponse
 	 */
-	public PhoneIdNumberDeactivationResponse deactivation(String phoneNo, String ucid, String originatingIp, String sessionId) {
+	public PhoneIdNumberDeactivationResponse deactivation(String phoneNo, String ucid) {
 		String result = null;
 
-		try {		
+		try {
 			
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_BASE_URL).subResource(V1_PHONEID_NUMBER_DEACTIVATION + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_NUMBER_DEACTIVATION + phoneNo).
+					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
 
@@ -656,8 +567,8 @@ public class PhoneId {
 
 		return response;
 	}
-	
+
 	public static PhoneIdBuilder initPhoneId(String customerId, String secretKey){
 		return new PhoneIdBuilder(customerId, secretKey);
-	}
+	}	
 }

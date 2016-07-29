@@ -28,13 +28,15 @@ import com.telesign.testUtil.TestUtil;
  *	Support email address "support@telesign.com"
  *	Author: jweatherford
  */
-public class PhoneIdTest {
+public class PhoneIdTest {	
 	
 	@BeforeClass
     public static void setUp() throws IOException {
 		TestUtil.initProperties();
 		if(TestUtil.runTests)
 			TestUtil.startServer();
+		else
+			TestUtil.testUrl = "https://rest.telesign.com";
 	}
 
 	@AfterClass
@@ -74,7 +76,8 @@ public class PhoneIdTest {
 		}
 		
 		PhoneIdBuilder pidb = PhoneId.initPhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);		
-		pidb.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL).runTests(TestUtil.runTests);
+		pidb.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL).url(TestUtil.testUrl);
+		pidb.originatingIp("localhost").sessionId("testSession");
 		
 		PhoneId pid = pidb.create();
 				
@@ -145,10 +148,10 @@ public class PhoneIdTest {
 		}
 		PhoneId pid = initPhoneIdParams();
 		
-		PhoneIdStandardResponse ret1 = pid.standard(TestUtil.PHONE_NUMBER, TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
-		PhoneIdContactResponse ret2 = pid.contact(TestUtil.PHONE_NUMBER , "BACS", TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
-		PhoneIdScoreResponse ret3 = pid.score(TestUtil.PHONE_NUMBER , "BACS", TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
-		PhoneIdLiveResponse ret4 = pid.live(TestUtil.PHONE_NUMBER , "BACS", TestUtil.ORIGINATING_IP, TestUtil.SESSION_ID);
+		PhoneIdStandardResponse ret1 = pid.standard(TestUtil.PHONE_NUMBER);
+		PhoneIdContactResponse ret2 = pid.contact(TestUtil.PHONE_NUMBER , "BACS");
+		PhoneIdScoreResponse ret3 = pid.score(TestUtil.PHONE_NUMBER , "BACS");
+		PhoneIdLiveResponse ret4 = pid.live(TestUtil.PHONE_NUMBER , "BACS");
 		
 		//all the successful responses should contain a json formatted reference_id at the start
 		String json1 = ret1.toString();
@@ -170,7 +173,7 @@ public class PhoneIdTest {
 	public void phoneIdSimSwap() {
 		PhoneId pid = initPhoneIdParams();
 		
-		PhoneIdSimSwapCheckResponse ret = pid.simSwap(TestUtil.PHONE_NUMBER, "BACS", "10.11.132.9", "session_id");
+		PhoneIdSimSwapCheckResponse ret = pid.simSwap(TestUtil.PHONE_NUMBER, "BACS");
 		assertNotNull(ret);System.out.println(ret.toString());
 		assertTrue(ret.errors.length == 0);
 		assertTrue(ret.status.code == 2204);
@@ -180,7 +183,7 @@ public class PhoneIdTest {
 	public void phoneIdCallForward() {
 		PhoneId pid = initPhoneIdParams();
 		
-		PhoneIdCallForwardResponse ret = pid.callForward(TestUtil.PHONE_NUMBER, "BACS", "10.11.132.9", "session_id");
+		PhoneIdCallForwardResponse ret = pid.callForward(TestUtil.PHONE_NUMBER, "BACS");
 		assertNotNull(ret);System.out.println(ret.toString());
 		assertTrue(ret.errors.length == 0);
 		assertTrue(ret.status.code == 300);		
@@ -190,7 +193,7 @@ public class PhoneIdTest {
 	public void phoneIdNoDeactivation() {
 		PhoneId pid = initPhoneIdParams();
 		
-		PhoneIdNumberDeactivationResponse ret = pid.deactivation(TestUtil.PHONE_NUMBER, "BACS", "10.11.132.9", "session_id");
+		PhoneIdNumberDeactivationResponse ret = pid.deactivation(TestUtil.PHONE_NUMBER, "BACS");
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		assertTrue(ret.status.code == 2300);		

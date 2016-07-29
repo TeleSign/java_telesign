@@ -29,22 +29,25 @@ public class TLSSocketFactory extends SSLSocketFactory {
 
 	public SSLContext sslContext;
 	private SSLSocketFactory sslSocketFactory;
-	private static String ciphers, protocols;
+	public static String ciphers, protocols;
 	public static String SRC_RESOURCE = "src/main/resources/";
 	public static String REQUEST_PROPERTIES = "telesignRequest.properties";
 	public static String URL_HOST;
+	public static final String LOCALHOST = "localhost";
 
 	private static final String PREFFERED_CIPHERS = "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,"
 			+ "TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,"
 			+ "TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256";
 	private static final String PREFERRED_PROTOCOLS = "TLSv1.1,TLSv1.2,TLSv1.3";
 
+	// Using properties seem to be cumbersome for users and not a good practice
 	public void getRequestProperties() {
 		Properties reqProps = new Properties();
 		try {
 			reqProps.load(new FileInputStream(SRC_RESOURCE + REQUEST_PROPERTIES));
 			protocols = reqProps.getProperty("telesignRequest.protocols", PREFERRED_PROTOCOLS).trim();
-			ciphers = reqProps.getProperty("telesignRequest.ciphers", PREFFERED_CIPHERS).trim();
+			if(!URL_HOST.equalsIgnoreCase(LOCALHOST))
+				ciphers = reqProps.getProperty("telesignRequest.ciphers", PREFFERED_CIPHERS).trim();
 		} catch (FileNotFoundException fnfe) {
 
 			fnfe.printStackTrace();
@@ -56,7 +59,7 @@ public class TLSSocketFactory extends SSLSocketFactory {
 	}
 	
 	public TLSSocketFactory() throws NoSuchAlgorithmException, KeyManagementException, IOException{
-		getRequestProperties();
+		// getRequestProperties();		
 		initTLSSocketFactory();		
 	}
 	
@@ -64,11 +67,14 @@ public class TLSSocketFactory extends SSLSocketFactory {
 		return sslContext;
 	}
 	private void initTLSSocketFactory() throws KeyManagementException, NoSuchAlgorithmException, IOException{
+		if(ciphers.isEmpty())
+			ciphers = PREFFERED_CIPHERS;
+		if(protocols.isEmpty())
+			protocols = PREFERRED_PROTOCOLS;
+		
 		sslContext = SSLContext.getInstance("TLS"); // This also sneaks TLSv1 & sslv3, we restrict this by passing allowed protocols
 		
-		if(URL_HOST.equalsIgnoreCase("localhost")){
-			// Accepting hostname as localhost and trusting certificates
-			runTests();
+		if(URL_HOST.equalsIgnoreCase(LOCALHOST)){
 			TrustManager[] trustAllCerts = trustCertificates();
 			sslContext.init(null,trustAllCerts,new SecureRandom());			
 			//printServerCiphersANDProtocols(sslContext);
@@ -78,7 +84,7 @@ public class TLSSocketFactory extends SSLSocketFactory {
 		
 		sslSocketFactory = sslContext.getSocketFactory();
 		
-		if(!URL_HOST.equalsIgnoreCase("localhost"))
+		if(!URL_HOST.equalsIgnoreCase(LOCALHOST))
 			cipherSuite = getCipherList();
 		protocolList = getProtocolList();
 	}
@@ -131,8 +137,7 @@ public class TLSSocketFactory extends SSLSocketFactory {
 	private Socket enableTLSOnSocket(Socket socket) {
         if(socket != null && (socket instanceof SSLSocket)) {
         	((SSLSocket)socket).setEnabledProtocols(protocolList);
-        	// not setting cipher suites when unit tests are running or there are no ciphers to set
-        	if(!URL_HOST.equalsIgnoreCase("localhost"))
+        	if(!URL_HOST.equalsIgnoreCase(LOCALHOST))
         		((SSLSocket)socket).setEnabledCipherSuites(cipherSuite);            
         }
         return socket;
@@ -212,10 +217,8 @@ public class TLSSocketFactory extends SSLSocketFactory {
         };
 		return trustAllCerts;
 	}
-	
-	//static {
+
 	public void runTests(){
-		//if(runTests)
 	    HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier()
 	        {
 	            public boolean verify(String hostname, SSLSession session)
