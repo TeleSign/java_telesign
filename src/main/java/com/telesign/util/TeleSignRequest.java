@@ -416,6 +416,7 @@ public class TeleSignRequest {
 	 */
 	public String executeRequest() throws IOException {
 
+		setSigningMethod(auth);
 		String signingString = getSigningString();
 		String signature;
 		String url_output = "";

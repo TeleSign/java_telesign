@@ -767,9 +767,13 @@ public class Verify {
 		String result = null;
 
 		try {			
+
 			//TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_PUSH, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(API_MOBILE_URL).subResource(V2_VERIFY_PUSH).
 					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).runTests(runTests).create();
+
+			//TeleSignRequest tr = new TeleSignRequest(API_MOBILE_URL, V2_VERIFY_PUSH, "POST", customer_id, secret_key, connectTimeout, readTimeout, httpsProtocol);
+
 			String body = "phone_number=" + URLEncoder.encode(phone_number, "UTF-8");			
 			
 			if(null == notification_type || notification_type.isEmpty()){
