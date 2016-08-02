@@ -38,28 +38,9 @@ public class TLSSocketFactory extends SSLSocketFactory {
 	private static final String PREFFERED_CIPHERS = "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,"
 			+ "TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,"
 			+ "TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256";
-	private static final String PREFERRED_PROTOCOLS = "TLSv1.1,TLSv1.2,TLSv1.3";
-
-	// Using properties seem to be cumbersome for users and not a good practice
-	public void getRequestProperties() {
-		Properties reqProps = new Properties();
-		try {
-			reqProps.load(new FileInputStream(SRC_RESOURCE + REQUEST_PROPERTIES));
-			protocols = reqProps.getProperty("telesignRequest.protocols", PREFERRED_PROTOCOLS).trim();
-			if(!URL_HOST.equalsIgnoreCase(LOCALHOST))
-				ciphers = reqProps.getProperty("telesignRequest.ciphers", PREFFERED_CIPHERS).trim();
-		} catch (FileNotFoundException fnfe) {
-
-			fnfe.printStackTrace();
-
-		} catch (IOException ioe) {
-
-			ioe.printStackTrace();
-		}
-	}
+	private static final String PREFERRED_PROTOCOLS = "TLSv1.1,TLSv1.2,TLSv1.3";	
 	
 	public TLSSocketFactory() throws NoSuchAlgorithmException, KeyManagementException, IOException{
-		// getRequestProperties();		
 		initTLSSocketFactory();		
 	}
 	

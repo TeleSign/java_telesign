@@ -736,4 +736,8 @@ public class TeleSignRequest {
 			return reqParam;
 		}		
 	}
+	
+	public static RequestBuilder init(String customerId, String secretKey){
+		return new RequestBuilder(customerId, secretKey);
+	}
 }

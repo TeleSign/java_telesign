@@ -34,6 +34,7 @@ public final class TestUtil {
 	public static String BUNDLE_ID;
 	public static boolean runTests;
 	public static String testUrl = "https://localhost:1443";
+	public static String CIPHERS;
 		
 	public static void initProperties() throws IOException {
 		Properties props = new Properties();
@@ -63,6 +64,7 @@ public final class TestUtil {
 		CALL_FORWARD_ACTION = props.getProperty("test.call_forward_action");
 		CALLER_ID = props.getProperty("test.caller_id");
 		BUNDLE_ID = props.getProperty("test.bundle_id");
+		CIPHERS = props.getProperty("test.testCiphers");
 		
 		runTests = Boolean.parseBoolean(props.getProperty("test.runTests", "true"));
 		
@@ -109,6 +111,13 @@ public final class TestUtil {
 			pass = true;
 		} else {
 			isHttpsProtocolSet = true;
+			pass = true;
+		}
+		
+		if(null == CIPHERS || CIPHERS.isEmpty()){
+			CIPHERS = "";
+			System.out.println("CIPHERS are not set. Please set the \"test.ciphers\" property in the properties file"
+					+ ", or default list of ciphers would be used");
 			pass = true;
 		}
 		

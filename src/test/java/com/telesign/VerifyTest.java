@@ -37,7 +37,8 @@ public class VerifyTest {
 	
 	@AfterClass
 	public static void stopServer(){
-		TestUtil.stopServer();
+		if(TestUtil.runTests)
+			TestUtil.stopServer();
 	}
 	
 	
