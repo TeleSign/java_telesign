@@ -45,12 +45,12 @@ public class VerifyTest {
 	@Test
 	public void verifyError() {
 		Verify ver;
-		if(!TestUtil.timeouts)
-			ver = new Verify("Junk" , "Fake");
-		else 
-			ver = new Verify("Junk" , "Fake", TestUtil.connectTimeout, TestUtil.readTimeout);
 		
-		VerifyResponse ret = ver.call("13102224444");
+		VerifyBuilder verifyBuilder = Verify.init("Junk" , "Fake");
+		verifyBuilder.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout);
+		ver = verifyBuilder.url(TestUtil.testUrl).create();
+		
+		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors[0].code == -30000);
 	}
