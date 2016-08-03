@@ -10,6 +10,7 @@
 package com.telesign.phoneid;
 
 import com.google.gson.Gson;
+import com.telesign.exception.TelesignAPIException;
 import com.telesign.phoneid.response.PhoneIdCallForwardResponse;
 import com.telesign.phoneid.response.PhoneIdContactResponse;
 import com.telesign.phoneid.response.PhoneIdLiveResponse;
@@ -273,11 +274,8 @@ public class PhoneId {
 			}
 
 			result = tr.executeRequest();
-		} catch (IOException e) {
-
-			System.err.println("IOException while executing phoneid standard API: "
-					+ e.getMessage());
-			throw new RuntimeException(e);
+		} catch (Exception e) {			
+			throw new TelesignAPIException("Exception occured while executing phoneid standard API",e);
 		}
 
 		PhoneIdStandardResponse response = gson.fromJson(result,
@@ -321,11 +319,8 @@ public class PhoneId {
 			}
 
 			result = tr.executeRequest();
-		} catch (IOException e) {
-
-			System.err.println("IOException while executing phoneid score API: "
-					+ e.getMessage());
-			throw new RuntimeException(e);
+		} catch (Exception e) {			
+			throw new TelesignAPIException("Exception while executing phoneid score API",e);
 		}
 
 		PhoneIdScoreResponse response = gson.fromJson(result,
@@ -370,11 +365,8 @@ public class PhoneId {
 			}
 
 			result = tr.executeRequest();
-		} catch (IOException e) {
-
-			System.err.println("IOException while executing phoneid contact API: "
-					+ e.getMessage());
-			throw new RuntimeException(e);
+		} catch (Exception e) {			
+			throw new TelesignAPIException("Exception while executing phoneid contact API", e);
 		}
 
 		PhoneIdContactResponse response = gson.fromJson(result,
@@ -421,11 +413,8 @@ public class PhoneId {
 			}
 
 			result = tr.executeRequest();
-		} catch (IOException e) {
-
-			System.err.println("IOException while executing phoneid live API: "
-					+ e.getMessage());
-			throw new RuntimeException(e);
+		} catch (Exception e) {
+			throw new TelesignAPIException("Exception while executing phoneid live API", e);
 		}
 
 		PhoneIdLiveResponse response = gson.fromJson(result,
@@ -464,11 +453,8 @@ public class PhoneId {
 			}
 
 			result = tr.executeRequest();
-		} catch (IOException e) {
-
-			System.err.println("IOException while executing phoneid sim-swap API: "
-					+ e.getMessage());
-			throw new RuntimeException(e);
+		} catch (Exception e) {
+			throw new TelesignAPIException("Exception while executing phoneid sim-swap API", e);
 		}
 
 		PhoneIdSimSwapCheckResponse response = gson.fromJson(result,
@@ -510,11 +496,8 @@ public class PhoneId {
 			}
 
 			result = tr.executeRequest();
-		} catch (IOException e) {
-
-			System.err.println("IOException while executing phoneid call forward API: "
-					+ e.getMessage());
-			throw new RuntimeException(e);
+		} catch (Exception e) {
+			throw new TelesignAPIException("Exception while executing phoneid call forward API", e);
 		}
 
 		PhoneIdCallForwardResponse response = gson.fromJson(result,
@@ -555,11 +538,8 @@ public class PhoneId {
 			}
 
 			result = tr.executeRequest();
-		} catch (IOException e) {
-
-			System.err.println("IOException while executing phoneid number deactivation API: "
-					+ e.getMessage());
-			throw new RuntimeException(e);
+		} catch (Exception e) {
+			throw new TelesignAPIException("Exception while executing phoneid number deactivation API", e);
 		}
 
 		PhoneIdNumberDeactivationResponse response = gson.fromJson(result,
