@@ -34,6 +34,7 @@ public final class TestUtil {
 	public static String BUNDLE_ID;
 	public static boolean runTests;
 	public static String testUrl = "https://localhost:1443";
+	public static String mobileTestUrl = "https://localhost:1443";
 	public static String CIPHERS;
 		
 	public static void initProperties() throws IOException {

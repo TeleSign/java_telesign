@@ -31,8 +31,10 @@ public class VerifyTest {
 		TestUtil.initProperties();
 		if(TestUtil.runTests)
 			TestUtil.startServer();
-		else
+		else {
 			TestUtil.testUrl = "https://rest.telesign.com";
+			TestUtil.mobileTestUrl = "https://rest-mobile.telesign.com";
+			}
 	}
 	
 	@AfterClass
@@ -64,7 +66,7 @@ public class VerifyTest {
 		
 		VerifyBuilder verifyBuilder = Verify.init(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
 		verifyBuilder.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL);
-		ver = verifyBuilder.url(TestUtil.testUrl).create();
+		ver = verifyBuilder.url(TestUtil.testUrl).mobileUrl(TestUtil.mobileTestUrl).create();
 		
 		return ver;
 	}
@@ -150,12 +152,13 @@ public class VerifyTest {
 		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
-		
-		String reference_id = ret.reference_id;
-		
-		VerifyResponse ret2 = ver.status(reference_id);
-		assertNotNull(ret2);
-		assertTrue(ret2.errors.length == 0);
+		if(!TestUtil.runTests){			
+			String reference_id = ret.reference_id;
+			
+			VerifyResponse ret2 = ver.status(reference_id);
+			assertNotNull(ret2);
+			assertTrue(ret2.errors.length == 0);
+		}
 		
 	}
 	
@@ -166,12 +169,13 @@ public class VerifyTest {
 		VerifyResponse ret = ver.sms(TestUtil.PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
-		
-		String reference_id = ret.reference_id;
-		
-		VerifyResponse ret2 = ver.status(reference_id);
-		assertNotNull(ret2);
-		assertTrue(ret2.errors.length == 0);
+		if(!TestUtil.runTests){	
+			String reference_id = ret.reference_id;
+			
+			VerifyResponse ret2 = ver.status(reference_id);
+			assertNotNull(ret2);
+			assertTrue(ret2.errors.length == 0);
+		}
 	}
 
 	@Test
@@ -183,13 +187,14 @@ public class VerifyTest {
 		VerifyResponse ret = ver.sms(TestUtil.PHONE_NUMBER, null, verify_code, null);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
-		
-		String reference_id = ret.reference_id;
-		
-		VerifyResponse ret2 = ver.status(reference_id, verify_code);
-		assertNotNull(ret2);
-		assertTrue(ret2.errors.length == 0);
-		assertTrue(ret2.verify.code_state.equals("VALID"));
+		if(!TestUtil.runTests){
+			String reference_id = ret.reference_id;
+			
+			VerifyResponse ret2 = ver.status(reference_id, verify_code);
+			assertNotNull(ret2);
+			assertTrue(ret2.errors.length == 0);
+			assertTrue(ret2.verify.code_state.equals("VALID"));
+		}
 	}
 	
 	@Test

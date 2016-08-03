@@ -297,7 +297,7 @@ public class TeleSignRequest {
 		this.subResource = builder.subResource;
 		this.httpMethod = builder.httpMethod;
 		if(baseUrl.contains("localhost"))
-			runTests();
+			verifyHostName();
 	}
 
 	/**
@@ -661,8 +661,7 @@ public class TeleSignRequest {
 		}
 	}	
 
-	public void runTests(){
-		//if(runTests)
+	public void verifyHostName(){
 	    HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier()
 	        {
 	            public boolean verify(String hostname, SSLSession session)
