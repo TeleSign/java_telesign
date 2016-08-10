@@ -35,6 +35,13 @@ public class Verify {
 	private String mobileUrl;
 	
 	private String sessionId, originatingIp;
+	// Verify call specific
+	private String verifyMethod, extensionTemplate;
+	private int extensionType;
+	private String callForwardAction, ttsMessage;
+	private boolean redial;
+	// for smartverify
+	private String callerId, preference, ignoreRisk;
 
 	private static final String API_BASE_URL   = "https://rest.telesign.com";
 	private static final String API_MOBILE_URL = "https://rest-mobile.telesign.com";
@@ -62,6 +69,16 @@ public class Verify {
 		this.mobileUrl = builder.mobileUrl;
 		this.originatingIp = builder.originatingIp;
 		this.sessionId = builder.sessionId;
+		// verify call specific
+		this.verifyMethod = builder.verifyMethod;
+		this.extensionType = builder.extensionType;
+		this.extensionTemplate = builder.extensionTemplate;
+		this.callForwardAction = builder.callForwardAction;
+		this.ttsMessage = builder.ttsMessage;
+		this.redial = builder.redial;
+		this.callerId = builder.callerId;
+		this.preference = builder.preference;
+		this.ignoreRisk = builder.ignoreRisk;
 	}
 	
 	public static class VerifyBuilder{
@@ -74,6 +91,12 @@ public class Verify {
 		private String url = "https://rest.telesign.com";
 		private String mobileUrl = "https://rest-mobile.telesign.com";
 		private String sessionId, originatingIp;
+		private String verifyMethod, extensionTemplate;
+		private int extensionType;
+		private String callForwardAction, ttsMessage;
+		private boolean redial = true;
+		// for smartverify
+		private String callerId, preference, ignoreRisk;
 				
 		public VerifyBuilder(String customerId, String secretKey){
 			this.customerId = customerId;
@@ -109,6 +132,43 @@ public class Verify {
 		}
 		public VerifyBuilder originatingIp(String originatingIp){
 			this.originatingIp = originatingIp;
+			return this;
+		}
+		// verify call specific
+		public VerifyBuilder verifyMethod(String verifyMethod){
+			this.verifyMethod = verifyMethod;
+			return this;
+		} 
+		public VerifyBuilder extensionType(int extensionType){
+			this.extensionType = extensionType;
+			return this;
+		} 
+		public VerifyBuilder extensionTemplate(String extensionTemplate){
+			this.extensionTemplate = extensionTemplate;
+			return this;
+		}
+		public VerifyBuilder callForwardAction(String callForwardAction){
+			this.callForwardAction = callForwardAction;
+			return this;
+		} 
+		public VerifyBuilder ttsMessage(String ttsMessage){
+			this.ttsMessage = ttsMessage;
+			return this;
+		}
+		public VerifyBuilder redial(boolean redial){
+			return this;
+		}
+		// for smart-verify
+		public VerifyBuilder callerId(String callerId){
+			this.callerId = callerId;
+			return this;
+		} 
+		public VerifyBuilder preference(String preference){
+			this.preference = preference;
+			return this;
+		} 
+		public VerifyBuilder ignoreRisk(String ignoreRisk){
+			this.ignoreRisk = ignoreRisk;
 			return this;
 		}
 		public Verify create(){
@@ -305,13 +365,13 @@ public class Verify {
 	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
 	 * @param call_forward_action 	[Optional]	A string containing call forward action
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
+	 *//*
 	public VerifyResponse call(String phone_number, String language, String call_forward_action) {
 
 		return call(phone_number, language, null, null, 0, null, true);
 	}
 
-	/**
+	*//**
 	 * Delivers a verification code to the end user - with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
 	 * Use this overload when:
 	 * <ul>
@@ -328,10 +388,10 @@ public class Verify {
 	 * @param extension_template	[Optional]	A numerical string specifying the user's PBX extension number. Since this value is used in the call string, you can include one second pauses by adding commas before the extension number.  Set this value to null (the default) if not used. 
 	 * @param redial				[Optional]	A boolean value that enables/disables redialing. Set this value to "true" (the default) when you want TeleSign to re-attempt the call after a failed attempt. Set this value to "false" when you don't.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
-	 */
+	 *//*
 	public VerifyResponse call(String phone_number , String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial) {
-		return call(phone_number , language, verify_code, verify_method, extension_type, extension_template, redial, null);
-	}
+		return call(phone_number , language, verify_code, verify_method, extension_type, extension_template, redial, null, null);
+	}*/
 	
 	/**
 	 * Delivers a verification code to the end user - with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
@@ -352,8 +412,7 @@ public class Verify {
 	 * @param call_forward_action 	[Optional]	A string containing call forward action
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse call(String phone_number , String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial, 
-			String call_forward_action) {
+	public VerifyResponse call(String phone_number , String language, String verify_code) {
 
 		String result = null;
 
@@ -372,18 +431,18 @@ public class Verify {
 				body += "&verify_code=" + URLEncoder.encode(verify_code, "UTF-8");
 			}
 			
-			if(verify_method != null && verify_method.equalsIgnoreCase("keypress")) {
+			if(verifyMethod != null && verifyMethod.equalsIgnoreCase("keypress")) {
 
-				body += "&verify_method=" + URLEncoder.encode(verify_method, "UTF-8");
+				body += "&verify_method=" + URLEncoder.encode(verifyMethod, "UTF-8");
 			}
 
-			if(extension_type > 0 && extension_type < 3) {
+			if(extensionType > 0 && extensionType < 3) {
 
-				body += "&extension_type=" + URLEncoder.encode(Integer.toString(extension_type), "UTF-8");
+				body += "&extension_type=" + URLEncoder.encode(Integer.toString(extensionType), "UTF-8");
 			}
-			if(extension_template != null) {
+			if(extensionTemplate != null) {
 
-				body += "&extension_template=" + URLEncoder.encode(extension_template, "UTF-8");
+				body += "&extension_template=" + URLEncoder.encode(extensionTemplate, "UTF-8");
 			}
 			if(originatingIp != null && !originatingIp.isEmpty() && IpValidator.isValidIpAddress(originatingIp)) {
 
@@ -398,17 +457,19 @@ public class Verify {
 				body += "&redial=" + URLEncoder.encode(Boolean.toString(redial), "UTF-8");
 			}
 			
-			if (null != call_forward_action) {				
-				if ("block".equalsIgnoreCase(call_forward_action)) {
+			if (null != callForwardAction) {				
+				if ("block".equalsIgnoreCase(callForwardAction)) {
 
 					body += "&call_forward_action=" + URLEncoder.encode("Block", "UTF-8");
 
-				} else if ("flag".equalsIgnoreCase(call_forward_action)) {
+				} else if ("flag".equalsIgnoreCase(callForwardAction)) {
 
 					body += "&call_forward_action=" + URLEncoder.encode("Flag", "UTF-8");
 
 				}
 			}
+			if(ttsMessage != null & !ttsMessage.isEmpty())
+				body += "&tts_message=" + URLEncoder.encode(ttsMessage, "UTF-8");
 			
 			tr.setPostBody(body);
 			result = tr.executeRequest();
@@ -532,7 +593,7 @@ public class Verify {
 	 * @param ignore_risk  [Optional] If set to "true", allows customers to bypass blocking the request if the score is above the threshold value configured in the customer account.	 
 	 * @return	A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse smartVerify(String phone_number, String ucid, String caller_id, String language, String verify_code, String preference, String ignore_risk){
+	public VerifyResponse smartVerify(String phone_number, String ucid, String language, String verify_code){
 		String result = null;
 
 		try {
@@ -545,9 +606,9 @@ public class Verify {
 				body += "&ucid=" + URLEncoder.encode(ucid, "UTF-8");
 			}
 			
-			if(null != caller_id) {
+			if(null != callerId) {
 
-				body += "&caller_id=" + URLEncoder.encode(caller_id, "UTF-8");
+				body += "&caller_id=" + URLEncoder.encode(callerId, "UTF-8");
 			}
 			
 			if(null != language) {
@@ -565,9 +626,9 @@ public class Verify {
 				body += "&preference=" + URLEncoder.encode(preference, "UTF-8");
 			}
 			
-			if(null != ignore_risk) {
+			if(null != ignoreRisk) {
 
-				body += "&ignore_risk=" + URLEncoder.encode(ignore_risk, "UTF-8");
+				body += "&ignore_risk=" + URLEncoder.encode(ignoreRisk, "UTF-8");
 			}
 						
 			if(null != originatingIp && !originatingIp.isEmpty() && IpValidator.isValidIpAddress(originatingIp)) {

@@ -66,6 +66,10 @@ public class VerifyTest {
 		
 		VerifyBuilder verifyBuilder = Verify.init(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
 		verifyBuilder.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL);
+		verifyBuilder.callForwardAction(TestUtil.CALL_FORWARD_ACTION).redial(true).verifyMethod("kepress");
+		verifyBuilder.extensionTemplate("1263").extensionType(1).ttsMessage(TestUtil.TTS_MESSAGE);
+		verifyBuilder.callerId(TestUtil.CALLER_ID).ignoreRisk(TestUtil.SMART_VERIFY_IGNORE_RISK).preference(TestUtil.SMART_VERIFY_PREFERENCE);
+				
 		ver = verifyBuilder.url(TestUtil.testUrl).mobileUrl(TestUtil.mobileTestUrl).create();
 		
 		return ver;
@@ -96,25 +100,7 @@ public class VerifyTest {
 		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER, "en-US", TestUtil.CALL_FORWARD_ACTION);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
-	}
-	
-	@Test
-	public void verifyReqCallNoOptionalParams() {
-		Verify ver = initVerifyParams();
-		
-		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER, "en-US", "54321", "keypress", 1, "1234", true); 
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
-	}
-	
-	@Test
-	public void verifyRequestCallWithAllParams() {
-		Verify ver = initVerifyParams();
-		
-		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true, TestUtil.CALL_FORWARD_ACTION);
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
-	}
+	}	
 	
 	@Test
 	public void verifyRequestSMS() {
@@ -237,7 +223,7 @@ public class VerifyTest {
 	public void smartVerify(){
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.smartVerify(TestUtil.PHONE_NUMBER,"BACS", TestUtil.CALLER_ID, "en-US", null, TestUtil.SMART_VERIFY_PREFERENCE, TestUtil.SMART_VERIFY_IGNORE_RISK);
+		VerifyResponse ret = ver.smartVerify(TestUtil.PHONE_NUMBER,"BACS", "en-US", null);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}	

@@ -36,6 +36,7 @@ public final class TestUtil {
 	public static String testUrl = "https://localhost:1443";
 	public static String mobileTestUrl = "https://localhost:1443";
 	public static String CIPHERS;
+	public static String TTS_MESSAGE;
 		
 	public static void initProperties() throws IOException {
 		Properties props = new Properties();
@@ -66,6 +67,7 @@ public final class TestUtil {
 		CALLER_ID = props.getProperty("test.caller_id");
 		BUNDLE_ID = props.getProperty("test.bundle_id");
 		CIPHERS = props.getProperty("test.testCiphers");
+		TTS_MESSAGE = props.getProperty("test.tts_message");
 		
 		runTests = Boolean.parseBoolean(props.getProperty("test.runTests", "true"));
 		
@@ -158,8 +160,8 @@ public final class TestUtil {
 			pass = true;
 		}
 		
-		if(null == CALL_FORWARD_ACTION || CALL_FORWARD_ACTION.isEmpty()) {
-			System.out.println("CALL_FORWARD_ACTION not set. Please set the \"test.call_forward_action\" property in the properties file");
+		if(null == TTS_MESSAGE || TTS_MESSAGE.isEmpty()) {
+			System.out.println("TTS_MESSAGE not set. You may set the \"test.TTS_MESSAGE\" property in the properties file");
 			pass = true;
 		}
 
