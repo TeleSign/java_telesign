@@ -29,7 +29,7 @@ Changes were that simple - needed to correct summarized items listed in title.
 - 2016-01-15 
   - Changes done for throwing underlying IOException for better visibility of underlying subclasses in all APIs.
  
-## [0.5.0] - 2016-01-15 
+## [0.5.0] - 2016-01-15 - http://central.maven.org/maven2/com/telesign/telesign/0.5.0/
   - Merge pull request #32 from Manmohan-TechM/July_2015
 Updated version to 0.5.0 
 - 2016-01-14 
@@ -53,7 +53,7 @@ Removing string literals from method bodies
 - 2015-12-16 
   - Capturing baseUrl and resource suffixes in static variables.
  
-## [0.4.0] - 2015-12-03 
+## [0.4.0] - 2015-12-03 - http://central.maven.org/maven2/com/telesign/telesign/0.4.0/
   - Merge pull request #24 from Manmohan-TechM/July_2015
 Comitting changes for Verify Push, Verify Softtoken, Verify Registration, TLS. 
 - 2015-12-03 
@@ -109,10 +109,10 @@ Shared Gson instance
 - 2015-10-01 
   - Committing changes for Verify registration, smart Verify API's
  
-## [0.3.0] - 2015-08-20 
+## [0.3.0] - 2015-08-20 - http://central.maven.org/maven2/com/telesign/telesign/0.3.0/
   - Adding carrier info to PhoneID Live and Contact responses.
 
-## [0.2.0] - 2015-08-19 
+## [0.2.0] - 2015-08-19 - http://central.maven.org/maven2/com/telesign/telesign/0.2.0/
   - Merge branch 'Manmohan-TechM-July_2015'
  
 - 2015-08-19 
@@ -139,7 +139,7 @@ use Locale.US for date header
 - 2015-08-03 
   - Added Originating_ip & Session_id to PhoneId & Verify calls. Changes done as part of PD-14562.
  
-## [0.1.0] - 2015-07-30 
+## [0.1.0] - 2015-07-30 - http://central.maven.org/maven2/com/telesign/telesign/0.1.0/
   - Updated pom.xml
  
 - 2015-07-17 
