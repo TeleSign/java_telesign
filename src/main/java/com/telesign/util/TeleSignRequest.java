@@ -42,6 +42,8 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.telesign.exception.TelesignAPIException;
+
 
 
 /** The TeleSignRequest class is an abstraction for creating and sending HTTP 1.1 REST Requests for TeleSign web services. */
@@ -101,10 +103,7 @@ public class TeleSignRequest {
     public static String RESOURCE_DIR = "src/test/resources/";
     
     private final String TEST_URL = "https://localhost:1443";
-    
-    /** Enable test based settings, if set to true requests will be sent to embedded server. **/
-    //public static boolean runTests;
-    
+
     private final String httpMethod;
     
 	/**
@@ -507,9 +506,8 @@ public class TeleSignRequest {
 
 			in.close();
 		}
-		catch (IOException e) {
-			System.err.println("IOException while reading from input stream " + e.getMessage());
-			throw new RuntimeException(e);
+		catch (Exception e) {
+			throw new TelesignAPIException("Exception while reading from input stream", e);
 		}
 
 		return url_output;
@@ -676,7 +674,6 @@ public class TeleSignRequest {
 		private String baseUrl, subResource, httpMethod;
 		private String httpsProtocol = "TLSv1.2", ciphers = "";
 		private int connectTimeout = 30000, readTimeout = 30000;
-		//private boolean runTests = false;
 		
 		public RequestBuilder(String customerId, String secretKey){
 			this.customerId = customerId;
@@ -705,12 +702,7 @@ public class TeleSignRequest {
 				this.readTimeout = readTimeout;
 			return this;
 		}
-		
-		/*public RequestBuilder runTests(boolean runTests){
-			this.runTests = runTests;
-			return this;
-		}*/
-		
+
 		public RequestBuilder baseUrl(String baseUrl){
 			this.baseUrl = baseUrl;
 			return this;

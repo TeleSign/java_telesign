@@ -85,6 +85,15 @@ public class VerifyTest {
 	}
 	
 	@Test
+	public void verifyRequestCallWithCode() {
+		Verify ver = initVerifyParams();
+		
+		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER,"hi-IN", "43561");
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+	}
+	
+	@Test
 	public void verifyRequestCallWithLanguage() {
 		Verify ver = initVerifyParams();
 		
