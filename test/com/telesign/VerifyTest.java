@@ -40,6 +40,7 @@ public class VerifyTest {
 	public static String PUSH_NOTIFICATION_VALUE;
 	public static String SOFT_TOKEN_ID;
 	public static String CALL_FORWARD_ACTION;
+	public static String TEXT_TO_SPEECH_MESSAGE;
 	public static String BUNDLE_ID;
 	public static String HTTPS_PROTOCOL;
 	public static boolean isHttpsProtocolSet = false;
@@ -68,6 +69,7 @@ public class VerifyTest {
 		PUSH_NOTIFICATION_VALUE=props.getProperty("test.push_notification_value");
 		SOFT_TOKEN_ID = props.getProperty("test.soft_token_id");
 		CALL_FORWARD_ACTION = props.getProperty("test.call_forward_action");
+		TEXT_TO_SPEECH_MESSAGE = props.getProperty("test.tts_message");
 		CALLER_ID = props.getProperty("test.caller_id");
 		BUNDLE_ID = props.getProperty("test.bundle_id");
 		HTTPS_PROTOCOL = props.getProperty("test.httpsprotocol");
@@ -124,6 +126,10 @@ public class VerifyTest {
 			pass = true;
 		}
 		
+		if(null == TEXT_TO_SPEECH_MESSAGE || TEXT_TO_SPEECH_MESSAGE.isEmpty()) {
+			System.out.println("TEXT_TO_SPEECH_MESSAGE not set. Please set the \"test.tts_message\" property in the properties file");
+			pass = true;
+		}
 		if(null == CALLER_ID || CALLER_ID.isEmpty()) {
 			System.out.println("CALLER_ID not set. Please set the \"test.caller_id\" property in the properties file");
 			pass = true;
@@ -238,10 +244,19 @@ public class VerifyTest {
 	}
 	
 	@Test
+	public void verifyRequestCallWithTextToSpeech() {
+		Verify ver = initVerifyParams();
+		
+		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", TEXT_TO_SPEECH_MESSAGE);
+		assertNotNull(ret);
+		assertTrue(ret.errors.length == 0);
+	}
+	
+	@Test
 	public void verifyRequestCallWithAllParams() {
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true, ORIGINATING_IP, SESSION_ID, CALL_FORWARD_ACTION);
+		VerifyResponse ret = ver.call(PHONE_NUMBER, "en-US", "12345", "keypress", 1, "1234", true, ORIGINATING_IP, SESSION_ID, CALL_FORWARD_ACTION, TEXT_TO_SPEECH_MESSAGE);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}
