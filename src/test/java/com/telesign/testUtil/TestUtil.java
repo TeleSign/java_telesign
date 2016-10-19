@@ -37,6 +37,12 @@ public final class TestUtil {
 	public static String mobileTestUrl = "https://localhost:1443";
 	public static String CIPHERS;
 	public static String TTS_MESSAGE;
+	public static String PUSH_MESSAGE;
+	public static String SMS_MESSAGE;
+	public static String LANGUAGE;
+	public static String VERIFY_CODE;
+	public static String TEMPLATE;
+	public static String UCID;
 		
 	public static void initProperties() throws IOException {
 		Properties props = new Properties();
@@ -51,6 +57,8 @@ public final class TestUtil {
 		CUSTOMER_ID = props.getProperty("test.customerid");
 		SECRET_KEY =  props.getProperty("test.secretkey");
 		PHONE_NUMBER = props.getProperty("test.phonenumber");
+		LANGUAGE = props.getProperty("test.language");
+		VERIFY_CODE = props.getProperty("test.verify_code");
 		CONNECT_TIMEOUT =  props.getProperty("test.connecttimeout");
 		READ_TIMEOUT =  props.getProperty("test.readtimeout");
 		ORIGINATING_IP = props.getProperty("test.originating_ip");
@@ -67,7 +75,12 @@ public final class TestUtil {
 		CALLER_ID = props.getProperty("test.caller_id");
 		BUNDLE_ID = props.getProperty("test.bundle_id");
 		CIPHERS = props.getProperty("test.testCiphers");
+		
 		TTS_MESSAGE = props.getProperty("test.tts_message");
+		SMS_MESSAGE = props.getProperty("test.sms_message");
+		PUSH_MESSAGE = props.getProperty("test.push_message");
+		TEMPLATE = props.getProperty("test.template");
+		UCID = props.getProperty("test.ucid");
 		
 		runTests = Boolean.parseBoolean(props.getProperty("test.runTests", "true"));
 		
@@ -85,6 +98,16 @@ public final class TestUtil {
 		if(PHONE_NUMBER == null || PHONE_NUMBER.isEmpty()) {
 			System.out.println("PHONE_NUMBER is not set. Please set the \"test.phonenumber\" property in the properties file");
 			pass = false;
+		}
+		
+		if(LANGUAGE == null || LANGUAGE.isEmpty()) {
+			System.out.println("LANGUAGE is not set. Please set the \"test.language\" property in the properties file");
+			pass = true;
+		}
+		
+		if(VERIFY_CODE == null || VERIFY_CODE.isEmpty()) {
+			System.out.println("VERIFY_CODE is not set. Please set the \"test.verify_code\" property in the properties file");
+			pass = true;
 		}
 		
 		if(CONNECT_TIMEOUT == null || CONNECT_TIMEOUT.isEmpty() || READ_TIMEOUT == null || READ_TIMEOUT.isEmpty()) {
@@ -161,14 +184,34 @@ public final class TestUtil {
 		}
 		
 		if(null == TTS_MESSAGE || TTS_MESSAGE.isEmpty()) {
-			System.out.println("TTS_MESSAGE not set. You may set the \"test.TTS_MESSAGE\" property in the properties file");
+			System.out.println("TTS_MESSAGE not set. You may set the \"test.tts_message\" property in the properties file");
 			pass = true;
 		}
-
+		
+		if(null == SMS_MESSAGE || SMS_MESSAGE.isEmpty()) {
+			System.out.println("SMS_MESSAGE not set. You may set the \"test.sms_message\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == PUSH_MESSAGE || PUSH_MESSAGE.isEmpty()) {
+			System.out.println("PUSH_MESSAGE not set. You may set the \"test.push_message\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == TEMPLATE || TEMPLATE.isEmpty()) {
+			System.out.println("TEMPLATE not set. You may set the \"test.template\" property in the properties file");
+			pass = true;
+		}
+		
 		if(null == BUNDLE_ID || BUNDLE_ID.isEmpty()) {
 			System.out.println("BUNDLE_ID not set. Please set the \"test.bundle_id\" property in the properties file");
 			pass = true;
 		}	
+		
+		if(null == UCID || UCID.isEmpty()) {
+			System.out.println("UCID not set. Please set the \"test.ucid\" property in the properties file");
+			pass = true;
+		}
 		
 		if(!pass) {
 			fail("Configuration file not setup correctly!");
