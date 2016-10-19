@@ -43,7 +43,9 @@ public class VerifyTest {
 	public static String TEXT_TO_SPEECH_MESSAGE;
 	public static String BUNDLE_ID;
 	public static String HTTPS_PROTOCOL;
-	public static boolean isHttpsProtocolSet = false;
+	public static boolean isHttpsProtocolSet = false;	
+	public static String PUSH_MESSAGE;
+	public static String SMS_MESSAGE;
 	
 	@BeforeClass
     public static void setUp() throws IOException {
@@ -72,7 +74,9 @@ public class VerifyTest {
 		TEXT_TO_SPEECH_MESSAGE = props.getProperty("test.tts_message");
 		CALLER_ID = props.getProperty("test.caller_id");
 		BUNDLE_ID = props.getProperty("test.bundle_id");
-		HTTPS_PROTOCOL = props.getProperty("test.httpsprotocol");
+		HTTPS_PROTOCOL = props.getProperty("test.httpsprotocol");		
+		SMS_MESSAGE = props.getProperty("test.sms_message");
+		PUSH_MESSAGE = props.getProperty("test.push_message");
 		
 		boolean pass = true; 
 		
@@ -166,6 +170,16 @@ public class VerifyTest {
 			pass = true;
 		} else {
 			isHttpsProtocolSet = true;
+			pass = true;
+		}
+				
+		if(null == SMS_MESSAGE || SMS_MESSAGE.isEmpty()) {
+			System.out.println("SMS_MESSAGE not set. You may set the \"test.sms_message\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == PUSH_MESSAGE || PUSH_MESSAGE.isEmpty()) {
+			System.out.println("PUSH_MESSAGE not set. You may set the \"test.push_message\" property in the properties file");
 			pass = true;
 		}
 		
@@ -406,7 +420,8 @@ public class VerifyTest {
 	public void smartVerifyWithAllParams(){
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.smartVerify(PHONE_NUMBER,"BACS", CALLER_ID, "en-US", null, SMART_VERIFY_PREFERENCE, SMART_VERIFY_IGNORE_RISK , ORIGINATING_IP, SESSION_ID);
+		VerifyResponse ret = ver.smartVerify(PHONE_NUMBER,"BACS", CALLER_ID, "en-US", null, SMART_VERIFY_PREFERENCE, SMART_VERIFY_IGNORE_RISK , ORIGINATING_IP, SESSION_ID,
+				TEXT_TO_SPEECH_MESSAGE, PUSH_MESSAGE, SMS_MESSAGE);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}
