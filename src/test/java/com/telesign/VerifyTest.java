@@ -65,9 +65,11 @@ public class VerifyTest {
 		Verify ver;
 		
 		VerifyBuilder verifyBuilder = Verify.init(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
+		verifyBuilder.language(TestUtil.LANGUAGE).ucid(TestUtil.UCID).verifyCode(TestUtil.VERIFY_CODE).template(TestUtil.TEMPLATE);
 		verifyBuilder.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL);
 		verifyBuilder.callForwardAction(TestUtil.CALL_FORWARD_ACTION).redial(true).verifyMethod("kepress");
-		verifyBuilder.extensionTemplate("1263").extensionType(1).ttsMessage(TestUtil.TTS_MESSAGE);
+		verifyBuilder.extensionTemplate("1263").extensionType(1);
+		verifyBuilder.ttsMessage(TestUtil.TTS_MESSAGE).pushMessage(TestUtil.PUSH_MESSAGE).smsMessage(TestUtil.SMS_MESSAGE);
 		verifyBuilder.callerId(TestUtil.CALLER_ID).ignoreRisk(TestUtil.SMART_VERIFY_IGNORE_RISK).preference(TestUtil.SMART_VERIFY_PREFERENCE);
 				
 		ver = verifyBuilder.url(TestUtil.testUrl).mobileUrl(TestUtil.mobileTestUrl).create();
@@ -82,33 +84,6 @@ public class VerifyTest {
 		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
-	}
-	
-	@Test
-	public void verifyRequestCallWithCode() {
-		Verify ver = initVerifyParams();
-		
-		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER,"hi-IN", "43561");
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
-	}
-	
-	@Test
-	public void verifyRequestCallWithLanguage() {
-		Verify ver = initVerifyParams();
-		
-		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER, "en-US");
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
-	}
-	
-	@Test
-	public void verifyRequestCallWithCallForwardAction() {
-		Verify ver = initVerifyParams();
-		
-		VerifyResponse ret = ver.call(TestUtil.PHONE_NUMBER, "en-US", TestUtil.CALL_FORWARD_ACTION);
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
 	}	
 	
 	@Test
@@ -119,26 +94,7 @@ public class VerifyTest {
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 		
-	}
-	
-	@Test
-	public void verifyRequestSMSWithLanguage() {
-		Verify ver = initVerifyParams();
-		
-		VerifyResponse ret = ver.sms(TestUtil.PHONE_NUMBER, "en-US");
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
-		
-	}
-	@Test
-	public void verifyRequestSMSAllParams() {
-		Verify ver = initVerifyParams();
-		
-		VerifyResponse ret = ver.sms(TestUtil.PHONE_NUMBER, "en-US", "12345", "Thanks! Custom code template pass! Code: $$CODE$$");
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
-		
-	}
+	}	
 	
 	@Test
 	public void verifyRequestCallwithResult() {
@@ -171,26 +127,7 @@ public class VerifyTest {
 			assertNotNull(ret2);
 			assertTrue(ret2.errors.length == 0);
 		}
-	}
-
-	@Test
-	public void verifyRequestSMSwithVerifyCode() {
-		Verify ver = initVerifyParams();
-		
-		String verify_code = "12345";
-		
-		VerifyResponse ret = ver.sms(TestUtil.PHONE_NUMBER, null, verify_code, null);
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
-		if(!TestUtil.runTests){
-			String reference_id = ret.reference_id;
-			
-			VerifyResponse ret2 = ver.status(reference_id, verify_code);
-			assertNotNull(ret2);
-			assertTrue(ret2.errors.length == 0);
-			assertTrue(ret2.verify.code_state.equals("VALID"));
-		}
-	}
+	}	
 	
 	@Test
 	public void verifyRequestPush(){
@@ -214,7 +151,7 @@ public class VerifyTest {
 	public void verifyRequestSoftToken(){
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.softToken(TestUtil.PHONE_NUMBER, TestUtil.SOFT_TOKEN_ID, "571591", TestUtil.BUNDLE_ID);
+		VerifyResponse ret = ver.softToken(TestUtil.PHONE_NUMBER, TestUtil.SOFT_TOKEN_ID, TestUtil.BUNDLE_ID);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}
@@ -232,7 +169,7 @@ public class VerifyTest {
 	public void smartVerify(){
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.smartVerify(TestUtil.PHONE_NUMBER,"BACS", "en-US", null);
+		VerifyResponse ret = ver.smartVerify(TestUtil.PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}	
