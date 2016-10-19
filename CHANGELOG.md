@@ -1,4 +1,6 @@
-## [0.6.0](http://central.maven.org/maven2/com/telesign/telesign/0.6.0/) - 2016-10-19
+## [0.6.0](http://central.maven.org/maven2/com/telesign/telesign/0.6.0/) - 2016-10-20
+- 2016-10-19 
+  - Added tts_message, sms_message, push_message to smartVerify Api. Also updated Test cases.
 - 2016-10-18
   - Added text to speech (TTS) feature of Voice Verify to the Java SDK. 
   - Updated version to 0.6.0 
