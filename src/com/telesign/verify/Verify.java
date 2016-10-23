@@ -222,19 +222,29 @@ public class Verify {
 	 */
 	public VerifyResponse call(String phone_number) {
 
-		return call(phone_number, null, null, null, 0, null, true, null, null, null);
+		return call(phone_number, null);
 	}
 	
 	/**
 	 * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
 	 * Use this overload when the user's native spoken language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
-	 * @param phone_number	[Required] A string containing the user�s phone number.
+	 * @param phone_number	[Required] A string containing the user's phone number.
 	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse call(String phone_number, String language) {
 
-		return call(phone_number, language, null, null, 0, null, true, null, null, null);
+		return call(phone_number, language, null, null, 0, null, true, null, null, null, null);
+	}
+	/** 
+	 * @param phone_number	[Required] A string containing the user's phone number.
+	 * @param language		[Optional] A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
+	 * @param ttsMessage 	[Optional] Allows you to pass a text-to-speech (TTS) message with language. Ex String: Hello, your secret code is $$CODE$$. Thank you.
+	 * @return	A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+	 */
+	public VerifyResponse call(String phone_number, String language, String ttsMessage) {
+
+		return call(phone_number, language, null, null, 0, null, true, null, null, null, ttsMessage);
 	}
 		
 	/**
@@ -250,7 +260,7 @@ public class Verify {
 	 */
 	public VerifyResponse call(String phone_number, String language, String originating_ip, String session_id) {
 
-		return call(phone_number, language, null, null, 0, null, true, originating_ip, session_id, null);
+		return call(phone_number, language, originating_ip, session_id, null);
 	}
 	
 	/**
@@ -267,9 +277,26 @@ public class Verify {
 	 */
 	public VerifyResponse call(String phone_number, String language, String originating_ip, String session_id, String call_forward_action) {
 
-		return call(phone_number, language, null, null, 0, null, true, originating_ip, session_id, call_forward_action);
+		return call(phone_number, language, null, null, 0, null, true, originating_ip, session_id, call_forward_action, null);
 	}
 	
+	/**
+	 * Delivers a verification code to the end user with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
+	 * Use this overload when the user's native spoken language is not the default language (English). You specify the user's language in the <em>language</em> parameter.
+	 * @param phone_number	[Required] A string containing the user�s phone number.
+	 * @param language		[Optional]	A string containing the IETF language tag. For example, "fr-CA". Set this value to "null" to use English (the default).
+	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the 
+	 * 								   Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. Ex: originating_ip=192.168.123.456.
+	 * 								   Set it to null if not sending originating ip.
+	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
+	 * @param call_forward_action 	[Optional]	A string containing call forward action
+	 * @param ttsMessage 	[Optional] Allows you to pass a text-to-speech (TTS) message with language. Ex String: Hello, your secret code is $$CODE$$. Thank you.
+	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+	 */
+	public VerifyResponse call(String phone_number, String language, String originating_ip, String session_id, String call_forward_action, String ttsMessage) {
+
+		return call(phone_number, language, null, null, 0, null, true, originating_ip, session_id, call_forward_action, ttsMessage);
+	}
 	/**
 	 * Delivers a verification code to the end user - with a phone call. When the user answers their phone, the TeleSign server plays an automated voice message that contains the code.
 	 * Use this overload when:
@@ -315,7 +342,7 @@ public class Verify {
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse call(String phone_number , String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial, String originating_ip, String session_id) {
-		return call(phone_number , language, verify_code, verify_method, extension_type, extension_template, redial, originating_ip, session_id, null);
+		return call(phone_number , language, verify_code, verify_method, extension_type, extension_template, redial, originating_ip, session_id, null, null);
 	}
 	
 	/**
@@ -339,10 +366,11 @@ public class Verify {
 	 * 								 		    Set it to null if not sending originating ip.
 	 * @param session_id			[Optional]  Your end users session id. Set it to "null" if not sending session id.
 	 * @param call_forward_action 	[Optional]	A string containing call forward action
+	 * @param ttsMessage			[Optional]	text to speech feature of Telesign gets used, <a href="https://developer.telesign.com/v2.0/docs/rest_api-verify-call#text-to-speech-tts-hints">TTS hints</a>
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse call(String phone_number , String language, String verify_code, String verify_method, int extension_type, String extension_template, boolean redial, 
-			String originating_ip, String session_id, String call_forward_action) {
+			String originating_ip, String session_id, String call_forward_action, String ttsMessage) {
 
 		String result = null;
 
@@ -398,6 +426,9 @@ public class Verify {
 
 				}
 			}
+			
+			if(null != ttsMessage && !ttsMessage.isEmpty())
+				body += "&tts_message=" + URLEncoder.encode(ttsMessage, "UTF-8");
 			
 			tr.setPostBody(body);
 			result = tr.executeRequest();
@@ -554,10 +585,30 @@ public class Verify {
 	/**
 	 * @param phone_number [Required] Your end user's phone number, including the country code.
 	 * @param ucid		   [Required] A string the specifies one of the <a href="http://docs.telesign.com/rest/content/xt/xt-use-case-codes.html#xref-use-case-codes">Use Case Codes</a>.
+	 * @param language	   [Optional] Determines the message for Verify SMS and Verify Push. IETF language tag is used in mapping languages codes to predefined templates.
+	 * @param verify_code  [Optional] The verification code used for the code challenge. By default, TeleSign automatically generates a six-digit value for you.
+	 * @param preference   [Optional] Allows customers to override the Smart Verify method selection. Customers can specify either "call", "sms" or "push" to be the recommended method to attempt.
+	 * @param ignore_risk  [Optional] If set to "true", allows customers to bypass blocking the request if the score is above the threshold value configured in the customer account.
+	 * @param ttsMessage		 [Optional] Allows you to pass a text-to-speech (TTS) message with language. Language parameter must be used with this.
+	 * @param pushMessage		 [Optional] Allows you to pass message that you want to Push. Ex String: Hello, your secret code is $$CODE$$. Thank you.
+	 * @param smsMessage		 [Optional] Allows you to pass a message sent via sms . Ex String: Hello, your secret code is $$CODE$$. Thank you.
+	 * @return	A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
+	 */
+	public VerifyResponse smartVerify(String phone_number, String ucid, String caller_id, String language, String verify_code, String preference, String ignore_risk, String ttsMessage, String pushMessage, String smsMessage){
+		return smartVerify(phone_number, ucid, caller_id, language, verify_code, preference, ignore_risk, null, null, ttsMessage, pushMessage, smsMessage);
+	}
+	
+	/**
+	 * @param phone_number [Required] Your end user's phone number, including the country code.
+	 * @param ucid		   [Required] A string the specifies one of the <a href="http://docs.telesign.com/rest/content/xt/xt-use-case-codes.html#xref-use-case-codes">Use Case Codes</a>.
+	 * @param language	   [Optional] Determines the message for Verify SMS and Verify Push. IETF language tag is used in mapping languages codes to predefined templates.
+	 * @param verify_code  [Optional] The verification code used for the code challenge. By default, TeleSign automatically generates a six-digit value for you.
+	 * @param preference   [Optional] Allows customers to override the Smart Verify method selection. Customers can specify either "call", "sms" or "push" to be the recommended method to attempt.
+	 * @param ignore_risk  [Optional] If set to "true", allows customers to bypass blocking the request if the score is above the threshold value configured in the customer account.
 	 * @return	A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
 	public VerifyResponse smartVerify(String phone_number, String ucid, String caller_id, String language, String verify_code, String preference, String ignore_risk){
-		return smartVerify(phone_number, ucid, caller_id, language, verify_code, preference, ignore_risk, null, null);
+		return smartVerify(phone_number, ucid, caller_id, language, verify_code, preference, ignore_risk, null, null, null, null, null);
 	}
 		
 	/**
@@ -575,9 +626,12 @@ public class Verify {
 	 * @param originating_ip [Optional] Your end users IP Address. This value must be in the format defined by IETF in the Internet-Draft document titled Textual Representation of IPv4 and IPv6 Addresses. 
 	 * 									</br>Ex: originating_ip=192.168.123.456. </br>Set it to null if not sending originating ip.
 	 * @param session_id	[Optional] Your end users session id. Set it to "null" if not sending session id.
+	 * @param ttsMessage	[Optional] Allows you to pass a text-to-speech (TTS) message with language. Language parameter must be used with this.
+	 * @param pushMessage	[Optional] Allows you to pass message that you want to Push. Ex String: Hello, your secret code is $$CODE$$. Thank you.
+	 * @param smsMessage	[Optional] Allows you to pass a message sent via sms . Ex String: Hello, your secret code is $$CODE$$. Thank you.
 	 * @return	A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
 	 */
-	public VerifyResponse smartVerify(String phone_number, String ucid, String caller_id, String language, String verify_code, String preference, String ignore_risk, String originating_ip, String session_id){
+	public VerifyResponse smartVerify(String phone_number, String ucid, String caller_id, String language, String verify_code, String preference, String ignore_risk, String originating_ip, String session_id, String ttsMessage, String pushMessage, String smsMessage){
 		String result = null;
 
 		try {
@@ -614,7 +668,16 @@ public class Verify {
 
 				body += "&ignore_risk=" + URLEncoder.encode(ignore_risk, "UTF-8");
 			}
-						
+			
+			if(null != ttsMessage && !ttsMessage.isEmpty())
+				body += "&tts_message=" + URLEncoder.encode(ttsMessage, "UTF-8");
+			
+			if(null != pushMessage && !pushMessage.isEmpty())
+				body += "&push_message=" + URLEncoder.encode(pushMessage, "UTF-8");
+			
+			if(null != smsMessage && !smsMessage.isEmpty())
+				body += "&sms_message=" + URLEncoder.encode(smsMessage, "UTF-8");
+			
 			if(null != originating_ip && !originating_ip.isEmpty() && IpValidator.isValidIpAddress(originating_ip)) {
 
 				body += "&originating_ip=" + URLEncoder.encode(originating_ip, "UTF-8");
