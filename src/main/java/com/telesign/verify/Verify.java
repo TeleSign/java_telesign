@@ -10,6 +10,7 @@
 package com.telesign.verify;
 
 import java.net.URLEncoder;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +38,7 @@ public class Verify {
 	
 	private String language, template, verifyCode;
 	private String sessionId, originatingIp;
+	private Map<String, String> extra;
 	// Verify call specific
 	private String verifyMethod, extensionTemplate;
 	private int extensionType;
@@ -104,6 +106,7 @@ public class Verify {
 		private int extensionType;
 		private String callForwardAction, ttsMessage, smsMessage, pushMessage,  ucid;
 		private boolean redial = true;
+		private Map<String, String> extra;
 		// for smartverify
 		private String callerId, preference, ignoreRisk;
 				
@@ -198,6 +201,10 @@ public class Verify {
 		}
 		public VerifyBuilder ucid(String ucid){
 			this.ucid = ucid;
+			return this;
+		}
+		public VerifyBuilder extra(Map<String, String> extra){
+			this.extra = extra;
 			return this;
 		}
 		public Verify create(){
@@ -329,6 +336,9 @@ public class Verify {
 
 				body += "&ucid=" + URLEncoder.encode(ucid, "UTF-8");
 			}			
+
+			if(null != extra)
+				extraParams(tr);
 			
 			tr.setPostBody(body);
 			
@@ -425,6 +435,9 @@ public class Verify {
 
 				body += "&ucid=" + URLEncoder.encode(ucid, "UTF-8");
 			}
+
+			if(null != extra)
+				extraParams(tr);
 			
 			tr.setPostBody(body);
 			result = tr.executeRequest();
@@ -467,6 +480,9 @@ public class Verify {
 				tr.addParam("session_id", sessionId);
 			}
 
+			if(null != extra)
+				extraParams(tr);
+			
 			result = tr.executeRequest();
 		}
 		catch (Exception e) {
@@ -504,6 +520,9 @@ public class Verify {
 
 				tr.addParam("session_id", sessionId);
 			}
+
+			if(null != extra)
+				extraParams(tr);
 			
 			result = tr.executeRequest();
 		}
@@ -586,6 +605,9 @@ public class Verify {
 				body += "&session_id=" + URLEncoder.encode(sessionId, "UTF-8");
 			}			
 
+			if(null != extra)
+				extraParams(tr);
+			
 			tr.setPostBody(body);			
 			result = tr.executeRequest();
 		}
@@ -668,6 +690,9 @@ public class Verify {
 
 				body += "&session_id=" + URLEncoder.encode(sessionId, "UTF-8");
 			}
+
+			if(null != extra)
+				extraParams(tr);
 			
 			tr.setPostBody(body);
 			result = tr.executeRequest();
@@ -724,6 +749,9 @@ public class Verify {
 
 				body += "&session_id=" + URLEncoder.encode(sessionId, "UTF-8");
 			}
+
+			if(null != extra)
+				extraParams(tr);
 			
 			tr.setPostBody(body);
 			result = tr.executeRequest();
@@ -748,6 +776,15 @@ public class Verify {
 			return m.matches();
 		} else 
 			return false;
+	}
+	
+	/**
+	 * Parses extra params and adds to TeleSignRequest
+	 * @param tr TeleSignRequest
+	 */
+	private void extraParams(TeleSignRequest tr) {
+		for(Map.Entry<String, String> extraParam:extra.entrySet())
+			tr.addParam(extraParam.getKey(), extraParam.getValue());
 	}
 	
 	public static VerifyBuilder init(String customerId, String secretKey){

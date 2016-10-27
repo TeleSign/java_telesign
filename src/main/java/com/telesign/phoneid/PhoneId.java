@@ -22,6 +22,7 @@ import com.telesign.util.TeleSignRequest;
 import com.telesign.util.TeleSignRequest.RequestBuilder;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * The PhoneId class abstracts your interactions with the
@@ -37,6 +38,7 @@ public class PhoneId {
 	private String httpsProtocol;
 	//private boolean runTests;
 	private String url; // Not used yet
+	private Map<String, String> extra; 
 	private String sessionId, originatingIp;
 	
 	private static final String API_BASE_URL = "https://rest.telesign.com";	
@@ -59,6 +61,7 @@ public class PhoneId {
 		private int connectTimeout;
 		private int readTimeout;		
 		private String httpsProtocol;
+		private Map<String, String> extra;
 		//private boolean runTests = false; // To be removed
 		private String url = "https://rest.telesign.com";
 		private String sessionId, originatingIp;
@@ -100,6 +103,11 @@ public class PhoneId {
 		
 		public PhoneIdBuilder originatingIp(String originatingIp){
 			this.originatingIp = originatingIp;
+			return this;
+		}
+		
+		public PhoneIdBuilder extra(Map<String, String> extra){
+			this.extra = extra;
 			return this;
 		}
 		
@@ -215,6 +223,7 @@ public class PhoneId {
 		this.readTimeout = builder.readTimeout;
 		//this.runTests = builder.runTests;
 		this.url = builder.url;
+		this.extra = builder.extra;
 		this.originatingIp = builder.originatingIp;
 		this.sessionId = builder.sessionId;
 	}
@@ -260,8 +269,12 @@ public class PhoneId {
 			
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_STANDARD + phoneNo).
 					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			
 			if(null != ucid && !ucid.isEmpty())
 				tr.addParam("ucid", ucid);
+			
+			if(null != extra)
+				extraParams(tr);
 			
 			if(originatingIp != null) {
 
@@ -307,6 +320,9 @@ public class PhoneId {
 					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
+			
+			if(null != extra)
+				extraParams(tr);
 
 			if(originatingIp != null) {
 
@@ -353,6 +369,9 @@ public class PhoneId {
 					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
+			
+			if(null != extra)
+				extraParams(tr);
 			
 			if(originatingIp != null) {
 
@@ -401,6 +420,9 @@ public class PhoneId {
 					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
+			
+			if(null != extra)
+				extraParams(tr);
 
 			if(originatingIp != null) {
 
@@ -441,6 +463,9 @@ public class PhoneId {
 					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
+			
+			if(null != extra)
+				extraParams(tr);
 
 			if(originatingIp != null) {
 
@@ -484,6 +509,9 @@ public class PhoneId {
 					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
+			
+			if(null != extra)
+				extraParams(tr);
 
 			if(originatingIp != null) {
 
@@ -526,6 +554,9 @@ public class PhoneId {
 					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			tr.addParam("ucid", ucid);
+			
+			if(null != extra)
+				extraParams(tr);
 
 			if(originatingIp != null) {
 
@@ -546,6 +577,15 @@ public class PhoneId {
 				PhoneIdNumberDeactivationResponse.class);
 
 		return response;
+	}
+	
+	/**
+	 * Parses extra params and adds to TeleSignRequest
+	 * @param tr TeleSignRequest
+	 */
+	private void extraParams(TeleSignRequest tr) {
+		for(Map.Entry<String, String> extraParam:extra.entrySet())
+			tr.addParam(extraParam.getKey(), extraParam.getValue());
 	}
 
 	public static PhoneIdBuilder initPhoneId(String customerId, String secretKey){
