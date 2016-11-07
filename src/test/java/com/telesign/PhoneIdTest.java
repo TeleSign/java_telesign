@@ -75,9 +75,10 @@ public class PhoneIdTest {
 			fail("TestUtil.CUSTOMER_ID and TestUtil.SECRET_KEY must be set to pass this test");
 		}
 		
-		PhoneIdBuilder pidb = PhoneId.initPhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);		
+		PhoneIdBuilder pidb = PhoneId.initPhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
+		pidb.extra(TestUtil.EXTRA_MAP);
 		pidb.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL).url(TestUtil.testUrl);
-		pidb.originatingIp("localhost").sessionId("testSession");
+		pidb.originatingIp(TestUtil.ORIGINATING_IP).sessionId(TestUtil.SESSION_ID);
 		
 		PhoneId pid = pidb.create();
 				

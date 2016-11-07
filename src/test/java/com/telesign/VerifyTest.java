@@ -67,11 +67,11 @@ public class VerifyTest {
 		VerifyBuilder verifyBuilder = Verify.init(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
 		verifyBuilder.language(TestUtil.LANGUAGE).ucid(TestUtil.UCID).verifyCode(TestUtil.VERIFY_CODE).template(TestUtil.TEMPLATE);
 		verifyBuilder.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL);
-		verifyBuilder.callForwardAction(TestUtil.CALL_FORWARD_ACTION).redial(true).verifyMethod("kepress");
-		verifyBuilder.extensionTemplate("1263").extensionType(1);
+		verifyBuilder.callForwardAction(TestUtil.CALL_FORWARD_ACTION).redial(true).verifyMethod(TestUtil.VERIFY_METHOD);
+		verifyBuilder.extensionTemplate(TestUtil.EXTENSION_TEMPLATE).extensionType(Integer.parseInt(TestUtil.EXTENSION_TYPE));
 		verifyBuilder.ttsMessage(TestUtil.TTS_MESSAGE).pushMessage(TestUtil.PUSH_MESSAGE).smsMessage(TestUtil.SMS_MESSAGE);
 		verifyBuilder.callerId(TestUtil.CALLER_ID).ignoreRisk(TestUtil.SMART_VERIFY_IGNORE_RISK).preference(TestUtil.SMART_VERIFY_PREFERENCE);
-				
+		verifyBuilder.extra(TestUtil.EXTRA_MAP);
 		ver = verifyBuilder.url(TestUtil.testUrl).mobileUrl(TestUtil.mobileTestUrl).create();
 		
 		return ver;

@@ -43,6 +43,11 @@ public final class TestUtil {
 	public static String VERIFY_CODE;
 	public static String TEMPLATE;
 	public static String UCID;
+	private static String EXTRA_PARAMS;
+	public static Map<String, String> EXTRA_MAP = new HashMap<String, String>();
+	public static String EXTENSION_TEMPLATE;
+	public static String EXTENSION_TYPE;
+	public static String VERIFY_METHOD; 
 		
 	public static void initProperties() throws IOException {
 		Properties props = new Properties();
@@ -81,8 +86,12 @@ public final class TestUtil {
 		PUSH_MESSAGE = props.getProperty("test.push_message");
 		TEMPLATE = props.getProperty("test.template");
 		UCID = props.getProperty("test.ucid");
-		
+		EXTRA_PARAMS = props.getProperty("test.extra");
+		EXTENSION_TEMPLATE = props.getProperty("test.extensionTemplate");
+		EXTENSION_TYPE = props.getProperty("test.extensionType");
+		VERIFY_METHOD = props.getProperty("test.verifyMethod");
 		runTests = Boolean.parseBoolean(props.getProperty("test.runTests", "true"));
+		
 		
 		boolean pass = true; 
 		
@@ -213,9 +222,43 @@ public final class TestUtil {
 			pass = true;
 		}
 		
+		if(null == EXTRA_PARAMS || EXTRA_PARAMS.isEmpty()) {
+			System.out.println("EXTRA_PARAMS not set. Please set the \"test.extra\" property in the properties file, " +
+					"to be comma separated key=value pairs. Ex: test.extra = name=some_name,org=org_name,place=chandigarh");
+			pass = true;
+		} else {		
+			extraMap(EXTRA_MAP);			
+		}
+		
+		if(null == EXTENSION_TEMPLATE || EXTENSION_TEMPLATE.isEmpty()) {
+			System.out.println("EXTENSION_TEMPLATE not set. Please set the \"test.extensionTemplate\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == EXTENSION_TYPE || EXTENSION_TYPE.isEmpty()) {
+			System.out.println("EXTENSION_TEMPLATE not set. Please set applicable numeric value in \"test.extensionType\" property in the properties file.");
+			pass = true;
+		}
+		if(null == VERIFY_METHOD || VERIFY_METHOD.isEmpty()) {
+			System.out.println("VERIFY_METHOD not set. Please set the \"test.verifyMethod\" property in the properties file");
+			pass = true;
+		}
+		
 		if(!pass) {
 			fail("Configuration file not setup correctly!");
 		}		
+	}
+
+	/**
+	 * Sets the extra variable
+	 * @param extraMap
+	 */
+	public static void extraMap(Map<String, String> extraMap) {
+		String [] extraArray = EXTRA_PARAMS.split(",");
+		for(String extra : extraArray){
+			String [] extraKeyValue = extra.split("=");
+			extraMap.put(extraKeyValue[0].trim(), extraKeyValue[1].trim());
+		}
 	}
 	
 	public static void startServer(){
