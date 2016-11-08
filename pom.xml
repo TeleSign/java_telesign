@@ -3,7 +3,7 @@
 	<groupId>com.telesign</groupId>
 	<artifactId>telesign</artifactId>
 	<packaging>jar</packaging>
-	<version>0.6.0</version>
+	<version>0.7.0</version>
 	<name>telesign</name>
 	<url>https://github.com/TeleSign/java_telesign</url>
 	<inceptionYear>2010</inceptionYear>
