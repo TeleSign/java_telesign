@@ -133,25 +133,16 @@ public class VerifyTest {
 	public void verifyRequestPush(){
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.push(TestUtil.PHONE_NUMBER,TestUtil.BUNDLE_ID);		
+		VerifyResponse ret = ver.push(TestUtil.PHONE_NUMBER);		
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
-	}
-	
-	@Test
-	public void verifyRequestPushWithAllParams(){
-		Verify ver = initVerifyParams();
-		
-		VerifyResponse ret = ver.push(TestUtil.PHONE_NUMBER, TestUtil.PUSH_NOTIFICATION_TYPE, TestUtil.PUSH_NOTIFICATION_VALUE, TestUtil.BUNDLE_ID, "Verify request push");
-		assertNotNull(ret);
-		assertTrue(ret.errors.length == 0);
-	}
+	}	
 	
 	@Test
 	public void verifyRequestSoftToken(){
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.softToken(TestUtil.PHONE_NUMBER, TestUtil.SOFT_TOKEN_ID, TestUtil.BUNDLE_ID);
+		VerifyResponse ret = ver.softToken(TestUtil.PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}
@@ -160,7 +151,7 @@ public class VerifyTest {
 	public void vertifyRequestRegistration(){
 		Verify ver = initVerifyParams();
 		
-		VerifyResponse ret = ver.registration(TestUtil.PHONE_NUMBER, TestUtil.BUNDLE_ID);
+		VerifyResponse ret = ver.registration(TestUtil.PHONE_NUMBER);
 		assertNotNull(ret);
 		assertTrue(ret.errors.length == 0);
 	}	
