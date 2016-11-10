@@ -674,45 +674,78 @@ public class TeleSignRequest {
 		private String baseUrl, subResource, httpMethod;
 		private String httpsProtocol = "TLSv1.2", ciphers = "";
 		private int connectTimeout = 30000, readTimeout = 30000;
-		
+		/**
+		 * RequestBuilder class constructor. 
+		 * Contains all information required to call any/all of TeleSign web Services.
+		 * @param customerId [Required] A string representing your TeleSign Customer ID. 
+		 * This represents your TeleSign account number.
+		 * @param secret_key [Required] A string representing your TeleSign Secret Shared 
+		 * Key (available from the TeleSign Client Portal).
+		 */
 		public RequestBuilder(String customerId, String secretKey){
 			this.customerId = customerId;
 			this.secretKey = secretKey;
 		}
-		
+		/**
+		 * @param httpsProtocol [Optional]	Specify the protocol version to use. ex: TLSv1.1, TLSv1.2. default is TLSv1.2
+		 * @return
+		 */
 		public RequestBuilder httpsProtocol(String httpsProtocol){
 			if(null != httpsProtocol && !httpsProtocol.isEmpty())
 				this.httpsProtocol = httpsProtocol;
 			return this;
 		}
-		
+		/** 
+		 * @param ciphers
+		 * @return
+		 */
 		public RequestBuilder ciphers(String ciphers){
 			this.ciphers = ciphers;
 			return this;
 		}
-		
+		/** 
+		 * @param connectTimeout [Required] A integer representing connection timeout connecting to Telesign api.
+		 * @return
+		 */
 		public RequestBuilder connectTimeout(int connectTimeout){
 			if(connectTimeout > 0)
 				this.connectTimeout = connectTimeout;
 			return this;
 		}
-		
+		/**
+		 * @param readTimeout [Required] A integer representing read timeout 
+		 * while reading response returned from Telesign api.
+		 * @return
+		 */
 		public RequestBuilder readTimeout(int readTimeout){
 			if(readTimeout > 0)
 				this.readTimeout = readTimeout;
 			return this;
 		}
-
+		/** 	
+		 * @param baseUrl [Required] A string representing the Base URI. 
+		 * For TeleSign web services, this is https://rest.telesign.com/
+		 * @return
+		 */
 		public RequestBuilder baseUrl(String baseUrl){
 			this.baseUrl = baseUrl;
 			return this;
 		}
-		
+		/** 
+		 * @param subResource [Required] A string representing the name of the network resource. 
+		 * Each of the TeleSign web services is identified by its resource specifier.
+		 * @return
+		 */
 		public RequestBuilder subResource(String subResource){
 			this.subResource = subResource;
 			return this;
 		}
-		
+		/** 
+		 * @param method [Required] A string representing the method to be 
+		 * performed on	the resource. For TeleSign web services, 
+		 * this is either GET or POST.
+		 * @return
+		 */
 		public RequestBuilder httpMethod(String httpMethod){
 			this.httpMethod = httpMethod;
 			return this;
