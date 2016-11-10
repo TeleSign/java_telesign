@@ -48,7 +48,8 @@ public class TLSSocketFactory extends SSLSocketFactory {
 		return sslContext;
 	}
 	private void initTLSSocketFactory() throws KeyManagementException, NoSuchAlgorithmException, IOException{
-		if(ciphers.isEmpty())
+		// If ciphers have not been set or set as null then use the preferred protocols
+		if(null == ciphers || ciphers.isEmpty())
 			ciphers = PREFFERED_CIPHERS;
 		if(protocols.isEmpty())
 			protocols = PREFERRED_PROTOCOLS;
@@ -64,8 +65,8 @@ public class TLSSocketFactory extends SSLSocketFactory {
 		}
 		
 		sslSocketFactory = sslContext.getSocketFactory();
-		
-		if(!URL_HOST.equalsIgnoreCase(LOCALHOST))
+		// If unit test cases not running and ciphers are not null
+		if(!URL_HOST.equalsIgnoreCase(LOCALHOST) && null != ciphers)
 			cipherSuite = getCipherList();
 		protocolList = getProtocolList();
 	}

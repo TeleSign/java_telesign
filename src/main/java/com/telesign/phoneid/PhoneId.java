@@ -35,6 +35,7 @@ public class PhoneId {
 	private int connectTimeout;
 	private int readTimeout;
 	private String httpsProtocol;
+	private String ciphers;
 	//private boolean runTests;
 	private String url; // Not used yet
 	private Map<String, String> extra; 
@@ -61,6 +62,7 @@ public class PhoneId {
 		private int connectTimeout;
 		private int readTimeout;		
 		private String httpsProtocol;
+		private String ciphers;
 		private Map<String, String> extra;
 		private String url = "https://rest.telesign.com";
 		private String sessionId, originatingIp;
@@ -71,7 +73,14 @@ public class PhoneId {
 			this.customerId = customerId;
 			this.secretKey = secretKey;
 		}
-		
+		/** 
+		 * @param ciphers [optional] Please set the ciphers that you want to use. 
+		 * @return
+		 */
+		public PhoneIdBuilder ciphers(String ciphers){
+			this.ciphers = ciphers;
+			return this;
+		}
 		/**
 		 * Set TeleSign REST api url 
 		 * @param url
@@ -247,7 +256,13 @@ public class PhoneId {
 		this.readTimeout = readTimeout;
 		this.httpsProtocol = httpsProtocol;
 	}
-	
+	/**
+	 * The PhoneId class constructor. Once you instantiate a PhoneId object, you
+	 * can use it to make instance calls to <em>PhoneID Standard</em>,
+	 * <em>PhoneID Score</em>, <em>PhoneID Contact</em>, and
+	 * <em>PhoneID Live</em>, <em>simSwap</>, <em>CallForward</em> & <em>Deactivation</em>.
+	 * @param builder
+	 */
 	public PhoneId(PhoneIdBuilder builder) {
 		this.customerId = builder.customerId;
 		this.secretKey = builder.secretKey;
@@ -259,6 +274,7 @@ public class PhoneId {
 		this.originatingIp = builder.originatingIp;
 		this.sessionId = builder.sessionId;
 		this.ucid = builder.ucid;
+		this.ciphers = builder.ciphers;
 	}
 
 	/**
@@ -279,10 +295,11 @@ public class PhoneId {
 
 		try {
 			
-			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_STANDARD + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).
+					subResource(V1_PHONEID_STANDARD + phoneNo).httpsProtocol(httpsProtocol).ciphers(ciphers).
+					httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
-			if(null != ucid && !ucid.isEmpty())
+			if(null != ucid)
 				tr.addParam("ucid", ucid);
 			
 			if(null != extra)
@@ -327,9 +344,9 @@ public class PhoneId {
 		try {
 			
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_SCORE + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
-			
-			tr.addParam("ucid", ucid);
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			if(null != ucid)
+				tr.addParam("ucid", ucid);
 			
 			if(null != extra)
 				extraParams(tr);
@@ -377,9 +394,9 @@ public class PhoneId {
 		try {
 			
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_CONTACT + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
-			
-			tr.addParam("ucid", ucid);
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			if(null != ucid)
+				tr.addParam("ucid", ucid);
 			
 			if(null != extra)
 				extraParams(tr);
@@ -428,9 +445,9 @@ public class PhoneId {
 		try {
 			
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_LIVE + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
-			
-			tr.addParam("ucid", ucid);
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			if(null != ucid)
+				tr.addParam("ucid", ucid);
 			
 			if(null != extra)
 				extraParams(tr);
@@ -467,9 +484,9 @@ public class PhoneId {
 		try {
 			
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_SIM_SWAP_CHECK + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
-			
-			tr.addParam("ucid", ucid);
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			if(null != ucid)
+				tr.addParam("ucid", ucid);
 			
 			if(null != extra)
 				extraParams(tr);
@@ -509,9 +526,9 @@ public class PhoneId {
 		try {
 			
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_CALL_FORWARD + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
-			
-			tr.addParam("ucid", ucid);
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			if(null != ucid)
+				tr.addParam("ucid", ucid);
 			
 			if(null != extra)
 				extraParams(tr);
@@ -550,9 +567,9 @@ public class PhoneId {
 		try {
 			
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_PHONEID_NUMBER_DEACTIVATION + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
-			
-			tr.addParam("ucid", ucid);
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+			if(null != ucid)
+				tr.addParam("ucid", ucid);
 			
 			if(null != extra)
 				extraParams(tr);

@@ -66,7 +66,7 @@ public class VerifyTest {
 		
 		VerifyBuilder verifyBuilder = Verify.init(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
 		verifyBuilder.language(TestUtil.LANGUAGE).ucid(TestUtil.UCID).verifyCode(TestUtil.VERIFY_CODE).template(TestUtil.TEMPLATE);
-		verifyBuilder.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL);
+		verifyBuilder.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL).ciphers(TestUtil.CIPHERS);
 		verifyBuilder.callForwardAction(TestUtil.CALL_FORWARD_ACTION).redial(true).verifyMethod(TestUtil.VERIFY_METHOD);
 		verifyBuilder.extensionTemplate(TestUtil.EXTENSION_TEMPLATE).extensionType(Integer.parseInt(TestUtil.EXTENSION_TYPE));
 		verifyBuilder.ttsMessage(TestUtil.TTS_MESSAGE).pushMessage(TestUtil.PUSH_MESSAGE).smsMessage(TestUtil.SMS_MESSAGE);

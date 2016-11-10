@@ -76,7 +76,7 @@ public class PhoneIdTest {
 		}
 		
 		PhoneIdBuilder pidb = PhoneId.initPhoneId(TestUtil.CUSTOMER_ID, TestUtil.SECRET_KEY);
-		pidb.extra(TestUtil.EXTRA_MAP);
+		pidb.extra(TestUtil.EXTRA_MAP).ciphers(TestUtil.CIPHERS);
 		pidb.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL).url(TestUtil.testUrl);
 		pidb.originatingIp(TestUtil.ORIGINATING_IP).sessionId(TestUtil.SESSION_ID);
 		

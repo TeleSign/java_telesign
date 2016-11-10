@@ -32,7 +32,7 @@ public class Verify {
 	private int connectTimeout;
 	private int readTimeout;
 	private String httpsProtocol;
-	//private boolean runTests;
+	private String ciphers;
 	private String url; // Not used yet
 	private String mobileUrl;
 	
@@ -72,15 +72,14 @@ public class Verify {
 		this.connectTimeout = builder.connectTimeout;
 		this.readTimeout = builder.readTimeout;
 		this.httpsProtocol = builder.httpsProtocol;
-		//this.runTests = builder.runTests;
+		this.ciphers = builder.ciphers;
 		this.url = builder.url;
 		this.mobileUrl = builder.mobileUrl;
 		this.language = builder.language;
 		this.originatingIp = builder.originatingIp;
 		this.sessionId = builder.sessionId;
 		this.template = builder.template; 
-		this.verifyCode = builder.verifyCode;  
-		// verify call specific
+		this.verifyCode = builder.verifyCode;
 		this.verifyMethod = builder.verifyMethod;
 		this.extensionType = builder.extensionType;
 		this.extensionTemplate = builder.extensionTemplate;
@@ -106,7 +105,7 @@ public class Verify {
 		private int connectTimeout;
 		private int readTimeout;
 		private String httpsProtocol;
-
+		private String ciphers;		
 		private String url = "https://rest.telesign.com";
 		private String mobileUrl = "https://rest-mobile.telesign.com";
 		private String sessionId, originatingIp; 
@@ -149,6 +148,14 @@ public class Verify {
 		 */
 		public VerifyBuilder httpsProtocol(String httpsProtocol) {
 			this.httpsProtocol = httpsProtocol;
+			return this;
+		}
+		/** 
+		 * @param ciphers [optional] Please set the ciphers that you want to use. 
+		 * @return
+		 */
+		public VerifyBuilder ciphers(String ciphers){
+			this.ciphers = ciphers;
 			return this;
 		}
 		/**
@@ -470,7 +477,7 @@ public class Verify {
 		try {			
 			
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_VERIFY_SMS).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			String body = "phone_number=" + URLEncoder.encode(phoneNo, "UTF-8");
 			
 			if(language != null) {
@@ -538,7 +545,7 @@ public class Verify {
 
 		try {
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_VERIFY_CALL).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).httpMethod("POST").ciphers(ciphers).connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			String body = "phone_number=" + URLEncoder.encode(phoneNo, "UTF-8");
 			
 			if(language != null) {
@@ -626,7 +633,7 @@ public class Verify {
 		
 		try {
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_VERIFY + resource_id).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 
 			if (verifyCode != null)
 				tr.addParam("verify_code", verifyCode);
@@ -665,7 +672,7 @@ public class Verify {
 
 		try {
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(mobileUrl).subResource(V2_VERIFY_REGISTRATION + phoneNo).
-					httpsProtocol(httpsProtocol).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("GET").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			
 			if(null != bundleId && !bundleId.isEmpty()) {
 
@@ -706,7 +713,7 @@ public class Verify {
 
 		try {
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(url).subResource(V1_VERIFY_SMART).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			String body = "phone_number=" + URLEncoder.encode(phoneNo, "UTF-8");
 
 			if(null != ucid) {
@@ -784,10 +791,14 @@ public class Verify {
 
 		try {
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(mobileUrl).subResource(V2_VERIFY_PUSH).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 
 			String body = "phone_number=" + URLEncoder.encode(phoneNo, "UTF-8");			
 			
+			if(null != ucid) {
+
+				body += "&ucid=" + URLEncoder.encode(ucid, "UTF-8");
+			}
 			if(null == notificationType || notificationType.isEmpty()){
 				
 				notificationType = "SIMPLE";
@@ -843,7 +854,7 @@ public class Verify {
 
 		try {
 			TeleSignRequest tr = new RequestBuilder(customerId, secretKey).baseUrl(mobileUrl).subResource(V2_VERIFY_TOKEN).
-					httpsProtocol(httpsProtocol).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
+					httpsProtocol(httpsProtocol).ciphers(ciphers).httpMethod("POST").connectTimeout(connectTimeout).readTimeout(readTimeout).create();
 			String body = "phone_number=" + URLEncoder.encode(phoneNo, "UTF-8");
 
 			if(null != softTokenId) {
