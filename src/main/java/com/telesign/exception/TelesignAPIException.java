@@ -1,6 +1,7 @@
 package com.telesign.exception;
 
 /**
+ * The exception class for throwing TeleSign exceptions.
  * {@code TelesignAPIException}
  * @author Manmohan Kumar
  * @since 3 Aug,2016
