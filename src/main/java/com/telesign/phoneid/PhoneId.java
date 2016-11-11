@@ -68,14 +68,27 @@ public class PhoneId {
 		private String sessionId, originatingIp;
 		private String ucid;
 		
-		
+		/**
+		 * The PhoneIdBuilder class constructor. Once you instantiate a PhoneId object, you
+		 * can use it to make instance calls to <em>PhoneID Standard</em>,
+		 * <em>PhoneID Score</em>, <em>PhoneID Contact</em>, and
+		 * <em>PhoneID Live</em>.	 
+		 * @param customerId [Required] A string representing your TeleSign Customer ID.
+		 *            This represents your TeleSign account number.
+		 * @param secretKey	 [Required] A string representing your TeleSign Secret Key
+		 *            (available from the TeleSign Client Portal).
+		 */
 		public PhoneIdBuilder(String customerId, String secretKey){
 			this.customerId = customerId;
 			this.secretKey = secretKey;
 		}
 		/** 
+		 * Comma separated string containing list of ciphers, Ex: 
+		 * ciphers = "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_GCM_SHA256,
+		 * TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA256,
+		 * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_DSS_WITH_AES_128_CBC_SHA256".
 		 * @param ciphers [optional] Please set the ciphers that you want to use. 
-		 * @return
+		 * @return PhoneIdBuilder A {@link com.telesign.phoneid.PhoneId.PhoneIdBuilder} object.
 		 */
 		public PhoneIdBuilder ciphers(String ciphers){
 			this.ciphers = ciphers;
@@ -84,7 +97,7 @@ public class PhoneId {
 		/**
 		 * Set TeleSign REST api url 
 		 * @param url
-		 * @return VerifyBuilder A {@link com.telesign.verify.Verify.VerifyBuilder} object.
+		 * @return PhoneIdBuilder A {@link com.telesign.phoneid.PhoneId.PhoneIdBuilder} object.
 		 */
 		public PhoneIdBuilder url(String url){
 			this.url = url;
@@ -93,7 +106,7 @@ public class PhoneId {
 		/** 
 		 * Connection timeout is the timeout in making the initial connection; i.e. completing the TCP connection handshake.
 		 * @param connectTimeout int value representing connection timeout
-		 * @return VerifyBuilder A {@link com.telesign.verify.Verify.VerifyBuilder} object.
+		 * @return PhoneIdBuilder A {@link com.telesign.phoneid.PhoneId.PhoneIdBuilder} object.
 		 */
 		public PhoneIdBuilder connectTimeout(int connectTimeout) {
 			this.connectTimeout = connectTimeout;
@@ -103,7 +116,7 @@ public class PhoneId {
 		 * The read timeout is the timeout on waiting to read data. 
 		 * Specifically, if the server fails to send a byte [timeout] seconds after the last byte, a read timeout error will be raised.
 		 * @param readTimeout int value representing connection read timeout
-		 * @return VerifyBuilder A {@link com.telesign.verify.Verify.VerifyBuilder} object.
+		 * @return PhoneIdBuilder A {@link com.telesign.phoneid.PhoneId.PhoneIdBuilder} object.
 		 */
 		public PhoneIdBuilder readTimeout(int readTimeout) {
 			this.readTimeout = readTimeout;
@@ -111,7 +124,7 @@ public class PhoneId {
 		}
 		/** 
 		 * @param httpsProtocol The httpsProtocol you want to use.
-		 * @return VerifyBuilder A {@link com.telesign.verify.Verify.VerifyBuilder} object.
+		 * @return PhoneIdBuilder A {@link com.telesign.phoneid.PhoneId.PhoneIdBuilder} object.
 		 */
 		public PhoneIdBuilder httpsProtocol(String httpsProtocol) {
 			this.httpsProtocol = httpsProtocol;
@@ -119,7 +132,7 @@ public class PhoneId {
 		}
 		/** 
 		 * @param sessionId [Optional] Your end users session id. Set it to "null" if not sending session id.
-		 * @return VerifyBuilder A {@link com.telesign.verify.Verify.VerifyBuilder} object.
+		 * @return PhoneIdBuilder A {@link com.telesign.phoneid.PhoneId.PhoneIdBuilder} object.
 		 */
 		public PhoneIdBuilder sessionId(String sessionId){
 			this.sessionId = sessionId;
@@ -128,8 +141,8 @@ public class PhoneId {
 		/** 
 		 * @param originatingIp [Optional] Your end users IP Address. This value must be in the format 
 		 * defined by IETF in the Internet-Draft document titled Textual Representation of IPv4 and IPv6 
-		 * Addresses. Ex: originatingIp=192.168.123.456. Set it to null if not sending originating ip. 		 * 
-		 * @return VerifyBuilder A {@link com.telesign.verify.Verify.VerifyBuilder} object.
+		 * Addresses. Ex: originatingIp=192.168.123.456. Set it to null if not sending originating ip. 
+		 * @return PhoneIdBuilder A {@link com.telesign.phoneid.PhoneId.PhoneIdBuilder} object.
 		 */
 		public PhoneIdBuilder originatingIp(String originatingIp){
 			this.originatingIp = originatingIp;
@@ -137,7 +150,7 @@ public class PhoneId {
 		}
 		/** 
 		 * @param extra The Extra parameter you would like to send to Telesign to take advantage of unreleased features.
-		 * @return VerifyBuilder A {@link com.telesign.verify.Verify.VerifyBuilder} object.
+		 * @return PhoneIdBuilder A {@link com.telesign.phoneid.PhoneId.PhoneIdBuilder} object.
 		 */
 		public PhoneIdBuilder extra(Map<String, String> extra){
 			this.extra = extra;
@@ -146,13 +159,15 @@ public class PhoneId {
 		/** 
 		 * @param ucid [Required] A string the specifies one of the 
 		 * <a href="http://docs.telesign.com/rest/content/xt/xt-use-case-codes.html#xref-use-case-codes">Use Case Codes</a>.
-		 * @return VerifyBuilder A {@link com.telesign.verify.Verify.VerifyBuilder} object.
+		 * @return PhoneIdBuilder A {@link com.telesign.phoneid.PhoneId.PhoneIdBuilder} object.
 		 */
 		public PhoneIdBuilder ucid(String ucid){
 			this.ucid = ucid;
 			return this;
 		}
-		
+		/** 
+		 * @return PhoneId A {@link com.telesign.phoneid.PhoneId} object.
+		 */
 		public PhoneId create(){
 			PhoneId phoneIdObj = new PhoneId(this); 
 			return phoneIdObj;
@@ -474,6 +489,7 @@ public class PhoneId {
 	}
 
 	/**
+	 * This service provides data about potential sim_swaps associated with the specified phone number. 
 	 * Additionally following parameters are applicable: @param ucid, @param originatingIp, @param sessionId, @param extra
 	 * @param phoneNo 
 	 * @return PhoneIdSimSwapCheckResponse
