@@ -25,6 +25,8 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import com.telesign.exception.TelesignAPIException;
+
 public class TLSSocketFactory extends SSLSocketFactory {
 
 	public SSLContext sslContext;
@@ -166,8 +168,8 @@ public class TLSSocketFactory extends SSLSocketFactory {
 			
 			if(socket != null)
 				socket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new TelesignAPIException("IOException occurred while creating sockets: ", e);
 		}        
 
         List<String> protocolList = new ArrayList<String>();
