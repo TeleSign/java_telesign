@@ -118,7 +118,12 @@ public class Verify {
 		private String callerId, preference, ignoreRisk;
 		private String softTokenId, bundleId;
 		private String notificationType, notificationValue;
-				
+		/**
+		 * The VerifyBuilder class constructor.
+		 * Once you instantiate a Verify object, you can use it to make instance calls to <em>Verify SMS</em> and <em>Verify Call</em>.
+		 * @param customer_id	[Required]	A string containing your TeleSign Customer ID (your TeleSign account number).
+		 * @param secret_key	[Required]	A string containing your TeleSign Secret Key (a bese64-encoded string valu, available from the TeleSign Client Portal).
+		 */
 		public VerifyBuilder(String customerId, String secretKey){
 			this.customerId = customerId;
 			this.secretKey = secretKey;
@@ -151,6 +156,10 @@ public class Verify {
 			return this;
 		}
 		/** 
+		 * Comma separated string containing list of ciphers, Ex: ciphers = 
+		 * "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_GCM_SHA256,
+		 * TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA256,
+		 * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_DSS_WITH_AES_128_CBC_SHA256"
 		 * @param ciphers [optional] Please set the ciphers that you want to use. 
 		 * @return
 		 */
@@ -382,7 +391,10 @@ public class Verify {
 		public VerifyBuilder notificationValue(String notificationValue){
 			this.notificationValue = notificationValue;
 			return this;
-		}		
+		}
+		/** 
+		 * @return Verify A {@link com.telesign.verify.Verify} object.
+		 */
 		public Verify create(){
 			Verify verifyObj = new Verify(this);
 			return verifyObj;
@@ -595,7 +607,7 @@ public class Verify {
 
 				}
 			}
-			if(ttsMessage != null & !ttsMessage.isEmpty())
+			if(ttsMessage != null && !ttsMessage.isEmpty())
 				body += "&tts_message=" + URLEncoder.encode(ttsMessage, "UTF-8");
 			
 			if(null != ucid) {
@@ -663,6 +675,7 @@ public class Verify {
 	}	
 
 	/**
+	 * The TeleSign Mobile Device Registration web service allows you to query the current state of the Push Verify application registration.
 	 * Additionally following parameters are applicable: @param extra, @param originatingId, @param sessionId
 	 * @param phoneNo 		   [Required] Your end user's phone number, including the country code.	 * 
 	 * @return  A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
@@ -704,6 +717,7 @@ public class Verify {
 	}
 		
 	/**
+	 * Calls the specified phone number, and using speech synthesis, speaks the verification code to the user.
 	 * Additionally following parameters are applicable: @param ucid, @param callerId, @param language, @param verifyCode, @param preference, ignoreRisk, ttsMessage, pushMessage, smsMessage, originatingIp, sessionId, extra	 
 	 * @param phoneNo [Required] Your end user's phone number, including the country code.	 	 
 	 * @return	A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
@@ -780,6 +794,7 @@ public class Verify {
 	}	
 	
 	/**
+	 * The push method sends a push notification containing the verification code to the specified phone number (supported for mobile phones only).
 	 * Additionally following parameters are applicable: @param notificationType, @param notificationValue, @param bundleId, @param pushMessage, @param originatingId, @param sessionId
 	 * @param phoneNo 		 [Required] The phone number of the mobile device that you want to send push notifications to. 
 	 * 								  		The phone number must include its associated country code (1 for North America). 
@@ -845,6 +860,10 @@ public class Verify {
 	}	
 	
 	/**
+	 * The TeleSign Mobile Device Soft Token Notification web service allows you to anticipate when your users need to use their soft token to 
+	 * generate a time-sensitive one-time passcode. You can use this web service to preemptively send them a push notification that initializes 
+	 * their on-device TeleSign AuthID application with the right soft token. When they open the notification, the soft token launches ready for 
+	 * them to use.
 	 * Additionally following parameters are applicable: @param softTokenId, @param verifyCode, @param bundleId, @param originatingIp, @param sessionId
 	 * @param phoneNo   [Required] The phone number for the Verify Soft Token request, including country code. For example, phone_number=13105551212.
 	 * @return A {@link com.telesign.verify.response.VerifyResponse} object, which contains the JSON-formatted response body from the TeleSign server.
