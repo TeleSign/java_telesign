@@ -47,11 +47,10 @@ public class PhoneIdTest {
 	
 	@Test
 	public void phoneIdError() {
-		PhoneId pid;
-		if(!TestUtil.timeouts)
-			pid = new PhoneId("Junk" , "Fake");
-		else 
-			pid = new PhoneId("Junk" , "Fake", TestUtil.connectTimeout, TestUtil.readTimeout);
+		PhoneIdBuilder pidb = PhoneId.initPhoneId("Junk" , "Fake");
+		pidb.connectTimeout(TestUtil.connectTimeout).readTimeout(TestUtil.readTimeout).httpsProtocol(TestUtil.HTTPS_PROTOCOL);		
+		
+		PhoneId pid = pidb.create();
 		
 		PhoneIdStandardResponse ret = pid.standard("13102224444");
 		assertNotNull(ret);
