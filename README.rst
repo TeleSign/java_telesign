@@ -54,10 +54,10 @@ With just two classes, **telesign.api** abstracts much of the complexity of the 
 |                              |     In addition to the information retrieved by *standard*, this         |
 |                              |     service provides actionable data associated with the specified phone |
 |                              |     number.                                                              |
-|                              | *simSwap*														          |
+|                              | *simSwap*                                                                |
 |                              | 	   In addition to the information retrieved by *standard*, this       |
 |                              | 	   service provides data about potential sim_swaps associated         |
-|                              | 	   with the specified phone number. 				                  |
+|                              | 	   with the specified phone number.                                   |
 |                              | *callForward* 														      |
 |                              | 	   In addition to the information retrieved by *standard*, this       |
 |                              | 	   service provides call forwarding information for the specified     | 
