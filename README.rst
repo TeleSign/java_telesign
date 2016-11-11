@@ -55,13 +55,13 @@ With just two classes, **telesign.api** abstracts much of the complexity of the 
 |                              |     service provides actionable data associated with the specified phone |
 |                              |     number.                                                              |
 |                              | *simSwap*                                                                |
-|                              | 	   In addition to the information retrieved by *standard*, this       |
-|                              | 	   service provides data about potential sim_swaps associated         |
-|                              | 	   with the specified phone number.                                   |
-|                              | *callForward* 														      |
-|                              | 	   In addition to the information retrieved by *standard*, this       |
-|                              | 	   service provides call forwarding information for the specified     | 
-|                              | 	   mobile number.                                                     |
+|                              |     In addition to the information retrieved by *standard*, this         |
+|                              |     service provides data about potential sim_swaps associated           |
+|                              |     with the specified phone number.                                     |
+|                              | *callForward*                                                            |
+|                              |     In addition to the information retrieved by *standard*, this         |
+|                              |     service provides call forwarding information for the specified       | 
+|                              |     mobile number.                                                       |
 |                              | *deactivation*                                                           |
 |                              |     In addition to the information retrieved by *standard*, this service |
 |                              |     provides information on number deactivation for the phone number     |
@@ -90,24 +90,24 @@ With just two classes, **telesign.api** abstracts much of the complexity of the 
 |                              |     Retrieves the verification result. You make this call in your web    | 
 |                              |     application after users complete the authentication transaction      | 
 |                              |     (using either a *call* or *sms*).                                    | 
-|                              | *registration*   									                      |
+|                              | *registration*                                                           |
 |                              |     The TeleSign Mobile Device Registration web service allows you to    |
 |                              |     query the current state of the Push Verify application registration. |
-|                              | *smartVerify* 								        			    	  |	
+|                              | *smartVerify*                                                            |	
 |                              |     Calls the specified phone number, and using speech synthesis, speaks |
-|                              |     the verification code to the user. 		              			  |
-|                              | *push*     									        				  |
+|                              |     the verification code to the user.                                   |
+|                              | *push*                                                                   |
 |                              |     The *push* method sends a push notification containing the           |
 |                              |     verification code to the specified phone number (supported for       |
-|                              |     mobile phones only).      					        				  |
-|                              | *softToken*    									    				  |
+|                              |     mobile phones only).                                                 |
+|                              | *softToken*                                                              |
 |                              |     The TeleSign Mobile Device Soft Token Notification web service       |
 |                              |     allows you to anticipate when your users need to use their soft token| 
 |                              |     to generate a time-sensitive one-time passcode. You can use this web |
-|                              |     service to preemptively send them a push notification that 		  |
+|                              |     service to preemptively send them a push notification that           |
 |                              |     initializes their on-device TeleSign AuthID application with the     |
 |                              |     right soft token. When they open the notification, the soft token    |
-|                              |     launches ready for them to use.					                  |
+|                              |     launches ready for them to use.                                      |
 |                              |                                                                          |
 +------------------------------+--------------------------------------------------------------------------+ 
 
