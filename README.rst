@@ -33,7 +33,7 @@ With just two classes, **telesign.api** abstracts much of the complexity of the 
 +------------------------------+--------------------------------------------------------------------------+ 
 | Java Class                   | Description                                                              | 
 +==============================+==========================================================================+ 
-| com.telesign.phoneid.PhoneId | The **PhoneId** class exposes four services that each provide            | 
+| com.telesign.phoneid.PhoneId | The **PhoneId** class exposes seven services that each provide           | 
 |                              | information about a specified phone number.                              | 
 |                              |                                                                          | 
 |                              | *standard*                                                               | 
@@ -68,7 +68,7 @@ With just two classes, **telesign.api** abstracts much of the complexity of the 
 |                              |     provided.                                                            |
 |                              |                                                                          |
 +------------------------------+--------------------------------------------------------------------------+ 
-| com.telesign.verify.Verify   | The **Verify** class exposes three services for sending users a          | 
+| com.telesign.verify.Verify   | The **Verify** class exposes five services for sending users a           | 
 |                              | verification token (a three to five-digit number). You can use this      | 
 |                              | mechanism to test whether you can reach users at the phone number        | 
 |                              | they supplied, or you can have them use the token to authenticate        | 
