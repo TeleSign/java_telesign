@@ -47,7 +47,15 @@ public final class TestUtil {
 	public static Map<String, String> EXTRA_MAP = new HashMap<String, String>();
 	public static String EXTENSION_TEMPLATE;
 	public static String EXTENSION_TYPE;
-	public static String VERIFY_METHOD; 
+	public static String VERIFY_METHOD;
+	
+	public static String FRAUD_TYPE, OCCURRED_AT;
+	public static String VERIFIED_BY;
+	public static String VERIFIED_AT;
+	public static String DISCOVERED_AT;
+	public static String FRAUD_IP;
+	public static String IMPACT_TYPE;
+	public static String IMPACT;
 		
 	public static void initProperties() throws IOException {
 		Properties props = new Properties();
@@ -90,6 +98,15 @@ public final class TestUtil {
 		EXTENSION_TEMPLATE = props.getProperty("test.extensionTemplate");
 		EXTENSION_TYPE = props.getProperty("test.extensionType");
 		VERIFY_METHOD = props.getProperty("test.verifyMethod");
+		
+		FRAUD_TYPE = props.getProperty("test.fraud_type");
+		OCCURRED_AT = props.getProperty("test.occurred_at");
+		VERIFIED_BY = props.getProperty("test.verified_by");
+		VERIFIED_AT = props.getProperty("test.verified_at");
+		DISCOVERED_AT = props.getProperty("test.discovered_at");
+		FRAUD_IP = props.getProperty("test.fraud_ip");
+		IMPACT_TYPE = props.getProperty("test.impact_type");
+		IMPACT = props.getProperty("test.impact");
 		runTests = Boolean.parseBoolean(props.getProperty("test.runTests", "true"));
 		
 		
@@ -241,6 +258,46 @@ public final class TestUtil {
 		}
 		if(null == VERIFY_METHOD || VERIFY_METHOD.isEmpty()) {
 			System.out.println("VERIFY_METHOD not set. Please set the \"test.verifyMethod\" property in the properties file");
+			pass = true;
+		}
+				
+		if(null == FRAUD_TYPE || FRAUD_TYPE.isEmpty()){
+			System.out.println("FRAUD_TYPE is not set. Please set the \"test.fraud_type\" property in the properties file");
+			pass = false;
+		}
+		
+		if(null == OCCURRED_AT || OCCURRED_AT.isEmpty()){
+			System.out.println("OCCURRED_AT is not set. Please set the \"test.occurred_at\" property in the properties file");
+			pass = false;
+		}
+		
+		if(null == VERIFIED_BY || VERIFIED_BY.isEmpty()){
+			System.out.println("VERIFIED_BY is not set. Please set the \"test.verified_by\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == VERIFIED_AT || VERIFIED_AT.isEmpty()){
+			System.out.println("VERIFIED_AT is not set. Please set the \"test.verified_at\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == DISCOVERED_AT || DISCOVERED_AT.isEmpty()){
+			System.out.println("DISCOVERED_AT is not set. Please set the \"test.discovered_at\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == FRAUD_IP || FRAUD_IP.isEmpty()){
+			System.out.println("FRAUD_IP is not set. Please set the \"test.fraud_ip\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == IMPACT_TYPE || IMPACT_TYPE.isEmpty()){
+			System.out.println("IMPACT_TYPE is not set. Please set the \"test.impact_type\" property in the properties file");
+			pass = true;
+		}
+		
+		if(null == IMPACT || IMPACT.isEmpty()){
+			System.out.println("IMPACT is not set. Please set the \"test.impact\" property in the properties file");
 			pass = true;
 		}
 		

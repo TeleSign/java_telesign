@@ -307,6 +307,7 @@ public class Verify {
 		 * @return VerifyBuilder A {@link com.telesign.verify.Verify.VerifyBuilder} object.
 		 */
 		public VerifyBuilder redial(boolean redial){
+			this.redial = redial;
 			return this;
 		}
 		/**
