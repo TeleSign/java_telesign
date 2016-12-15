@@ -54,7 +54,10 @@ With just two classes, **telesign.api** abstracts much of the complexity of the 
 |                              |     In addition to the information retrieved by *standard*, this         |
 |                              |     service provides actionable data associated with the specified phone |
 |                              |     number.                                                              |
-|                              |                                                                          |
+|                              | *number_deactivation*                                                    |
+|                              |     In addition to the information retrieved by *standard*, this service |
+|                              |     provides information on number deactivation for the phone number     |
+|                              |     provided.                                                            |
 +------------------------------+--------------------------------------------------------------------------+ 
 | com.telesign.verify.Verify   | The **Verify** class exposes three services for sending users a          | 
 |                              | verification token (a three to five-digit number). You can use this      | 
@@ -79,7 +82,24 @@ With just two classes, **telesign.api** abstracts much of the complexity of the 
 |                              |     application after users complete the authentication transaction      | 
 |                              |     (using either a *call* or *sms*).                                    | 
 |                              |                                                                          | 
-+------------------------------+--------------------------------------------------------------------------+ 
++------------------------------+--------------------------------------------------------------------------+
+| com.telesign.api.Telebureau  | The **Telebureau** class exposes services for creating, retrieving,      |
+|                              | updating and deleting Telebureau fraud events. You can use this          |
+|                              | mechanism to test whether you can reach Telebureau services.             |
+|                              |                                                                          |
+|                              | *create*                                                                 |
+|                              |   Creates a Telebureau event corresponding to supplied data.             |
+|                              |                                                                          |
+|                              | *retrieve*                                                               |
+|                              |   Retrieves the fraud event status. You make this call in your web       |
+|                              |   application after completion of submit/update transaction for a        |
+|                              |   Telebureau event.                                                      |
+|                              |                                                                          |
+|                              | *delete*                                                                 |
+|                              |   Deletes a previously submitted fraud event. You make this call in your |
+|                              |   web application after completion of submit/update transaction for a    |
+|                              |   Telebureau event.                                                      |
++------------------------------+--------------------------------------------------------------------------+
 
 Java Code Example: To Verify a Call
 -------------------------------------
