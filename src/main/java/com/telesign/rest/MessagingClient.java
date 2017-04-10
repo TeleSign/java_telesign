@@ -3,6 +3,10 @@ package com.telesign.rest;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * TeleSign's Messaging API allows you to easily send SMS messages. You can send alerts, reminders, and notifications,
+ * or you can send verification messages containing one-time passcodes (OTP).
+ */
 public class MessagingClient extends RestClient {
 
     private static final String MESSAGING_RESOURCE = "/v1/messaging";
@@ -12,6 +16,11 @@ public class MessagingClient extends RestClient {
         super(customerId, secretKey);
     }
 
+    /**
+     * Send a message to the target phone_number.
+     * <p>
+     * See https://developer.telesign.com/v2.0/docs/messaging-api for detailed API documentation.
+     */
     public TelesignResponse message(String phoneNumber, String message, String messageType, Map<String, String> params) {
 
         if (params == null) {
@@ -25,6 +34,11 @@ public class MessagingClient extends RestClient {
         return this.post(MESSAGING_RESOURCE, params);
     }
 
+    /**
+     * Retrieves the current status of the message.
+     * <p>
+     * See https://developer.telesign.com/v2.0/docs/messaging-api for detailed API documentation.
+     */
     public TelesignResponse status(String referenceId, Map<String, String> params) {
 
         return this.get(String.format(MESSAGING_STATUS_RESOURCE, referenceId), params);

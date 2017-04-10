@@ -16,6 +16,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The TeleSign RestClient is a generic HTTP REST client that can be extended to make requests against any of
+ * TeleSign's REST API endpoints.
+ * <p>
+ * See https://developer.telesign.com for detailed API documentation.
+ */
 public class RestClient {
 
     private static final String userAgent = String.format("TeleSignSDK/java-%s Java/%s %s",
@@ -38,6 +44,19 @@ public class RestClient {
         this(customerId, secretKey, apiHost, null, null, null, null, null, null);
     }
 
+    /**
+     * TeleSign RestClient useful for making generic RESTful requests against our API.
+     *
+     * @param customerId     Your customer_id string associated with your account.
+     * @param secretKey      Your secret_key string associated with your account.
+     * @param apiHost        (optional) Override the default apiHost to target another endpoint.
+     * @param connectTimeout (optional) connectTimeout passed into OkHttp.
+     * @param readTimeout    (optional) readTimeout passed into OkHttp.
+     * @param writeTimeout   (optional) writeTimeout passed into OkHttp.
+     * @param proxy          (optional) proxy passed into OkHttp.
+     * @param proxyUserName  (optional) proxyUserName used to create an Authenticator passed into OkHttp.
+     * @param proxyPassword  (optional) proxyPassword used to create an Authenticator passed into OkHttp.
+     */
     public RestClient(String customerId,
                       String secretKey,
                       String apiHost,
@@ -95,6 +114,9 @@ public class RestClient {
         this.client = okHttpClientBuilder.build();
     }
 
+    /**
+     * A simple HTTP Response object to abstract the underlying OkHttp library response.
+     */
     public static class TelesignResponse {
 
         public int statusCode;
@@ -132,6 +154,25 @@ public class RestClient {
         }
     }
 
+    /**
+     * Generates the TeleSign REST API headers used to authenticate requests.
+     * <p>
+     * Creates the canonicalized stringToSign and generates the HMAC signature. This is used to authenticate requests
+     * against the TeleSign REST API.
+     * <p>
+     * See https://developer.telesign.com/docs/authentication-1 for detailed API documentation.
+     *
+     * @param customerId       Your account customer_id.
+     * @param secretKey        Your account secret_key.
+     * @param methodName       The HTTP method name of the request as a upper case string, should be one of 'POST', 'GET',
+     *                         'PUT' or 'DELETE'.
+     * @param resource         The partial resource URI to perform the request against.
+     * @param urlEncodedFields URL encoded HTTP body to perform the HTTP request with.
+     * @param dateRfc2616      (optional) The date and time of the request formatted in rfc 2616.
+     * @param nonce            (optional) A unique cryptographic nonce for the request.
+     * @param userAgent        (optional) User Agent associated with the request.
+     * @return Map of HTTP headers to be applied to the request.
+     */
     public static Map<String, String> generateTelesignHeaders(String customerId,
                                                               String secretKey,
                                                               String methodName,
@@ -157,31 +198,31 @@ public class RestClient {
 
             String authMethod = "HMAC-SHA256";
 
-            StringBuilder string_to_sign_builder = new StringBuilder();
+            StringBuilder stringToSignBuilder = new StringBuilder();
 
-            string_to_sign_builder.append(String.format("%s", methodName));
+            stringToSignBuilder.append(String.format("%s", methodName));
 
-            string_to_sign_builder.append(String.format("\n%s", contentType));
+            stringToSignBuilder.append(String.format("\n%s", contentType));
 
-            string_to_sign_builder.append(String.format("\n%s", dateRfc2616));
+            stringToSignBuilder.append(String.format("\n%s", dateRfc2616));
 
-            string_to_sign_builder.append(String.format("\nx-ts-auth-method:%s", authMethod));
+            stringToSignBuilder.append(String.format("\nx-ts-auth-method:%s", authMethod));
 
-            string_to_sign_builder.append(String.format("\nx-ts-nonce:%s", nonce));
+            stringToSignBuilder.append(String.format("\nx-ts-nonce:%s", nonce));
 
             if (!contentType.isEmpty() && !urlEncodedFields.isEmpty()) {
-                string_to_sign_builder.append(String.format("\n%s", urlEncodedFields));
+                stringToSignBuilder.append(String.format("\n%s", urlEncodedFields));
             }
 
-            string_to_sign_builder.append(String.format("\n%s", resource));
+            stringToSignBuilder.append(String.format("\n%s", resource));
 
-            String string_to_sign = string_to_sign_builder.toString();
+            String stringToSign = stringToSignBuilder.toString();
 
             String signature;
-            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            Mac sha256HMAC = Mac.getInstance("HmacSHA256");
             SecretKeySpec secret_key = new SecretKeySpec(Base64.getDecoder().decode(secretKey), "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-            signature = Base64.getEncoder().encodeToString(sha256_HMAC.doFinal(string_to_sign.getBytes()));
+            sha256HMAC.init(secret_key);
+            signature = Base64.getEncoder().encodeToString(sha256HMAC.doFinal(stringToSign.getBytes()));
 
             String authorization = String.format("TSA %s:%s", customerId, signature);
 
@@ -202,26 +243,62 @@ public class RestClient {
         }
     }
 
+    /**
+     * Generic TeleSign REST API POST handler.
+     *
+     * @param resource The partial resource URI to perform the request against.
+     * @param params   Body params to perform the POST request with.
+     * @return The TelesignResponse for the request.
+     */
     public TelesignResponse post(String resource, Map<String, String> params) {
 
         return this.execute("POST", resource, params);
     }
 
+    /**
+     * Generic TeleSign REST API GET handler.
+     *
+     * @param resource The partial resource URI to perform the request against.
+     * @param params   Body params to perform the POST request with.
+     * @return The TelesignResponse for the request.
+     */
     public TelesignResponse get(String resource, Map<String, String> params) {
 
         return this.execute("GET", resource, params);
     }
 
+    /**
+     * Generic TeleSign REST API PUT handler.
+     *
+     * @param resource The partial resource URI to perform the request against.
+     * @param params   Body params to perform the POST request with.
+     * @return The TelesignResponse for the request.
+     */
     public TelesignResponse put(String resource, Map<String, String> params) {
 
         return this.execute("PUT", resource, params);
     }
 
+    /**
+     * Generic TeleSign REST API DELETE handler.
+     *
+     * @param resource The partial resource URI to perform the request against.
+     * @param params   Body params to perform the POST request with.
+     * @return The TelesignResponse for the request.
+     */
     public TelesignResponse delete(String resource, Map<String, String> params) {
 
         return this.execute("DELETE", resource, params);
     }
 
+    /**
+     * Generic TeleSign REST API request handler.
+     *
+     * @param methodName The HTTP method name, as an upper case string.
+     * @param resource   The partial resource URI to perform the request against.
+     * @param params     Body params to perform the POST request with.
+     * @return The TelesignResponse for the request.
+     */
     private TelesignResponse execute(String methodName, String resource, Map<String, String> params) {
 
         try {

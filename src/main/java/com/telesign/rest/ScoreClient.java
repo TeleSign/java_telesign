@@ -3,6 +3,9 @@ package com.telesign.rest;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Score provides risk information about a specified phone number.
+ */
 public class ScoreClient extends RestClient {
 
     private static final String SCORE_RESOURCE = "/v1/score/%s";
@@ -12,6 +15,12 @@ public class ScoreClient extends RestClient {
         super(customerId, secretKey);
     }
 
+    /**
+     * Score is an API that delivers reputation scoring based on phone number intelligence, traffic patterns, machine
+     * learning, and a global data consortium.
+     * <p>
+     * See https://developer.telesign.com/docs/rest_api-phoneid-score for detailed API documentation.
+     */
     public TelesignResponse score(String phoneNumber, String accountLifecycleEvent, Map<String, String> params) {
 
         if (params == null) {
