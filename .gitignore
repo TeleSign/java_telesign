@@ -1,20 +1,17 @@
-# Build & Release Folders.
+# Gradle
+.gradle/
+build/
+
+# Eclipse
+.classpath
+.project
+.settings/
 bin/
-doc/
-# Package Files
-.war
-.ear
-.swp
 
-# Compiled Java files.
-.class
-
-# Experimental Bits
-# The output from an XML Doclet.
-jel/
-
-# Properties File for Tests
-test.properties
-
-# IntelliJIDEA
+# IntelliJ IDEA
 .idea/
+*.iml
+*.iws
+
+# Other
+.DS_Store
