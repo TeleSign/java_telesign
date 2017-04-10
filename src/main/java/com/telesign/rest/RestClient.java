@@ -30,22 +30,44 @@ public class RestClient {
 
     public RestClient(String customerId, String secretKey) {
 
-        this(customerId, secretKey, "https://rest-api.telesign.com", 10, 10, 10, null, null, null);
+        this(customerId, secretKey, null, null, null, null, null, null, null);
+    }
+
+    public RestClient(String customerId, String secretKey, String apiHost) {
+
+        this(customerId, secretKey, apiHost, null, null, null, null, null, null);
     }
 
     public RestClient(String customerId,
                       String secretKey,
                       String apiHost,
-                      long connectTimeout,
-                      long readTimeout,
-                      long writeTimeout,
+                      Long connectTimeout,
+                      Long readTimeout,
+                      Long writeTimeout,
                       Proxy proxy,
                       String proxyUserName,
                       String proxyPassword) {
 
         this.customerId = customerId;
         this.secretKey = secretKey;
-        this.apiHost = apiHost;
+
+        if (apiHost == null) {
+            this.apiHost = "https://rest-api.telesign.com";
+        } else {
+            this.apiHost = apiHost;
+        }
+
+        if (connectTimeout == null) {
+            connectTimeout = 10L;
+        }
+
+        if (readTimeout == null) {
+            readTimeout = 10L;
+        }
+
+        if (writeTimeout == null) {
+            writeTimeout = 10L;
+        }
 
         OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(connectTimeout, TimeUnit.SECONDS)
@@ -117,7 +139,7 @@ public class RestClient {
                                                               String urlEncodedFields,
                                                               String dateRfc2616,
                                                               String nonce,
-                                                              String userAgent) throws RestClient.TelesignException {
+                                                              String userAgent) {
 
         try {
             if (dateRfc2616 == null) {
