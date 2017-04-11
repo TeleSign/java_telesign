@@ -19,7 +19,11 @@ public class SendVoiceCallFrench {
         HashMap<String, String> params = new HashMap<>();
         params.put("voice", "f-FR-fr");
 
-        VoiceClient voiceClient = new VoiceClient(customerId, secretKey);
-        RestClient.TelesignResponse telesignResponse = voiceClient.call(phoneNumber, message, messageType, params);
+        try {
+            VoiceClient voiceClient = new VoiceClient(customerId, secretKey);
+            RestClient.TelesignResponse telesignResponse = voiceClient.call(phoneNumber, message, messageType, params);
+        } catch (RestClient.TelesignException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -15,10 +15,40 @@ repositories {
 }
 
 dependencies {
-    compile 'com.squareup.okhttp3:okhttp:3.6.0'
-    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.squareup.okhttp3:okhttp:3.3+'
+    compile 'com.google.code.gson:gson:2.7+'
 
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'junit', name: 'junit', version: '4+'
 }
 
 apply plugin: 'idea'
+apply plugin: 'maven'
+
+task writeNewPom {
+    doLast {
+        pom {
+            project {
+                packaging 'pom'
+                url 'https://github.com/TeleSign/java_telesign'
+                organization {
+                    name 'telesign'
+                }
+                description 'The TeleSign Java SDK is a Java library that provides an interface to TeleSign Web ' +
+                        'Services. TeleSign Web Services conform to the REST Web Service Design Model. Services are ' +
+                        'exposed as URI-addressable resources through the set of RESTful procedures in our TeleSign ' +
+                        'REST API.'
+                inceptionYear '2010'
+                licenses {
+                    license {
+                        name 'MIT License'
+                        url 'http://www.opensource.org/licenses/mit-license.php'
+                    }
+                    license {
+                        name 'Apache Software License (ASL) version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+            }
+        }.writeTo("$buildDir/pom.xml")
+    }
+}

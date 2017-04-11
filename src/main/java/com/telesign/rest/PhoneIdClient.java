@@ -10,7 +10,7 @@ public class PhoneIdClient extends RestClient {
 
     private static final String PHONEID_RESOURCE = "/v1/phoneid/%s";
 
-    public PhoneIdClient(String customerId, String secretKey) {
+    public PhoneIdClient(String customerId, String secretKey) throws TelesignException {
         super(customerId, secretKey);
     }
 
@@ -20,7 +20,7 @@ public class PhoneIdClient extends RestClient {
      * <p>
      * See https://developer.telesign.com/docs/phoneid-api for detailed API documentation.
      */
-    public TelesignResponse phoneid(String phoneNumber, Map<String, String> params) {
+    public TelesignResponse phoneid(String phoneNumber, Map<String, String> params) throws TelesignException {
 
         return this.post(String.format(PHONEID_RESOURCE, phoneNumber), params);
     }

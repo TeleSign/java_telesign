@@ -12,14 +12,18 @@ public class GetStatusByExternalId {
 
         String externalId = "external_id";
 
-        AutoVerifyClient autoverifyClient = new AutoVerifyClient(customerId, secretKey);
-        RestClient.TelesignResponse telesignResponse = autoverifyClient.status(externalId, null);
+        try {
+            AutoVerifyClient autoverifyClient = new AutoVerifyClient(customerId, secretKey);
+            RestClient.TelesignResponse telesignResponse = autoverifyClient.status(externalId, null);
 
-        if (telesignResponse.ok) {
-            System.out.println(String.format("AutoVerify transaction with external_id %s has status code %s and status description %s.",
-                    externalId,
-                    telesignResponse.json.getAsJsonObject("status").get("code").getAsString(),
-                    telesignResponse.json.getAsJsonObject("status").get("description").getAsString()));
+            if (telesignResponse.ok) {
+                System.out.println(String.format("AutoVerify transaction with external_id %s has status code %s and status description %s.",
+                        externalId,
+                        telesignResponse.json.getAsJsonObject("status").get("code").getAsString(),
+                        telesignResponse.json.getAsJsonObject("status").get("description").getAsString()));
+            }
+        } catch (RestClient.TelesignException e) {
+            e.printStackTrace();
         }
     }
 }

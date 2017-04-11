@@ -10,6 +10,8 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.Proxy;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,12 +36,12 @@ public class RestClient {
     private String apiHost;
     private OkHttpClient client;
 
-    public RestClient(String customerId, String secretKey) {
+    public RestClient(String customerId, String secretKey) throws TelesignException {
 
         this(customerId, secretKey, null, null, null, null, null, null, null);
     }
 
-    public RestClient(String customerId, String secretKey, String apiHost) {
+    public RestClient(String customerId, String secretKey, String apiHost) throws TelesignException {
 
         this(customerId, secretKey, apiHost, null, null, null, null, null, null);
     }
@@ -54,7 +56,7 @@ public class RestClient {
      * @param readTimeout    (optional) readTimeout passed into OkHttp.
      * @param writeTimeout   (optional) writeTimeout passed into OkHttp.
      * @param proxy          (optional) proxy passed into OkHttp.
-     * @param proxyUserName  (optional) proxyUserName used to create an Authenticator passed into OkHttp.
+     * @param proxyUsername  (optional) proxyUserName used to create an Authenticator passed into OkHttp.
      * @param proxyPassword  (optional) proxyPassword used to create an Authenticator passed into OkHttp.
      */
     public RestClient(String customerId,
@@ -64,8 +66,8 @@ public class RestClient {
                       Long readTimeout,
                       Long writeTimeout,
                       Proxy proxy,
-                      String proxyUserName,
-                      String proxyPassword) {
+                      String proxyUsername,
+                      String proxyPassword) throws TelesignException {
 
         this.customerId = customerId;
         this.secretKey = secretKey;
@@ -88,30 +90,35 @@ public class RestClient {
             writeTimeout = 10L;
         }
 
-        OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
-                .connectTimeout(connectTimeout, TimeUnit.SECONDS)
-                .readTimeout(readTimeout, TimeUnit.SECONDS)
-                .writeTimeout(writeTimeout, TimeUnit.SECONDS);
+        try {
 
-        if (proxy != null) {
-            okHttpClientBuilder.proxy(proxy);
+            OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
+                    .connectTimeout(connectTimeout, TimeUnit.SECONDS)
+                    .readTimeout(readTimeout, TimeUnit.SECONDS)
+                    .writeTimeout(writeTimeout, TimeUnit.SECONDS);
 
-            if (proxyUserName != null && proxyPassword != null) {
+            if (proxy != null) {
+                okHttpClientBuilder.proxy(proxy);
 
-                Authenticator proxyAuthenticator = new Authenticator() {
-                    public Request authenticate(Route route, Response response) throws IOException {
-                        String credential = Credentials.basic(proxyUserName, proxyPassword);
-                        return response.request().newBuilder()
-                                .header("Proxy-Authorization", credential)
-                                .build();
-                    }
-                };
+                if (proxyUsername != null && proxyPassword != null) {
 
-                okHttpClientBuilder.proxyAuthenticator(proxyAuthenticator);
+                    Authenticator proxyAuthenticator = new Authenticator() {
+                        public Request authenticate(Route route, Response response) throws IOException {
+                            String credential = Credentials.basic(proxyUsername, proxyPassword);
+                            return response.request().newBuilder()
+                                    .header("Proxy-Authorization", credential)
+                                    .build();
+                        }
+                    };
+
+                    okHttpClientBuilder.proxyAuthenticator(proxyAuthenticator);
+                }
             }
-        }
 
-        this.client = okHttpClientBuilder.build();
+            this.client = okHttpClientBuilder.build();
+        } catch (Exception e) {
+            throw new TelesignException("An error occurred creating the API client.", e);
+        }
     }
 
     /**
@@ -147,7 +154,7 @@ public class RestClient {
         }
     }
 
-    public static class TelesignException extends RuntimeException {
+    public static class TelesignException extends Exception {
 
         public TelesignException(String message, Throwable cause) {
             super(message, cause);
@@ -180,67 +187,63 @@ public class RestClient {
                                                               String urlEncodedFields,
                                                               String dateRfc2616,
                                                               String nonce,
-                                                              String userAgent) {
+                                                              String userAgent) throws NoSuchAlgorithmException, InvalidKeyException {
 
-        try {
-            if (dateRfc2616 == null) {
-                dateRfc2616 = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
-            }
-
-            if (nonce == null) {
-                nonce = UUID.randomUUID().toString();
-            }
-
-            String contentType = "";
-            if (methodName.equals("POST") || methodName.equals("PUT")) {
-                contentType = "application/x-www-form-urlencoded";
-            }
-
-            String authMethod = "HMAC-SHA256";
-
-            StringBuilder stringToSignBuilder = new StringBuilder();
-
-            stringToSignBuilder.append(String.format("%s", methodName));
-
-            stringToSignBuilder.append(String.format("\n%s", contentType));
-
-            stringToSignBuilder.append(String.format("\n%s", dateRfc2616));
-
-            stringToSignBuilder.append(String.format("\nx-ts-auth-method:%s", authMethod));
-
-            stringToSignBuilder.append(String.format("\nx-ts-nonce:%s", nonce));
-
-            if (!contentType.isEmpty() && !urlEncodedFields.isEmpty()) {
-                stringToSignBuilder.append(String.format("\n%s", urlEncodedFields));
-            }
-
-            stringToSignBuilder.append(String.format("\n%s", resource));
-
-            String stringToSign = stringToSignBuilder.toString();
-
-            String signature;
-            Mac sha256HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(Base64.getDecoder().decode(secretKey), "HmacSHA256");
-            sha256HMAC.init(secret_key);
-            signature = Base64.getEncoder().encodeToString(sha256HMAC.doFinal(stringToSign.getBytes()));
-
-            String authorization = String.format("TSA %s:%s", customerId, signature);
-
-            Map<String, String> headers = new HashMap<>();
-            headers.put("Authorization", authorization);
-            headers.put("Date", dateRfc2616);
-            headers.put("Content-Type", contentType);
-            headers.put("x-ts-auth-method", authMethod);
-            headers.put("x-ts-nonce", nonce);
-
-            if (userAgent != null) {
-                headers.put("User-Agent", userAgent);
-            }
-
-            return headers;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (dateRfc2616 == null) {
+            dateRfc2616 = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
         }
+
+        if (nonce == null) {
+            nonce = UUID.randomUUID().toString();
+        }
+
+        String contentType = "";
+        if (methodName.equals("POST") || methodName.equals("PUT")) {
+            contentType = "application/x-www-form-urlencoded";
+        }
+
+        String authMethod = "HMAC-SHA256";
+
+        StringBuilder stringToSignBuilder = new StringBuilder();
+
+        stringToSignBuilder.append(String.format("%s", methodName));
+
+        stringToSignBuilder.append(String.format("\n%s", contentType));
+
+        stringToSignBuilder.append(String.format("\n%s", dateRfc2616));
+
+        stringToSignBuilder.append(String.format("\nx-ts-auth-method:%s", authMethod));
+
+        stringToSignBuilder.append(String.format("\nx-ts-nonce:%s", nonce));
+
+        if (!contentType.isEmpty() && !urlEncodedFields.isEmpty()) {
+            stringToSignBuilder.append(String.format("\n%s", urlEncodedFields));
+        }
+
+        stringToSignBuilder.append(String.format("\n%s", resource));
+
+        String stringToSign = stringToSignBuilder.toString();
+
+        String signature;
+        Mac sha256HMAC = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secret_key = new SecretKeySpec(Base64.getDecoder().decode(secretKey), "HmacSHA256");
+        sha256HMAC.init(secret_key);
+        signature = Base64.getEncoder().encodeToString(sha256HMAC.doFinal(stringToSign.getBytes()));
+
+        String authorization = String.format("TSA %s:%s", customerId, signature);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", authorization);
+        headers.put("Date", dateRfc2616);
+        headers.put("Content-Type", contentType);
+        headers.put("x-ts-auth-method", authMethod);
+        headers.put("x-ts-nonce", nonce);
+
+        if (userAgent != null) {
+            headers.put("User-Agent", userAgent);
+        }
+
+        return headers;
     }
 
     /**
@@ -250,7 +253,7 @@ public class RestClient {
      * @param params   Body params to perform the POST request with.
      * @return The TelesignResponse for the request.
      */
-    public TelesignResponse post(String resource, Map<String, String> params) {
+    public TelesignResponse post(String resource, Map<String, String> params) throws TelesignException {
 
         return this.execute("POST", resource, params);
     }
@@ -262,7 +265,7 @@ public class RestClient {
      * @param params   Body params to perform the POST request with.
      * @return The TelesignResponse for the request.
      */
-    public TelesignResponse get(String resource, Map<String, String> params) {
+    public TelesignResponse get(String resource, Map<String, String> params) throws TelesignException {
 
         return this.execute("GET", resource, params);
     }
@@ -274,7 +277,7 @@ public class RestClient {
      * @param params   Body params to perform the POST request with.
      * @return The TelesignResponse for the request.
      */
-    public TelesignResponse put(String resource, Map<String, String> params) {
+    public TelesignResponse put(String resource, Map<String, String> params) throws TelesignException {
 
         return this.execute("PUT", resource, params);
     }
@@ -286,7 +289,7 @@ public class RestClient {
      * @param params   Body params to perform the POST request with.
      * @return The TelesignResponse for the request.
      */
-    public TelesignResponse delete(String resource, Map<String, String> params) {
+    public TelesignResponse delete(String resource, Map<String, String> params) throws TelesignException {
 
         return this.execute("DELETE", resource, params);
     }
@@ -299,7 +302,7 @@ public class RestClient {
      * @param params     Body params to perform the POST request with.
      * @return The TelesignResponse for the request.
      */
-    private TelesignResponse execute(String methodName, String resource, Map<String, String> params) {
+    private TelesignResponse execute(String methodName, String resource, Map<String, String> params) throws TelesignException {
 
         try {
             if (params == null) {
@@ -348,7 +351,7 @@ public class RestClient {
             return telesignResponse;
 
         } catch (Exception e) {
-            throw new RestClient.TelesignException("An error occurred executing the request.", e);
+            throw new TelesignException("An error occurred executing the API request.", e);
         }
     }
 }

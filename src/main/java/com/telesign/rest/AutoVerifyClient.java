@@ -10,7 +10,7 @@ public class AutoVerifyClient extends RestClient {
 
     private static final String AUTOVERIFY_STATUS_RESOURCE = "/v1/mobile/verification/status/%s";
 
-    public AutoVerifyClient(String customerId, String secretKey) {
+    public AutoVerifyClient(String customerId, String secretKey) throws TelesignException {
         super(customerId, secretKey);
     }
 
@@ -22,7 +22,7 @@ public class AutoVerifyClient extends RestClient {
      * See https://developer.telesign.com/docs/auto-verify-sdk#section-obtaining-verification-status for detailed API
      * documentation.
      */
-    public TelesignResponse status(String externalId, Map<String, String> params) {
+    public TelesignResponse status(String externalId, Map<String, String> params) throws TelesignException {
 
         return this.get(String.format(AUTOVERIFY_STATUS_RESOURCE, externalId), params);
     }

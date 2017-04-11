@@ -14,7 +14,11 @@ public class SendVoiceCall {
         String message = "You're scheduled for a dentist appointment at 2:30PM.";
         String messageType = "ARN";
 
-        VoiceClient voiceClient = new VoiceClient(customerId, secretKey);
-        RestClient.TelesignResponse telesignResponse = voiceClient.call(phoneNumber, message, messageType, null);
+        try {
+            VoiceClient voiceClient = new VoiceClient(customerId, secretKey);
+            RestClient.TelesignResponse telesignResponse = voiceClient.call(phoneNumber, message, messageType, null);
+        } catch (RestClient.TelesignException e) {
+            e.printStackTrace();
+        }
     }
 }

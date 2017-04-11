@@ -16,7 +16,12 @@ public class SendMessageWithVerificationCode {
         String message = String.format("Your code is %s", verifyCode);
         String messageType = "OTP";
 
-        MessagingClient messagingClient = new MessagingClient(customerId, secretKey);
-        RestClient.TelesignResponse telesignResponse = messagingClient.message(phoneNumber, message, messageType, null);
+
+        try {
+            MessagingClient messagingClient = new MessagingClient(customerId, secretKey);
+            RestClient.TelesignResponse telesignResponse = messagingClient.message(phoneNumber, message, messageType, null);
+        } catch (RestClient.TelesignException e) {
+            e.printStackTrace();
+        }
     }
 }

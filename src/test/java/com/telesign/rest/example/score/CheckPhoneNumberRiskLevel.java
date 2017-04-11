@@ -13,14 +13,18 @@ public class CheckPhoneNumberRiskLevel {
         String phoneNumber = "phone_number";
         String accountLifecycleEvent = "create";
 
-        ScoreClient scoreClient = new ScoreClient(customerId, secretKey);
-        RestClient.TelesignResponse telesignResponse = scoreClient.score(phoneNumber, accountLifecycleEvent, null);
+        try {
+            ScoreClient scoreClient = new ScoreClient(customerId, secretKey);
+            RestClient.TelesignResponse telesignResponse = scoreClient.score(phoneNumber, accountLifecycleEvent, null);
 
-        if (telesignResponse.ok) {
-            System.out.println(String.format("Phone number %s has a '%s' risk level and the recommendation is to '%s' the transaction.",
-                    phoneNumber,
-                    telesignResponse.json.getAsJsonObject("risk").get("level").getAsString(),
-                    telesignResponse.json.getAsJsonObject("risk").get("recommendation").getAsString()));
+            if (telesignResponse.ok) {
+                System.out.println(String.format("Phone number %s has a '%s' risk level and the recommendation is to '%s' the transaction.",
+                        phoneNumber,
+                        telesignResponse.json.getAsJsonObject("risk").get("level").getAsString(),
+                        telesignResponse.json.getAsJsonObject("risk").get("recommendation").getAsString()));
+            }
+        } catch (RestClient.TelesignException e) {
+            e.printStackTrace();
         }
     }
 }

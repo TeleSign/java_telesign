@@ -17,7 +17,11 @@ public class SendVoiceCallWithVerificationCode {
         String message = String.format("Hello, your code is %s. Once again, your code is %s. Goodbye.", verifyCodeWithCommas, verifyCodeWithCommas);
         String messageType = "OTP";
 
-        VoiceClient voiceClient = new VoiceClient(customerId, secretKey);
-        RestClient.TelesignResponse telesignResponse = voiceClient.call(phoneNumber, message, messageType, null);
+        try {
+            VoiceClient voiceClient = new VoiceClient(customerId, secretKey);
+            RestClient.TelesignResponse telesignResponse = voiceClient.call(phoneNumber, message, messageType, null);
+        } catch (RestClient.TelesignException e) {
+            e.printStackTrace();
+        }
     }
 }

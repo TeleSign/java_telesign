@@ -12,7 +12,7 @@ public class MessagingClient extends RestClient {
     private static final String MESSAGING_RESOURCE = "/v1/messaging";
     private static final String MESSAGING_STATUS_RESOURCE = "/v1/messaging/%s";
 
-    public MessagingClient(String customerId, String secretKey) {
+    public MessagingClient(String customerId, String secretKey) throws TelesignException {
         super(customerId, secretKey);
     }
 
@@ -21,7 +21,7 @@ public class MessagingClient extends RestClient {
      * <p>
      * See https://developer.telesign.com/v2.0/docs/messaging-api for detailed API documentation.
      */
-    public TelesignResponse message(String phoneNumber, String message, String messageType, Map<String, String> params) {
+    public TelesignResponse message(String phoneNumber, String message, String messageType, Map<String, String> params) throws TelesignException {
 
         if (params == null) {
             params = new HashMap<>();
@@ -39,7 +39,7 @@ public class MessagingClient extends RestClient {
      * <p>
      * See https://developer.telesign.com/v2.0/docs/messaging-api for detailed API documentation.
      */
-    public TelesignResponse status(String referenceId, Map<String, String> params) {
+    public TelesignResponse status(String referenceId, Map<String, String> params) throws TelesignException {
 
         return this.get(String.format(MESSAGING_STATUS_RESOURCE, referenceId), params);
     }

@@ -14,16 +14,20 @@ public class Cleansing {
         String phoneNumber = "phone_number";
         String incorrectPhoneNumber = String.format("%s%s", phoneNumber, extraDigit);
 
-        PhoneIdClient phoneIdClient = new PhoneIdClient(customerId, secretKey);
-        RestClient.TelesignResponse telesignResponse = phoneIdClient.phoneid(incorrectPhoneNumber, null);
+        try {
+            PhoneIdClient phoneIdClient = new PhoneIdClient(customerId, secretKey);
+            RestClient.TelesignResponse telesignResponse = phoneIdClient.phoneid(incorrectPhoneNumber, null);
 
-        if (telesignResponse.ok) {
-            System.out.println(String.format("Cleansed phone number has country code %s and phone number is %s.",
-                    telesignResponse.json.getAsJsonObject("numbering").getAsJsonObject("cleansing").getAsJsonObject("call").get("country_code").getAsString(),
-                    telesignResponse.json.getAsJsonObject("numbering").getAsJsonObject("cleansing").getAsJsonObject("call").get("phone_number").getAsString()));
+            if (telesignResponse.ok) {
+                System.out.println(String.format("Cleansed phone number has country code %s and phone number is %s.",
+                        telesignResponse.json.getAsJsonObject("numbering").getAsJsonObject("cleansing").getAsJsonObject("call").get("country_code").getAsString(),
+                        telesignResponse.json.getAsJsonObject("numbering").getAsJsonObject("cleansing").getAsJsonObject("call").get("phone_number").getAsString()));
 
-            System.out.println(String.format("Original phone number was %s.",
-                    telesignResponse.json.getAsJsonObject("numbering").getAsJsonObject("original").get("complete_phone_number").getAsString()));
+                System.out.println(String.format("Original phone number was %s.",
+                        telesignResponse.json.getAsJsonObject("numbering").getAsJsonObject("original").get("complete_phone_number").getAsString()));
+            }
+        } catch (RestClient.TelesignException e) {
+            e.printStackTrace();
         }
     }
 }
