@@ -1,7 +1,7 @@
-package com.telesign.rest.example.voice;
+package com.telesign.example.voice;
 
-import com.telesign.rest.RestClient;
-import com.telesign.rest.VoiceClient;
+import com.telesign.RestClient;
+import com.telesign.VoiceClient;
 
 public class SendVoiceCall {
 

@@ -1,4 +1,4 @@
-package com.telesign.rest;
+package com.telesign;
 
 import java.security.SecureRandom;
 

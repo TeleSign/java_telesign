@@ -1,7 +1,7 @@
-package com.telesign.rest.example.autoverify;
+package com.telesign.example.autoverify;
 
-import com.telesign.rest.AutoVerifyClient;
-import com.telesign.rest.RestClient;
+import com.telesign.AutoVerifyClient;
+import com.telesign.RestClient;
 
 public class GetStatusByExternalId {
 

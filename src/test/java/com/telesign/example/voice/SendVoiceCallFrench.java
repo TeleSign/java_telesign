@@ -1,7 +1,7 @@
-package com.telesign.rest.example.voice;
+package com.telesign.example.voice;
 
-import com.telesign.rest.RestClient;
-import com.telesign.rest.VoiceClient;
+import com.telesign.RestClient;
+import com.telesign.VoiceClient;
 
 import java.util.HashMap;
 
@@ -12,7 +12,7 @@ public class SendVoiceCallFrench {
         String customerId = "customer_id";
         String secretKey = "secret_key";
 
-        String phoneNumber = "13107705278";
+        String phoneNumber = "phone_number";
         String message = "N'oubliez pas d'appeler votre mère pour son anniversaire demain.";
         String messageType = "ARN";
 

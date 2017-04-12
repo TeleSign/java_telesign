@@ -1,9 +1,10 @@
-package com.telesign.rest.example.messaging;
+package com.telesign.example.messaging;
 
-import com.telesign.rest.MessagingClient;
-import com.telesign.rest.RestClient;
+import com.telesign.MessagingClient;
+import com.telesign.RestClient;
+import com.telesign.Util;
 
-public class SendMessage {
+public class SendMessageWithVerificationCode {
 
     public static void main(String[] args) {
 
@@ -11,8 +12,10 @@ public class SendMessage {
         String secretKey = "secret_key";
 
         String phoneNumber = "phone_number";
-        String message = "You're scheduled for a dentist appointment at 2:30PM.";
-        String messageType = "ARN";
+        String verifyCode = Util.randomWithNDigits(5);
+        String message = String.format("Your code is %s", verifyCode);
+        String messageType = "OTP";
+
 
         try {
             MessagingClient messagingClient = new MessagingClient(customerId, secretKey);

@@ -1,4 +1,4 @@
-package com.telesign.rest;
+package com.telesign;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;

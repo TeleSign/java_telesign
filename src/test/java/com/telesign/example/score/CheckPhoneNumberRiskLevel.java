@@ -1,7 +1,7 @@
-package com.telesign.rest.example.score;
+package com.telesign.example.score;
 
-import com.telesign.rest.RestClient;
-import com.telesign.rest.ScoreClient;
+import com.telesign.RestClient;
+import com.telesign.ScoreClient;
 
 public class CheckPhoneNumberRiskLevel {
 

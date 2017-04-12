@@ -1,4 +1,4 @@
-package com.telesign.rest;
+package com.telesign;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;

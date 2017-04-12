@@ -1,7 +1,7 @@
-package com.telesign.rest.example.phoneid;
+package com.telesign.example.phoneid;
 
-import com.telesign.rest.PhoneIdClient;
-import com.telesign.rest.RestClient;
+import com.telesign.PhoneIdClient;
+import com.telesign.RestClient;
 
 public class Cleansing {
 
