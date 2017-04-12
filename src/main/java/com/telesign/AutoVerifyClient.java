@@ -1,6 +1,7 @@
 package com.telesign;
 
 import java.io.IOException;
+import java.net.Proxy;
 import java.security.GeneralSecurityException;
 import java.util.Map;
 
@@ -14,6 +15,22 @@ public class AutoVerifyClient extends RestClient {
 
     public AutoVerifyClient(String customerId, String secretKey) {
         super(customerId, secretKey);
+    }
+
+    public AutoVerifyClient(String customerId, String secretKey, String apiHost) {
+        super(customerId, secretKey, apiHost);
+    }
+
+    public AutoVerifyClient(String customerId,
+                            String secretKey,
+                            String apiHost,
+                            Long connectTimeout,
+                            Long readTimeout,
+                            Long writeTimeout,
+                            Proxy proxy,
+                            final String proxyUsername,
+                            final String proxyPassword) {
+        super(customerId, secretKey, apiHost, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
     }
 
     /**

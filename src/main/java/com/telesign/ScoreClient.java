@@ -1,6 +1,7 @@
 package com.telesign;
 
 import java.io.IOException;
+import java.net.Proxy;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +14,23 @@ public class ScoreClient extends RestClient {
     private static final String SCORE_RESOURCE = "/v1/score/%s";
 
     public ScoreClient(String customerId, String secretKey) {
-
         super(customerId, secretKey);
+    }
+
+    public ScoreClient(String customerId, String secretKey, String apiHost) {
+        super(customerId, secretKey, apiHost);
+    }
+
+    public ScoreClient(String customerId,
+                       String secretKey,
+                       String apiHost,
+                       Long connectTimeout,
+                       Long readTimeout,
+                       Long writeTimeout,
+                       Proxy proxy,
+                       final String proxyUsername,
+                       final String proxyPassword) {
+        super(customerId, secretKey, apiHost, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
     }
 
     /**
