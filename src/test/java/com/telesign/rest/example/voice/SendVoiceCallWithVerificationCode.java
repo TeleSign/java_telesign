@@ -11,10 +11,9 @@ public class SendVoiceCallWithVerificationCode {
         String customerId = "customer_id";
         String secretKey = "secret_key";
 
-        String phoneNumber = "13107705278";
+        String phoneNumber = "phone_number";
         String verifyCode = Util.randomWithNDigits(5);
-        String verifyCodeWithCommas = String.join(", ", verifyCode.split(""));
-        String message = String.format("Hello, your code is %s. Once again, your code is %s. Goodbye.", verifyCodeWithCommas, verifyCodeWithCommas);
+        String message = String.format("Hello, your code is %s. Once again, your code is %s. Goodbye.", verifyCode, verifyCode);
         String messageType = "OTP";
 
         try {

@@ -1,6 +1,7 @@
 package com.telesign.rest;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import okhttp3.*;
 import okhttp3.internal.Version;
@@ -8,14 +9,13 @@ import okio.Buffer;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.net.Proxy;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -67,8 +67,8 @@ public class RestClient {
                       Long readTimeout,
                       Long writeTimeout,
                       Proxy proxy,
-                      String proxyUsername,
-                      String proxyPassword) {
+                      final String proxyUsername,
+                      final String proxyPassword) {
 
         this.customerId = customerId;
         this.secretKey = secretKey;
@@ -139,7 +139,7 @@ public class RestClient {
 
                 try {
                     this.json = new JsonParser().parse(body).getAsJsonObject();
-                } catch (IllegalStateException e) {
+                } catch (JsonParseException | IllegalStateException e) {
                     this.json = new JsonObject();
                 }
 
@@ -179,7 +179,9 @@ public class RestClient {
                                                               String userAgent) throws NoSuchAlgorithmException, InvalidKeyException {
 
         if (dateRfc2616 == null) {
-            dateRfc2616 = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
+            SimpleDateFormat rfc2616 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
+            rfc2616.setTimeZone(TimeZone.getTimeZone("GMT"));
+            dateRfc2616 = rfc2616.format(new Date());
         }
 
         if (nonce == null) {
@@ -215,9 +217,9 @@ public class RestClient {
 
         String signature;
         Mac sha256HMAC = Mac.getInstance("HmacSHA256");
-        SecretKeySpec secretKeySpec = new SecretKeySpec(Base64.getDecoder().decode(secretKey), "HmacSHA256");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(DatatypeConverter.parseBase64Binary(secretKey), "HmacSHA256");
         sha256HMAC.init(secretKeySpec);
-        signature = Base64.getEncoder().encodeToString(sha256HMAC.doFinal(stringToSign.getBytes()));
+        signature = DatatypeConverter.printBase64Binary(sha256HMAC.doFinal(stringToSign.getBytes()));
 
         String authorization = String.format("TSA %s:%s", customerId, signature);
 
