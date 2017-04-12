@@ -1,5 +1,7 @@
 package com.telesign.rest;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +14,7 @@ public class MessagingClient extends RestClient {
     private static final String MESSAGING_RESOURCE = "/v1/messaging";
     private static final String MESSAGING_STATUS_RESOURCE = "/v1/messaging/%s";
 
-    public MessagingClient(String customerId, String secretKey) throws TelesignException {
+    public MessagingClient(String customerId, String secretKey) {
         super(customerId, secretKey);
     }
 
@@ -21,7 +23,7 @@ public class MessagingClient extends RestClient {
      * <p>
      * See https://developer.telesign.com/v2.0/docs/messaging-api for detailed API documentation.
      */
-    public TelesignResponse message(String phoneNumber, String message, String messageType, Map<String, String> params) throws TelesignException {
+    public TelesignResponse message(String phoneNumber, String message, String messageType, Map<String, String> params) throws IOException, GeneralSecurityException {
 
         if (params == null) {
             params = new HashMap<>();
@@ -39,7 +41,7 @@ public class MessagingClient extends RestClient {
      * <p>
      * See https://developer.telesign.com/v2.0/docs/messaging-api for detailed API documentation.
      */
-    public TelesignResponse status(String referenceId, Map<String, String> params) throws TelesignException {
+    public TelesignResponse status(String referenceId, Map<String, String> params) throws IOException, GeneralSecurityException {
 
         return this.get(String.format(MESSAGING_STATUS_RESOURCE, referenceId), params);
     }

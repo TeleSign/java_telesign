@@ -17,7 +17,7 @@ public class SendVoiceCall {
         try {
             VoiceClient voiceClient = new VoiceClient(customerId, secretKey);
             RestClient.TelesignResponse telesignResponse = voiceClient.call(phoneNumber, message, messageType, null);
-        } catch (RestClient.TelesignException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

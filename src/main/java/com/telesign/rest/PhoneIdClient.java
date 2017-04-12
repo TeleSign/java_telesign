@@ -1,5 +1,7 @@
 package com.telesign.rest;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 
 /**
@@ -10,7 +12,7 @@ public class PhoneIdClient extends RestClient {
 
     private static final String PHONEID_RESOURCE = "/v1/phoneid/%s";
 
-    public PhoneIdClient(String customerId, String secretKey) throws TelesignException {
+    public PhoneIdClient(String customerId, String secretKey) {
         super(customerId, secretKey);
     }
 
@@ -20,7 +22,7 @@ public class PhoneIdClient extends RestClient {
      * <p>
      * See https://developer.telesign.com/docs/phoneid-api for detailed API documentation.
      */
-    public TelesignResponse phoneid(String phoneNumber, Map<String, String> params) throws TelesignException {
+    public TelesignResponse phoneid(String phoneNumber, Map<String, String> params) throws IOException, GeneralSecurityException {
 
         return this.post(String.format(PHONEID_RESOURCE, phoneNumber), params);
     }

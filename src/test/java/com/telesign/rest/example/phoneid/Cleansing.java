@@ -26,7 +26,7 @@ public class Cleansing {
                 System.out.println(String.format("Original phone number was %s.",
                         telesignResponse.json.getAsJsonObject("numbering").getAsJsonObject("original").get("complete_phone_number").getAsString()));
             }
-        } catch (RestClient.TelesignException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

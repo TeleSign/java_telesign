@@ -1,5 +1,7 @@
 package com.telesign.rest;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 
 /**
@@ -10,7 +12,7 @@ public class AutoVerifyClient extends RestClient {
 
     private static final String AUTOVERIFY_STATUS_RESOURCE = "/v1/mobile/verification/status/%s";
 
-    public AutoVerifyClient(String customerId, String secretKey) throws TelesignException {
+    public AutoVerifyClient(String customerId, String secretKey) {
         super(customerId, secretKey);
     }
 
@@ -22,7 +24,7 @@ public class AutoVerifyClient extends RestClient {
      * See https://developer.telesign.com/docs/auto-verify-sdk#section-obtaining-verification-status for detailed API
      * documentation.
      */
-    public TelesignResponse status(String externalId, Map<String, String> params) throws TelesignException {
+    public TelesignResponse status(String externalId, Map<String, String> params) throws IOException, GeneralSecurityException {
 
         return this.get(String.format(AUTOVERIFY_STATUS_RESOURCE, externalId), params);
     }

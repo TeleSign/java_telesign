@@ -25,7 +25,7 @@ public class CheckPhoneTypeToBlockVoip {
                     System.out.println(String.format("Phone number %s is not a VOIP phone.", phoneNumber));
                 }
             }
-        } catch (RestClient.TelesignException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

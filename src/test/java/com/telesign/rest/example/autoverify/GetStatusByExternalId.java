@@ -22,7 +22,7 @@ public class GetStatusByExternalId {
                         telesignResponse.json.getAsJsonObject("status").get("code").getAsString(),
                         telesignResponse.json.getAsJsonObject("status").get("description").getAsString()));
             }
-        } catch (RestClient.TelesignException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

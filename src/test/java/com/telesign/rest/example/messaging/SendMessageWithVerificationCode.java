@@ -20,7 +20,7 @@ public class SendMessageWithVerificationCode {
         try {
             MessagingClient messagingClient = new MessagingClient(customerId, secretKey);
             RestClient.TelesignResponse telesignResponse = messagingClient.message(phoneNumber, message, messageType, null);
-        } catch (RestClient.TelesignException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

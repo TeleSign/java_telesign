@@ -23,7 +23,7 @@ public class CheckPhoneNumberRiskLevel {
                         telesignResponse.json.getAsJsonObject("risk").get("level").getAsString(),
                         telesignResponse.json.getAsJsonObject("risk").get("recommendation").getAsString()));
             }
-        } catch (RestClient.TelesignException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -10,6 +10,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.Proxy;
+import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
@@ -36,12 +37,12 @@ public class RestClient {
     private String apiHost;
     private OkHttpClient client;
 
-    public RestClient(String customerId, String secretKey) throws TelesignException {
+    public RestClient(String customerId, String secretKey) {
 
         this(customerId, secretKey, null, null, null, null, null, null, null);
     }
 
-    public RestClient(String customerId, String secretKey, String apiHost) throws TelesignException {
+    public RestClient(String customerId, String secretKey, String apiHost) {
 
         this(customerId, secretKey, apiHost, null, null, null, null, null, null);
     }
@@ -67,7 +68,7 @@ public class RestClient {
                       Long writeTimeout,
                       Proxy proxy,
                       String proxyUsername,
-                      String proxyPassword) throws TelesignException {
+                      String proxyPassword) {
 
         this.customerId = customerId;
         this.secretKey = secretKey;
@@ -90,35 +91,30 @@ public class RestClient {
             writeTimeout = 10L;
         }
 
-        try {
+        OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
+                .connectTimeout(connectTimeout, TimeUnit.SECONDS)
+                .readTimeout(readTimeout, TimeUnit.SECONDS)
+                .writeTimeout(writeTimeout, TimeUnit.SECONDS);
 
-            OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
-                    .connectTimeout(connectTimeout, TimeUnit.SECONDS)
-                    .readTimeout(readTimeout, TimeUnit.SECONDS)
-                    .writeTimeout(writeTimeout, TimeUnit.SECONDS);
+        if (proxy != null) {
+            okHttpClientBuilder.proxy(proxy);
 
-            if (proxy != null) {
-                okHttpClientBuilder.proxy(proxy);
+            if (proxyUsername != null && proxyPassword != null) {
 
-                if (proxyUsername != null && proxyPassword != null) {
+                Authenticator proxyAuthenticator = new Authenticator() {
+                    public Request authenticate(Route route, Response response) throws IOException {
+                        String credential = Credentials.basic(proxyUsername, proxyPassword);
+                        return response.request().newBuilder()
+                                .header("Proxy-Authorization", credential)
+                                .build();
+                    }
+                };
 
-                    Authenticator proxyAuthenticator = new Authenticator() {
-                        public Request authenticate(Route route, Response response) throws IOException {
-                            String credential = Credentials.basic(proxyUsername, proxyPassword);
-                            return response.request().newBuilder()
-                                    .header("Proxy-Authorization", credential)
-                                    .build();
-                        }
-                    };
-
-                    okHttpClientBuilder.proxyAuthenticator(proxyAuthenticator);
-                }
+                okHttpClientBuilder.proxyAuthenticator(proxyAuthenticator);
             }
-
-            this.client = okHttpClientBuilder.build();
-        } catch (Exception e) {
-            throw new TelesignException("An error occurred creating the API client.", e);
         }
+
+        this.client = okHttpClientBuilder.build();
     }
 
     /**
@@ -151,13 +147,6 @@ public class RestClient {
                 this.body = "";
                 this.json = new JsonObject();
             }
-        }
-    }
-
-    public static class TelesignException extends Exception {
-
-        public TelesignException(String message, Throwable cause) {
-            super(message, cause);
         }
     }
 
@@ -226,8 +215,8 @@ public class RestClient {
 
         String signature;
         Mac sha256HMAC = Mac.getInstance("HmacSHA256");
-        SecretKeySpec secret_key = new SecretKeySpec(Base64.getDecoder().decode(secretKey), "HmacSHA256");
-        sha256HMAC.init(secret_key);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(Base64.getDecoder().decode(secretKey), "HmacSHA256");
+        sha256HMAC.init(secretKeySpec);
         signature = Base64.getEncoder().encodeToString(sha256HMAC.doFinal(stringToSign.getBytes()));
 
         String authorization = String.format("TSA %s:%s", customerId, signature);
@@ -253,7 +242,7 @@ public class RestClient {
      * @param params   Body params to perform the POST request with.
      * @return The TelesignResponse for the request.
      */
-    public TelesignResponse post(String resource, Map<String, String> params) throws TelesignException {
+    public TelesignResponse post(String resource, Map<String, String> params) throws IOException, GeneralSecurityException {
 
         return this.execute("POST", resource, params);
     }
@@ -265,7 +254,7 @@ public class RestClient {
      * @param params   Body params to perform the POST request with.
      * @return The TelesignResponse for the request.
      */
-    public TelesignResponse get(String resource, Map<String, String> params) throws TelesignException {
+    public TelesignResponse get(String resource, Map<String, String> params) throws IOException, GeneralSecurityException {
 
         return this.execute("GET", resource, params);
     }
@@ -277,7 +266,7 @@ public class RestClient {
      * @param params   Body params to perform the POST request with.
      * @return The TelesignResponse for the request.
      */
-    public TelesignResponse put(String resource, Map<String, String> params) throws TelesignException {
+    public TelesignResponse put(String resource, Map<String, String> params) throws IOException, GeneralSecurityException {
 
         return this.execute("PUT", resource, params);
     }
@@ -289,7 +278,7 @@ public class RestClient {
      * @param params   Body params to perform the POST request with.
      * @return The TelesignResponse for the request.
      */
-    public TelesignResponse delete(String resource, Map<String, String> params) throws TelesignException {
+    public TelesignResponse delete(String resource, Map<String, String> params) throws IOException, GeneralSecurityException {
 
         return this.execute("DELETE", resource, params);
     }
@@ -302,56 +291,51 @@ public class RestClient {
      * @param params     Body params to perform the POST request with.
      * @return The TelesignResponse for the request.
      */
-    private TelesignResponse execute(String methodName, String resource, Map<String, String> params) throws TelesignException {
+    private TelesignResponse execute(String methodName, String resource, Map<String, String> params) throws IOException, GeneralSecurityException {
 
-        try {
-            if (params == null) {
-                params = new HashMap<>();
-            }
-
-            String resourceUri = String.format("%s%s", this.apiHost, resource);
-
-            FormBody formBody = null;
-            String urlEncodedFields = "";
-            if (methodName.equals("POST") || methodName.equals("PUT")) {
-                FormBody.Builder formBuilder = new FormBody.Builder();
-                for (Map.Entry<String, String> entry : params.entrySet()) {
-                    formBuilder.add(entry.getKey(), entry.getValue());
-                }
-                formBody = formBuilder.build();
-
-                Buffer buffer = new Buffer();
-                formBody.writeTo(buffer);
-                urlEncodedFields = buffer.readUtf8();
-            }
-
-            Map<String, String> headers = RestClient.generateTelesignHeaders(
-                    this.customerId,
-                    this.secretKey,
-                    methodName,
-                    resource,
-                    urlEncodedFields,
-                    null,
-                    null,
-                    RestClient.userAgent);
-
-            Request.Builder requestBuilder = new Request.Builder()
-                    .url(resourceUri)
-                    .method(methodName, formBody);
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                requestBuilder.addHeader(entry.getKey(), entry.getValue());
-            }
-            Request request = requestBuilder.build();
-
-            TelesignResponse telesignResponse;
-            try (Response okhttpResponse = this.client.newCall(request).execute()) {
-                telesignResponse = new TelesignResponse(okhttpResponse);
-            }
-
-            return telesignResponse;
-
-        } catch (Exception e) {
-            throw new TelesignException("An error occurred executing the API request.", e);
+        if (params == null) {
+            params = new HashMap<>();
         }
+
+        String resourceUri = String.format("%s%s", this.apiHost, resource);
+
+        FormBody formBody = null;
+        String urlEncodedFields = "";
+        if (methodName.equals("POST") || methodName.equals("PUT")) {
+            FormBody.Builder formBuilder = new FormBody.Builder();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                formBuilder.add(entry.getKey(), entry.getValue());
+            }
+            formBody = formBuilder.build();
+
+            Buffer buffer = new Buffer();
+            formBody.writeTo(buffer);
+            urlEncodedFields = buffer.readUtf8();
+        }
+
+        Map<String, String> headers = RestClient.generateTelesignHeaders(
+                this.customerId,
+                this.secretKey,
+                methodName,
+                resource,
+                urlEncodedFields,
+                null,
+                null,
+                RestClient.userAgent);
+
+        Request.Builder requestBuilder = new Request.Builder()
+                .url(resourceUri)
+                .method(methodName, formBody);
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            requestBuilder.addHeader(entry.getKey(), entry.getValue());
+        }
+        Request request = requestBuilder.build();
+
+        TelesignResponse telesignResponse;
+        try (Response okhttpResponse = this.client.newCall(request).execute()) {
+            telesignResponse = new TelesignResponse(okhttpResponse);
+        }
+
+        return telesignResponse;
     }
 }

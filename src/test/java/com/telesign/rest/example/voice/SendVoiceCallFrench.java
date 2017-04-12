@@ -22,7 +22,7 @@ public class SendVoiceCallFrench {
         try {
             VoiceClient voiceClient = new VoiceClient(customerId, secretKey);
             RestClient.TelesignResponse telesignResponse = voiceClient.call(phoneNumber, message, messageType, params);
-        } catch (RestClient.TelesignException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

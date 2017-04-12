@@ -1,5 +1,7 @@
 package com.telesign.rest;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +14,7 @@ public class VoiceClient extends RestClient {
     private static final String VOICE_RESOURCE = "/v1/voice";
     private static final String VOICE_STATUS_RESOURCE = "/v1/voice/%s";
 
-    public VoiceClient(String customerId, String secretKey) throws TelesignException {
+    public VoiceClient(String customerId, String secretKey) {
 
         super(customerId, secretKey);
     }
@@ -22,7 +24,7 @@ public class VoiceClient extends RestClient {
      * <p>
      * See https://developer.telesign.com/docs/voice-api for detailed API documentation.
      */
-    public TelesignResponse call(String phoneNumber, String message, String messageType, Map<String, String> params) throws TelesignException {
+    public TelesignResponse call(String phoneNumber, String message, String messageType, Map<String, String> params) throws IOException, GeneralSecurityException {
 
         if (params == null) {
             params = new HashMap<>();
@@ -40,7 +42,7 @@ public class VoiceClient extends RestClient {
      * <p>
      * See https://developer.telesign.com/docs/voice-api for detailed API documentation.
      */
-    public TelesignResponse status(String referenceId, Map<String, String> params) throws TelesignException {
+    public TelesignResponse status(String referenceId, Map<String, String> params) throws IOException, GeneralSecurityException {
 
         return this.get(String.format(VOICE_STATUS_RESOURCE, referenceId), params);
     }
