@@ -299,20 +299,26 @@ public class RestClient {
             params = new HashMap<>();
         }
 
-        String resourceUri = String.format("%s%s", this.apiHost, resource);
+        HttpUrl httpUrl = HttpUrl.parse(String.format("%s%s", this.apiHost, resource));
 
         FormBody formBody = null;
         String urlEncodedFields = "";
         if (methodName.equals("POST") || methodName.equals("PUT")) {
-            FormBody.Builder formBuilder = new FormBody.Builder();
+            FormBody.Builder formBodyBuilder = new FormBody.Builder();
             for (Map.Entry<String, String> entry : params.entrySet()) {
-                formBuilder.add(entry.getKey(), entry.getValue());
+                formBodyBuilder.add(entry.getKey(), entry.getValue());
             }
-            formBody = formBuilder.build();
+            formBody = formBodyBuilder.build();
 
             Buffer buffer = new Buffer();
             formBody.writeTo(buffer);
             urlEncodedFields = buffer.readUtf8();
+        } else {
+            HttpUrl.Builder httpUrlBuilder = httpUrl.newBuilder();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                httpUrlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+            }
+            httpUrl = httpUrlBuilder.build();
         }
 
         Map<String, String> headers = RestClient.generateTelesignHeaders(
@@ -326,7 +332,7 @@ public class RestClient {
                 RestClient.userAgent);
 
         Request.Builder requestBuilder = new Request.Builder()
-                .url(resourceUri)
+                .url(httpUrl)
                 .method(methodName, formBody);
         for (Map.Entry<String, String> entry : headers.entrySet()) {
             requestBuilder.addHeader(entry.getKey(), entry.getValue());
