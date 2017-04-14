@@ -37,7 +37,7 @@ public class ScoreClient extends RestClient {
      * Score is an API that delivers reputation scoring based on phone number intelligence, traffic patterns, machine
      * learning, and a global data consortium.
      * <p>
-     * See https://developer.telesign.com/docs/rest_api-phoneid-score for detailed API documentation.
+     * See https://developer.telesign.com/docs/score-api for detailed API documentation.
      */
     public TelesignResponse score(String phoneNumber, String accountLifecycleEvent, Map<String, String> params) throws IOException, GeneralSecurityException {
 

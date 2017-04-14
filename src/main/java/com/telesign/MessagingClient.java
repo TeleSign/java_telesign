@@ -38,7 +38,7 @@ public class MessagingClient extends RestClient {
     /**
      * Send a message to the target phone_number.
      * <p>
-     * See https://developer.telesign.com/v2.0/docs/messaging-api for detailed API documentation.
+     * See https://developer.telesign.com/docs/messaging-api for detailed API documentation.
      */
     public TelesignResponse message(String phoneNumber, String message, String messageType, Map<String, String> params) throws IOException, GeneralSecurityException {
 
@@ -56,7 +56,7 @@ public class MessagingClient extends RestClient {
     /**
      * Retrieves the current status of the message.
      * <p>
-     * See https://developer.telesign.com/v2.0/docs/messaging-api for detailed API documentation.
+     * See https://developer.telesign.com/docs/messaging-api for detailed API documentation.
      */
     public TelesignResponse status(String referenceId, Map<String, String> params) throws IOException, GeneralSecurityException {
 

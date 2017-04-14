@@ -38,8 +38,8 @@ public class AutoVerifyClient extends RestClient {
      * flow you must check the status using TeleSign's servers on your backend. Do not rely on the SDK alone to
      * indicate a successful verification.
      * <p>
-     * See https://developer.telesign.com/docs/auto-verify-sdk#section-obtaining-verification-status for detailed API
-     * documentation.
+     * See https://developer.telesign.com/docs/auto-verify-sdk-self#section-obtaining-verification-status for detailed
+     * API documentation.
      */
     public TelesignResponse status(String externalId, Map<String, String> params) throws IOException, GeneralSecurityException {
 
