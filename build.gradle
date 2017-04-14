@@ -26,12 +26,12 @@ apply plugin: 'signing'
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
-    from 'build/docs/javadoc'
+    from javadoc
 }
 
 task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
     classifier = 'sources'
+    from sourceSets.main.allSource
 }
 
 artifacts {
@@ -50,11 +50,11 @@ uploadArchives {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
+                authentication(userName: ossrhUsername, password: ossrhPassword)
             }
 
             pom.project {
-                name 'TeleSign'
+                name 'TeleSign SDK'
                 packaging 'jar'
                 description 'The TeleSign Java SDK is a Java library that provides an interface to TeleSign Web ' +
                         'Services. TeleSign Web Services conform to the REST Web Service Design Model. Services are ' +
@@ -63,9 +63,9 @@ uploadArchives {
                 url 'https://github.com/TeleSign/java_telesign'
 
                 scm {
-                    url 'scm:git@github.com:TeleSign/java_telesign.git'
                     connection 'scm:git@github.com:TeleSign/java_telesign.git'
                     developerConnection 'scm:git@github.com:TeleSign/java_telesign.git'
+                    url 'https://github.com/TeleSign/java_telesign'
                 }
 
                 licenses {
@@ -76,6 +76,13 @@ uploadArchives {
                     license {
                         name 'Apache Software License (ASL) version 2.0'
                         url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        name 'TeleSign Corp.'
+                        organizationUrl 'https://www.telesign.com'
                     }
                 }
             }
