@@ -21,68 +21,71 @@ dependencies {
 }
 
 apply plugin: 'idea'
-apply plugin: 'maven'
-apply plugin: 'signing'
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc
-}
+if (System.getenv('TRAVIS') == null) {
+    apply plugin: 'maven'
+    apply plugin: 'signing'
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc
+    }
 
-artifacts {
-    archives jar
-    archives javadocJar
-    archives sourcesJar
-}
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
 
-signing {
-    sign configurations.archives
-}
+    artifacts {
+        archives jar
+        archives javadocJar
+        archives sourcesJar
+    }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+    signing {
+        sign configurations.archives
+    }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            pom.project {
-                name 'TeleSign SDK'
-                packaging 'jar'
-                description 'The TeleSign Java SDK is a Java library that provides an interface to TeleSign Web ' +
-                        'Services. TeleSign Web Services conform to the REST Web Service Design Model. Services are ' +
-                        'exposed as URI-addressable resources through the set of RESTful procedures in our TeleSign ' +
-                        'REST API.'
-                url 'https://github.com/TeleSign/java_telesign'
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
 
-                scm {
-                    connection 'scm:git@github.com:TeleSign/java_telesign.git'
-                    developerConnection 'scm:git@github.com:TeleSign/java_telesign.git'
+                pom.project {
+                    name 'TeleSign SDK'
+                    packaging 'jar'
+                    description 'The TeleSign Java SDK is a Java library that provides an interface to TeleSign Web ' +
+                            'Services. TeleSign Web Services conform to the REST Web Service Design Model. Services are ' +
+                            'exposed as URI-addressable resources through the set of RESTful procedures in our TeleSign ' +
+                            'REST API.'
                     url 'https://github.com/TeleSign/java_telesign'
-                }
 
-                licenses {
-                    license {
-                        name 'MIT License'
-                        url 'http://www.opensource.org/licenses/mit-license.php'
+                    scm {
+                        connection 'scm:git@github.com:TeleSign/java_telesign.git'
+                        developerConnection 'scm:git@github.com:TeleSign/java_telesign.git'
+                        url 'https://github.com/TeleSign/java_telesign'
                     }
-                    license {
-                        name 'Apache Software License (ASL) version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
 
-                developers {
-                    developer {
-                        name 'TeleSign Corp.'
-                        organizationUrl 'https://www.telesign.com'
+                    licenses {
+                        license {
+                            name 'MIT License'
+                            url 'http://www.opensource.org/licenses/mit-license.php'
+                        }
+                        license {
+                            name 'Apache Software License (ASL) version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            name 'TeleSign Corp.'
+                            organizationUrl 'https://www.telesign.com'
+                        }
                     }
                 }
             }
