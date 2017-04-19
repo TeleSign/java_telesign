@@ -1,3 +1,12 @@
+.. image:: https://img.shields.io/travis/TeleSign/java_telesign.svg?branch=master
+    :target: https://travis-ci.org/TeleSign/java_telesign
+
+.. image:: https://img.shields.io/maven-central/v/com.telesign/telesign.svg
+    :target: http://maven-repository.com/artifact/com.telesign/telesign/
+
+.. image:: https://img.shields.io/github/license/TeleSign/java_telesign.svg
+    :target: https://github.com/TeleSign/java_telesign/blob/master/LICENSE.txt
+
 ========
 TeleSign
 ========
@@ -27,9 +36,21 @@ Detailed documentation for TeleSign REST APIs is available in the `Developer Por
 Installation
 ------------
 
-To add the TeleSign Java SDK to your project:
+To add the TeleSign Java SDK to your Gradle project:
 
-compile 'com.telesign.rest:telesign:2.0.0'
+.. code-block:: groovy
+
+    compile 'com.telesign.rest:telesign:[current_version]'
+
+To add the TeleSign Java SDK to your Maven project:
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>com.telesign</groupId>
+        <artifactId>telesign</artifactId>
+        <version>[current_version]</version>
+    </dependency>
 
 Java Code Example: Messaging
 ----------------------------
