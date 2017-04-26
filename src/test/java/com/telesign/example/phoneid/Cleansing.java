@@ -7,15 +7,15 @@ public class Cleansing {
 
     public static void main(String[] args) {
 
-        String customerId = "customer_id";
-        String secretKey = "secret_key";
+        String customerId = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890";
+        String apiKey = "EXAMPLE----TE8sTgg45yusumoN6BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw==";
 
         String extraDigit = "0";
         String phoneNumber = "phone_number";
         String incorrectPhoneNumber = String.format("%s%s", phoneNumber, extraDigit);
 
         try {
-            PhoneIdClient phoneIdClient = new PhoneIdClient(customerId, secretKey);
+            PhoneIdClient phoneIdClient = new PhoneIdClient(customerId, apiKey);
             RestClient.TelesignResponse telesignResponse = phoneIdClient.phoneid(incorrectPhoneNumber, null);
 
             if (telesignResponse.ok) {

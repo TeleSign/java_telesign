@@ -13,24 +13,24 @@ public class AutoVerifyClient extends RestClient {
 
     private static final String AUTOVERIFY_STATUS_RESOURCE = "/v1/mobile/verification/status/%s";
 
-    public AutoVerifyClient(String customerId, String secretKey) {
-        super(customerId, secretKey);
+    public AutoVerifyClient(String customerId, String apiKey) {
+        super(customerId, apiKey);
     }
 
-    public AutoVerifyClient(String customerId, String secretKey, String apiHost) {
-        super(customerId, secretKey, apiHost);
+    public AutoVerifyClient(String customerId, String apiKey, String restEndpoint) {
+        super(customerId, apiKey, restEndpoint);
     }
 
     public AutoVerifyClient(String customerId,
-                            String secretKey,
-                            String apiHost,
+                            String apiKey,
+                            String restEndpoint,
                             Long connectTimeout,
                             Long readTimeout,
                             Long writeTimeout,
                             Proxy proxy,
                             final String proxyUsername,
                             final String proxyPassword) {
-        super(customerId, secretKey, apiHost, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
+        super(customerId, apiKey, restEndpoint, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
     }
 
     /**

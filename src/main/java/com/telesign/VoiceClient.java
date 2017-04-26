@@ -15,24 +15,24 @@ public class VoiceClient extends RestClient {
     private static final String VOICE_RESOURCE = "/v1/voice";
     private static final String VOICE_STATUS_RESOURCE = "/v1/voice/%s";
 
-    public VoiceClient(String customerId, String secretKey) {
-        super(customerId, secretKey);
+    public VoiceClient(String customerId, String apiKey) {
+        super(customerId, apiKey);
     }
 
-    public VoiceClient(String customerId, String secretKey, String apiHost) {
-        super(customerId, secretKey, apiHost);
+    public VoiceClient(String customerId, String apiKey, String restEndpoint) {
+        super(customerId, apiKey, restEndpoint);
     }
 
     public VoiceClient(String customerId,
-                       String secretKey,
-                       String apiHost,
+                       String apiKey,
+                       String restEndpoint,
                        Long connectTimeout,
                        Long readTimeout,
                        Long writeTimeout,
                        Proxy proxy,
                        final String proxyUsername,
                        final String proxyPassword) {
-        super(customerId, secretKey, apiHost, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
+        super(customerId, apiKey, restEndpoint, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
     }
 
     /**

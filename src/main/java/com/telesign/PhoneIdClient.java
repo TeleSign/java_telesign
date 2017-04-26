@@ -13,24 +13,24 @@ public class PhoneIdClient extends RestClient {
 
     private static final String PHONEID_RESOURCE = "/v1/phoneid/%s";
 
-    public PhoneIdClient(String customerId, String secretKey) {
-        super(customerId, secretKey);
+    public PhoneIdClient(String customerId, String apiKey) {
+        super(customerId, apiKey);
     }
 
-    public PhoneIdClient(String customerId, String secretKey, String apiHost) {
-        super(customerId, secretKey, apiHost);
+    public PhoneIdClient(String customerId, String apiKey, String restEndpoint) {
+        super(customerId, apiKey, restEndpoint);
     }
 
     public PhoneIdClient(String customerId,
-                         String secretKey,
-                         String apiHost,
+                         String apiKey,
+                         String restEndpoint,
                          Long connectTimeout,
                          Long readTimeout,
                          Long writeTimeout,
                          Proxy proxy,
                          final String proxyUsername,
                          final String proxyPassword) {
-        super(customerId, secretKey, apiHost, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
+        super(customerId, apiKey, restEndpoint, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
     }
 
     /**

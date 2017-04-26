@@ -13,24 +13,24 @@ public class ScoreClient extends RestClient {
 
     private static final String SCORE_RESOURCE = "/v1/score/%s";
 
-    public ScoreClient(String customerId, String secretKey) {
-        super(customerId, secretKey);
+    public ScoreClient(String customerId, String apiKey) {
+        super(customerId, apiKey);
     }
 
-    public ScoreClient(String customerId, String secretKey, String apiHost) {
-        super(customerId, secretKey, apiHost);
+    public ScoreClient(String customerId, String apiKey, String restEndpoint) {
+        super(customerId, apiKey, restEndpoint);
     }
 
     public ScoreClient(String customerId,
-                       String secretKey,
-                       String apiHost,
+                       String apiKey,
+                       String restEndpoint,
                        Long connectTimeout,
                        Long readTimeout,
                        Long writeTimeout,
                        Proxy proxy,
                        final String proxyUsername,
                        final String proxyPassword) {
-        super(customerId, secretKey, apiHost, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
+        super(customerId, apiKey, restEndpoint, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
     }
 
     /**

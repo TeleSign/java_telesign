@@ -33,26 +33,26 @@ public class RestClient {
             Version.userAgent());
 
     private String customerId;
-    private String secretKey;
-    private String apiHost;
+    private String apiKey;
+    private String restEndpoint;
     private OkHttpClient client;
 
-    public RestClient(String customerId, String secretKey) {
+    public RestClient(String customerId, String apiKey) {
 
-        this(customerId, secretKey, null, null, null, null, null, null, null);
+        this(customerId, apiKey, null, null, null, null, null, null, null);
     }
 
-    public RestClient(String customerId, String secretKey, String apiHost) {
+    public RestClient(String customerId, String apiKey, String restEndpoint) {
 
-        this(customerId, secretKey, apiHost, null, null, null, null, null, null);
+        this(customerId, apiKey, restEndpoint, null, null, null, null, null, null);
     }
 
     /**
      * TeleSign RestClient useful for making generic RESTful requests against our API.
      *
      * @param customerId     Your customer_id string associated with your account.
-     * @param secretKey      Your secret_key string associated with your account.
-     * @param apiHost        (optional) Override the default apiHost to target another endpoint.
+     * @param apiKey      Your api_key string associated with your account.
+     * @param restEndpoint        (optional) Override the default restEndpoint to target another endpoint.
      * @param connectTimeout (optional) connectTimeout passed into OkHttp.
      * @param readTimeout    (optional) readTimeout passed into OkHttp.
      * @param writeTimeout   (optional) writeTimeout passed into OkHttp.
@@ -61,8 +61,8 @@ public class RestClient {
      * @param proxyPassword  (optional) proxyPassword used to create an Authenticator passed into OkHttp.
      */
     public RestClient(String customerId,
-                      String secretKey,
-                      String apiHost,
+                      String apiKey,
+                      String restEndpoint,
                       Long connectTimeout,
                       Long readTimeout,
                       Long writeTimeout,
@@ -71,12 +71,12 @@ public class RestClient {
                       final String proxyPassword) {
 
         this.customerId = customerId;
-        this.secretKey = secretKey;
+        this.apiKey = apiKey;
 
-        if (apiHost == null) {
-            this.apiHost = "https://rest-api.telesign.com";
+        if (restEndpoint == null) {
+            this.restEndpoint = "https://rest-api.telesign.com";
         } else {
-            this.apiHost = apiHost;
+            this.restEndpoint = restEndpoint;
         }
 
         if (connectTimeout == null) {
@@ -156,10 +156,10 @@ public class RestClient {
      * Creates the canonicalized stringToSign and generates the HMAC signature. This is used to authenticate requests
      * against the TeleSign REST API.
      * <p>
-     * See https://developer.telesign.com/docs/authentication-1 for detailed API documentation.
+     * See https://developer.telesign.com/docs/authentication for detailed API documentation.
      *
      * @param customerId       Your account customer_id.
-     * @param secretKey        Your account secret_key.
+     * @param apiKey        Your account api_key.
      * @param methodName       The HTTP method name of the request as a upper case string, should be one of 'POST', 'GET',
      *                         'PUT' or 'DELETE'.
      * @param resource         The partial resource URI to perform the request against.
@@ -170,7 +170,7 @@ public class RestClient {
      * @return Map of HTTP headers to be applied to the request.
      */
     public static Map<String, String> generateTelesignHeaders(String customerId,
-                                                              String secretKey,
+                                                              String apiKey,
                                                               String methodName,
                                                               String resource,
                                                               String urlEncodedFields,
@@ -217,7 +217,7 @@ public class RestClient {
 
         String signature;
         Mac sha256HMAC = Mac.getInstance("HmacSHA256");
-        SecretKeySpec secretKeySpec = new SecretKeySpec(DatatypeConverter.parseBase64Binary(secretKey), "HmacSHA256");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(DatatypeConverter.parseBase64Binary(apiKey), "HmacSHA256");
         sha256HMAC.init(secretKeySpec);
         signature = DatatypeConverter.printBase64Binary(sha256HMAC.doFinal(stringToSign.getBytes()));
 
@@ -299,7 +299,7 @@ public class RestClient {
             params = new HashMap<>();
         }
 
-        HttpUrl httpUrl = HttpUrl.parse(String.format("%s%s", this.apiHost, resource));
+        HttpUrl httpUrl = HttpUrl.parse(String.format("%s%s", this.restEndpoint, resource));
 
         FormBody formBody = null;
         String urlEncodedFields = "";
@@ -323,7 +323,7 @@ public class RestClient {
 
         Map<String, String> headers = RestClient.generateTelesignHeaders(
                 this.customerId,
-                this.secretKey,
+                this.apiKey,
                 methodName,
                 resource,
                 urlEncodedFields,

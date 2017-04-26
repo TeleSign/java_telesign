@@ -15,24 +15,24 @@ public class MessagingClient extends RestClient {
     private static final String MESSAGING_RESOURCE = "/v1/messaging";
     private static final String MESSAGING_STATUS_RESOURCE = "/v1/messaging/%s";
 
-    public MessagingClient(String customerId, String secretKey) {
-        super(customerId, secretKey);
+    public MessagingClient(String customerId, String apiKey) {
+        super(customerId, apiKey);
     }
 
-    public MessagingClient(String customerId, String secretKey, String apiHost) {
-        super(customerId, secretKey, apiHost);
+    public MessagingClient(String customerId, String apiKey, String restEndpoint) {
+        super(customerId, apiKey, restEndpoint);
     }
 
     public MessagingClient(String customerId,
-                           String secretKey,
-                           String apiHost,
+                           String apiKey,
+                           String restEndpoint,
                            Long connectTimeout,
                            Long readTimeout,
                            Long writeTimeout,
                            Proxy proxy,
                            final String proxyUsername,
                            final String proxyPassword) {
-        super(customerId, secretKey, apiHost, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
+        super(customerId, apiKey, restEndpoint, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
     }
 
     /**
