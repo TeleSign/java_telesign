@@ -34,7 +34,7 @@ To add the TeleSign Java SDK to your Gradle project:
 
 .. code-block:: groovy
 
-    compile 'com.telesign.rest:telesign:[current_version]'
+    compile 'com.telesign.rest:telesign:(insert latest version)'
 
 To add the TeleSign Java SDK to your Maven project:
 
@@ -43,7 +43,7 @@ To add the TeleSign Java SDK to your Maven project:
     <dependency>
         <groupId>com.telesign</groupId>
         <artifactId>telesign</artifactId>
-        <version>[current_version]</version>
+        <version>(insert latest version)</version>
     </dependency>
 
 Authentication
