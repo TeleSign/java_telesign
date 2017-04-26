@@ -1,3 +1,6 @@
+.. image:: https://raw.github.com/TeleSign/java_telesign/master/sdk_banner.jpg
+    :target: https://developer.telesign.com
+
 .. image:: https://img.shields.io/travis/TeleSign/java_telesign.svg?branch=master
     :target: https://travis-ci.org/TeleSign/java_telesign
 
@@ -7,31 +10,22 @@
 .. image:: https://img.shields.io/github/license/TeleSign/java_telesign.svg
     :target: https://github.com/TeleSign/java_telesign/blob/master/LICENSE.txt
 
-========
-TeleSign
-========
+=================
+TeleSign Java SDK
+=================
 
-TeleSign provides the world’s most comprehensive approach to account security for Web and mobile applications.
+TeleSign is a communications platform as a service (CPaaS) company, founded on security. Since 2005, TeleSign has
+been a trusted partner to the world’s leading websites and mobile applications, helping secure billions of end-user
+accounts. Today, TeleSign’s data-driven, cloud communications platform is changing the way businesses engage with
+customers and prevent fraud.
 
-For more information about TeleSign, visit the `TeleSign website <http://www.TeleSign.com>`_.
-
-TeleSign REST API: Java SDK
----------------------------
-
-**TeleSign web services** conform to the `REST Web Service Design Model
-<http://en.wikipedia.org/wiki/Representational_state_transfer>`_. Services are exposed as URI-addressable resources
-through the set of *RESTful* procedures in our **TeleSign REST API**.
-
-The **TeleSign Java SDK** is a set classes and functions — a *Java Library* that wraps the
-TeleSign REST API, and it simplifies TeleSign application development in the `Java programming language
-<https://www.oracle.com/java>`_. The SDK software is distributed on
-`GitHub <https://github.com/TeleSign/java_telesign>`_ and also as a Java Software Package using the
-`The Central Repository (Maven) <https://search.maven.org>`_.
+For more information about TeleSign, visit our `website <http://www.TeleSign.com>`_.
 
 Documentation
 -------------
 
-Detailed documentation for TeleSign REST APIs is available in the `Developer Portal <https://developer.telesign.com/>`_.
+Code documentation is included in the SDK. Complete documentation, quick start guides and reference material
+for the TeleSign API is available within the `TeleSign Developer Center <https://developer.telesign.com/>`_.
 
 Installation
 ------------
@@ -52,21 +46,37 @@ To add the TeleSign Java SDK to your Maven project:
         <version>[current_version]</version>
     </dependency>
 
+Authentication
+--------------
+
+You will need a Customer ID and API Key in order to use TeleSign’s API. If you already have an account you can retrieve
+them from your account dashboard within the `Portal <https://portal.telesign.com>`_. If you have not signed up yet, sign
+up `here <https://portal.telesign.com/signup>`_.
+
+Dependencies
+------------
+
+We make use of popular, feature-rich and well-tested open-source libraries to perform the underlying functionality of
+the SDK. These dependencies are managed by the community accepted package manager. If you are unable to add these
+additional third party dependencies to your project we have ensured that the SDK code is easy to read and can serve as
+sample code. We have also made sure that more complicated functions such as generate_telesign_headers can be easily
+extracted from the SDK and used 'as is' in your project.
+
 Java Code Example: Messaging
 ----------------------------
 
-Here's a basic code example with JSON response.
+Here is a basic code example with JSON response.
 
 .. code-block:: java
 
-    String customerId = "customer_id";
-    String secretKey = "secret_key";
+    String customerId = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890";
+    String apiKey = "EXAMPLE----TE8sTgg45yusumoN6BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw==";
 
     String phoneNumber = "phone_number";
     String message = "You're scheduled for a dentist appointment at 2:30PM.";
     String messageType = "ARN";
 
-    MessagingClient messagingClient = new MessagingClient(customerId, secretKey);
+    MessagingClient messagingClient = new MessagingClient(customerId, apiKey);
     RestClient.TelesignResponse telesignResponse = messagingClient.message(phoneNumber, message, messageType, null);
 
 .. code-block:: javascript
@@ -77,9 +87,3 @@ Here's a basic code example with JSON response.
         'updated_on': '2016-12-12T00:39:58.325559Z'}}
 
 For more examples, see the examples folder or visit `TeleSign Developer Portal <https://developer.telesign.com/>`_.
-
-Authentication
---------------
-
-You will need a Customer ID and API Key in order to use TeleSign’s REST API. If you are already a customer and need an
-API Key, you can generate one in the `Portal <https://portal.telesign.com>`_.
