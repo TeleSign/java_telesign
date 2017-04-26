@@ -1,3 +1,11 @@
+## [2.1.0](http://central.maven.org/maven2/com/telesign/telesign/2.1.0/) - 2017-04-26
+- 2016-04-26
+  - updated and improved README
+  - secret_key refactored to api_key to align with docs and portal
+  - api_host is now known as rest_endpoint to align with docs and portal
+  - various doc string updates and fixes
+  - added travis CI, codecov coverage and additional unit tests
+
 ## [2.0.0](http://central.maven.org/maven2/com/telesign/telesign/2.0.0/) - 2017-04-10
 - 2016-04-10
   - Major refactor and simplification into generic REST client.
@@ -6,7 +14,6 @@
   - UserAgent is now set to track client usage and help debug issues.
   - generateTelesignHeaders is a static and easily extracted from the SDK if
     custom behavior/implementation is required.
-  - SDK is now targeting Java 8 as Java 7 has reached EoL
 
 ## [0.6.0](http://central.maven.org/maven2/com/telesign/telesign/0.6.0/) - 2016-10-20
 - 2016-10-19 
