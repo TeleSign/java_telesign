@@ -51,8 +51,8 @@ public class RestClient {
      * TeleSign RestClient useful for making generic RESTful requests against our API.
      *
      * @param customerId     Your customer_id string associated with your account.
-     * @param apiKey      Your api_key string associated with your account.
-     * @param restEndpoint        (optional) Override the default restEndpoint to target another endpoint.
+     * @param apiKey         Your api_key string associated with your account.
+     * @param restEndpoint   (optional) Override the default restEndpoint to target another endpoint.
      * @param connectTimeout (optional) connectTimeout passed into OkHttp.
      * @param readTimeout    (optional) readTimeout passed into OkHttp.
      * @param writeTimeout   (optional) writeTimeout passed into OkHttp.
@@ -159,7 +159,7 @@ public class RestClient {
      * See https://developer.telesign.com/docs/authentication for detailed API documentation.
      *
      * @param customerId       Your account customer_id.
-     * @param apiKey        Your account api_key.
+     * @param apiKey           Your account api_key.
      * @param methodName       The HTTP method name of the request as a upper case string, should be one of 'POST', 'GET',
      *                         'PUT' or 'DELETE'.
      * @param resource         The partial resource URI to perform the request against.
