@@ -40,7 +40,6 @@ public class RestClientTest extends TestCase {
         String test_resource = "/test/resource";
         HashMap<String, String> test_params = new HashMap<>();
         test_params.put("test", "123_\u03ff_test");
-        test_params.put("test2", "321_\u03ff_test");
 
         this.mockServer.enqueue(new MockResponse().setBody("{}"));
 
@@ -54,7 +53,7 @@ public class RestClientTest extends TestCase {
 
         assertEquals("POST", request.getMethod());
         assertEquals("/test/resource", request.getPath());
-        assertEquals("test=123_%CF%BF_test&test2=321_%CF%BF_test", request.getBody().readUtf8());
+        assertEquals("test=123_%CF%BF_test", request.getBody().readUtf8());
         assertEquals("application/x-www-form-urlencoded", request.getHeader("Content-Type"));
         assertEquals("HMAC-SHA256", request.getHeader("x-ts-auth-method"));
 
@@ -78,7 +77,6 @@ public class RestClientTest extends TestCase {
         String test_resource = "/test/resource";
         HashMap<String, String> test_params = new HashMap<>();
         test_params.put("test", "123_\u03ff_test");
-        test_params.put("test2", "321_\u03ff_test");
 
         this.mockServer.enqueue(new MockResponse().setBody("{}"));
 
@@ -91,7 +89,7 @@ public class RestClientTest extends TestCase {
         RecordedRequest request = this.mockServer.takeRequest();
 
         assertEquals("GET", request.getMethod());
-        assertEquals("/test/resource?test=123_%CF%BF_test&test2=321_%CF%BF_test", request.getPath());
+        assertEquals("/test/resource?test=123_%CF%BF_test", request.getPath());
         assertEquals("", request.getBody().readUtf8());
         assertEquals("", request.getHeader("Content-Type"));
         assertEquals("HMAC-SHA256", request.getHeader("x-ts-auth-method"));
@@ -116,7 +114,6 @@ public class RestClientTest extends TestCase {
         String test_resource = "/test/resource";
         HashMap<String, String> test_params = new HashMap<>();
         test_params.put("test", "123_\u03ff_test");
-        test_params.put("test2", "321_\u03ff_test");
 
         this.mockServer.enqueue(new MockResponse().setBody("{}"));
 
@@ -130,7 +127,7 @@ public class RestClientTest extends TestCase {
 
         assertEquals("PUT", request.getMethod());
         assertEquals("/test/resource", request.getPath());
-        assertEquals("test=123_%CF%BF_test&test2=321_%CF%BF_test", request.getBody().readUtf8());
+        assertEquals("test=123_%CF%BF_test", request.getBody().readUtf8());
         assertEquals("application/x-www-form-urlencoded", request.getHeader("Content-Type"));
         assertEquals("HMAC-SHA256", request.getHeader("x-ts-auth-method"));
 
@@ -154,7 +151,6 @@ public class RestClientTest extends TestCase {
         String test_resource = "/test/resource";
         HashMap<String, String> test_params = new HashMap<>();
         test_params.put("test", "123_\u03ff_test");
-        test_params.put("test2", "321_\u03ff_test");
 
         this.mockServer.enqueue(new MockResponse().setBody("{}"));
 
@@ -167,7 +163,7 @@ public class RestClientTest extends TestCase {
         RecordedRequest request = this.mockServer.takeRequest();
 
         assertEquals("DELETE", request.getMethod());
-        assertEquals("/test/resource?test=123_%CF%BF_test&test2=321_%CF%BF_test", request.getPath());
+        assertEquals("/test/resource?test=123_%CF%BF_test", request.getPath());
         assertEquals("", request.getBody().readUtf8());
         assertEquals("", request.getHeader("Content-Type"));
         assertEquals("HMAC-SHA256", request.getHeader("x-ts-auth-method"));
