@@ -4,6 +4,9 @@
 .. image:: https://img.shields.io/travis/TeleSign/java_telesign.svg?branch=master
     :target: https://travis-ci.org/TeleSign/java_telesign
 
+.. image:: https://img.shields.io/codecov/c/github/TeleSign/java_telesign.svg
+    :target: https://codecov.io/gh/TeleSign/java_telesign
+
 .. image:: https://img.shields.io/maven-central/v/com.telesign/telesign.svg
     :target: http://maven-repository.com/artifact/com.telesign/telesign/
 
