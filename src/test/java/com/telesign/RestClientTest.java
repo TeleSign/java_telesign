@@ -5,9 +5,11 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
+import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class RestClientTest extends TestCase {
@@ -35,10 +37,113 @@ public class RestClientTest extends TestCase {
         this.mockServer.shutdown();
     }
 
+    public void testRestClientConstructors() {
+
+        RestClient client = new RestClient(this.customerId, this.apiKey);
+    }
+
+    public void testGenerateTelesignHeadersWithPost() throws GeneralSecurityException {
+
+        String methodName = "POST";
+        String dateRfc2616 = "Wed, 14 Dec 2016 18:20:12 GMT";
+        String nonce = "A1592C6F-E384-4CDB-BC42-C3AB970369E9";
+        String resource = "/v1/resource";
+        String bodyParamsUrlEncoded = "test=param";
+
+        String expectedAuthorizationHeader = "TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:" +
+                "2xVlmbrxLjYrrPun3G3WMNG6Jon4yKcTeOoK9DjXJ/Q=";
+
+        Map<String, String> actualHeaders = RestClient.generateTelesignHeaders(this.customerId,
+                this.apiKey,
+                methodName,
+                resource,
+                bodyParamsUrlEncoded,
+                dateRfc2616,
+                nonce,
+                "unitTest");
+
+        assertEquals(expectedAuthorizationHeader, actualHeaders.get("Authorization"));
+    }
+
+    public void testGenerateTelesignHeadersUnicodeContent() throws GeneralSecurityException {
+
+        String methodName = "POST";
+        String dateRfc2616 = "Wed, 14 Dec 2016 18:20:12 GMT";
+        String nonce = "A1592C6F-E384-4CDB-BC42-C3AB970369E9";
+        String resource = "/v1/resource";
+        String bodyParamsUrlEncoded = "test=%CF%BF";
+
+        String expectedAuthorizationHeader = "TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:" +
+                "h8d4I0RTxErbxYXuzCOtNqb/f0w3Ck8e5SEkGNj01+8=";
+
+        Map<String, String> actualHeaders = RestClient.generateTelesignHeaders(this.customerId,
+                this.apiKey,
+                methodName,
+                resource,
+                bodyParamsUrlEncoded,
+                dateRfc2616,
+                nonce,
+                "unitTest");
+
+        assertEquals(expectedAuthorizationHeader, actualHeaders.get("Authorization"));
+    }
+
+    public void testGenerateTelesignHeadersWithGet() throws GeneralSecurityException {
+
+        String methodName = "GET";
+        String dateRfc2616 = "Wed, 14 Dec 2016 18:20:12 GMT";
+        String nonce = "A1592C6F-E384-4CDB-BC42-C3AB970369E9";
+        String resource = "/v1/resource";
+
+        String expectedAuthorizationHeader = "TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:" +
+                "aUm7I+9GKl3ww7PNeeJntCT0iS7b+EmRKEE4LnRzChQ=";
+
+        Map<String, String> actualHeaders = RestClient.generateTelesignHeaders(this.customerId,
+                this.apiKey,
+                methodName,
+                resource,
+                "",
+                dateRfc2616,
+                nonce,
+                "unitTest");
+
+        assertEquals(expectedAuthorizationHeader, actualHeaders.get("Authorization"));
+    }
+
+    public void testGenerateTelesignHeadersDefaultDateAndNonce() throws GeneralSecurityException {
+
+        String methodName = "GET";
+        String resource = "/v1/resource";
+
+        String expectedAuthorizationHeader = "TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:" +
+                "aUm7I+9GKl3ww7PNeeJntCT0iS7b+EmRKEE4LnRzChQ=";
+
+        Map<String, String> actualHeaders = RestClient.generateTelesignHeaders(this.customerId,
+                this.apiKey,
+                methodName,
+                resource,
+                "",
+                null,
+                null,
+                "unitTest");
+
+        try {
+            UUID uuid = UUID.fromString(actualHeaders.get("x-ts-nonce"));
+        } catch (IllegalArgumentException e) {
+            fail("x-ts-nonce header is not a valid UUID");
+        }
+
+        try {
+            this.rfc2616.parse(actualHeaders.get("Date"));
+        } catch (ParseException e) {
+            fail("Date header is not valid rfc2616 format");
+        }
+    }
+
     public void testRestClientPost() throws Exception {
 
         String test_resource = "/test/resource";
-        HashMap<String, String> test_params = new HashMap<>();
+        Map<String, String> test_params = new HashMap<>();
         test_params.put("test", "123_\u03ff_test");
 
         this.mockServer.enqueue(new MockResponse().setBody("{}"));
@@ -75,7 +180,7 @@ public class RestClientTest extends TestCase {
     public void testRestClientGet() throws Exception {
 
         String test_resource = "/test/resource";
-        HashMap<String, String> test_params = new HashMap<>();
+        Map<String, String> test_params = new HashMap<>();
         test_params.put("test", "123_\u03ff_test");
 
         this.mockServer.enqueue(new MockResponse().setBody("{}"));
@@ -112,7 +217,7 @@ public class RestClientTest extends TestCase {
     public void testRestClientPut() throws Exception {
 
         String test_resource = "/test/resource";
-        HashMap<String, String> test_params = new HashMap<>();
+        Map<String, String> test_params = new HashMap<>();
         test_params.put("test", "123_\u03ff_test");
 
         this.mockServer.enqueue(new MockResponse().setBody("{}"));
@@ -149,7 +254,7 @@ public class RestClientTest extends TestCase {
     public void testRestClientDelete() throws Exception {
 
         String test_resource = "/test/resource";
-        HashMap<String, String> test_params = new HashMap<>();
+        Map<String, String> test_params = new HashMap<>();
         test_params.put("test", "123_\u03ff_test");
 
         this.mockServer.enqueue(new MockResponse().setBody("{}"));
@@ -182,6 +287,4 @@ public class RestClientTest extends TestCase {
 
         assertNotNull(request.getHeader("Authorization"));
     }
-
-
 }
