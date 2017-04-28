@@ -63,7 +63,8 @@ public class RestClientTest extends TestCase {
                 nonce,
                 "unitTest");
 
-        assertEquals(expectedAuthorizationHeader, actualHeaders.get("Authorization"));
+        assertEquals("Authorization header is not as expected", expectedAuthorizationHeader,
+                actualHeaders.get("Authorization"));
     }
 
     public void testGenerateTelesignHeadersUnicodeContent() throws GeneralSecurityException {
@@ -86,7 +87,8 @@ public class RestClientTest extends TestCase {
                 nonce,
                 "unitTest");
 
-        assertEquals(expectedAuthorizationHeader, actualHeaders.get("Authorization"));
+        assertEquals("Authorization header is not as expected", expectedAuthorizationHeader,
+                actualHeaders.get("Authorization"));
     }
 
     public void testGenerateTelesignHeadersWithGet() throws GeneralSecurityException {
@@ -108,7 +110,8 @@ public class RestClientTest extends TestCase {
                 nonce,
                 "unitTest");
 
-        assertEquals(expectedAuthorizationHeader, actualHeaders.get("Authorization"));
+        assertEquals("Authorization header is not as expected", expectedAuthorizationHeader,
+                actualHeaders.get("Authorization"));
     }
 
     public void testGenerateTelesignHeadersDefaultValues() throws GeneralSecurityException {
@@ -157,11 +160,14 @@ public class RestClientTest extends TestCase {
 
         RecordedRequest request = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
 
-        assertEquals("POST", request.getMethod());
-        assertEquals("/test/resource", request.getPath());
-        assertEquals("test=123_%CF%BF_test", request.getBody().readUtf8());
-        assertEquals("application/x-www-form-urlencoded", request.getHeader("Content-Type"));
-        assertEquals("HMAC-SHA256", request.getHeader("x-ts-auth-method"));
+        assertEquals("method is not as expected", "POST", request.getMethod());
+        assertEquals("path is not as expected", "/test/resource", request.getPath());
+        assertEquals("body is not as expected", "test=123_%CF%BF_test",
+                request.getBody().readUtf8());
+        assertEquals("Content-Type header is not as expected", "application/x-www-form-urlencoded",
+                request.getHeader("Content-Type"));
+        assertEquals("x-ts-auth-method header is not as expected", "HMAC-SHA256",
+                request.getHeader("x-ts-auth-method"));
 
         try {
             UUID uuid = UUID.fromString(request.getHeader("x-ts-nonce"));
@@ -194,11 +200,14 @@ public class RestClientTest extends TestCase {
 
         RecordedRequest request = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
 
-        assertEquals("GET", request.getMethod());
-        assertEquals("/test/resource?test=123_%CF%BF_test", request.getPath());
-        assertEquals("", request.getBody().readUtf8());
-        assertEquals("", request.getHeader("Content-Type"));
-        assertEquals("HMAC-SHA256", request.getHeader("x-ts-auth-method"));
+        assertEquals("method is not as expected", "GET", request.getMethod());
+        assertEquals("path is not as expected","/test/resource?test=123_%CF%BF_test",
+                request.getPath());
+        assertEquals("body is not as expected", "", request.getBody().readUtf8());
+        assertEquals("Content-Type header is not as expected", "",
+                request.getHeader("Content-Type"));
+        assertEquals("x-ts-auth-method header is not as expected", "HMAC-SHA256",
+                request.getHeader("x-ts-auth-method"));
 
         try {
             UUID uuid = UUID.fromString(request.getHeader("x-ts-nonce"));
@@ -231,11 +240,14 @@ public class RestClientTest extends TestCase {
 
         RecordedRequest request = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
 
-        assertEquals("PUT", request.getMethod());
-        assertEquals("/test/resource", request.getPath());
-        assertEquals("test=123_%CF%BF_test", request.getBody().readUtf8());
-        assertEquals("application/x-www-form-urlencoded", request.getHeader("Content-Type"));
-        assertEquals("HMAC-SHA256", request.getHeader("x-ts-auth-method"));
+        assertEquals("method is not as expected", "PUT", request.getMethod());
+        assertEquals("path is not as expected","/test/resource", request.getPath());
+        assertEquals("body is not as expected", "test=123_%CF%BF_test",
+                request.getBody().readUtf8());
+        assertEquals("Content-Type header is not as expected","application/x-www-form-urlencoded",
+                request.getHeader("Content-Type"));
+        assertEquals("x-ts-auth-method header is not as expected","HMAC-SHA256",
+                request.getHeader("x-ts-auth-method"));
 
         try {
             UUID uuid = UUID.fromString(request.getHeader("x-ts-nonce"));
@@ -268,11 +280,14 @@ public class RestClientTest extends TestCase {
 
         RecordedRequest request = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
 
-        assertEquals("DELETE", request.getMethod());
-        assertEquals("/test/resource?test=123_%CF%BF_test", request.getPath());
-        assertEquals("", request.getBody().readUtf8());
-        assertEquals("", request.getHeader("Content-Type"));
-        assertEquals("HMAC-SHA256", request.getHeader("x-ts-auth-method"));
+        assertEquals("method is not as expected", "DELETE", request.getMethod());
+        assertEquals("path is not as expected","/test/resource?test=123_%CF%BF_test",
+                request.getPath());
+        assertEquals("body is not as expected","", request.getBody().readUtf8());
+        assertEquals("Content-Type header is not as expected","",
+                request.getHeader("Content-Type"));
+        assertEquals("x-ts-auth-method header is not as expected","HMAC-SHA256",
+                request.getHeader("x-ts-auth-method"));
 
         try {
             UUID uuid = UUID.fromString(request.getHeader("x-ts-nonce"));
@@ -310,12 +325,14 @@ public class RestClientTest extends TestCase {
 
         client.get(test_resource, test_params);
 
-        assertEquals(2, this.mockServer.getRequestCount());
+        assertEquals("request count does not match expected",2, this.mockServer.getRequestCount());
 
         RecordedRequest initialRequest = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
         RecordedRequest proxyAuthorizationRequest = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
 
-        assertNull(initialRequest.getHeader("Proxy-Authorization"));
-        assertNotNull(proxyAuthorizationRequest.getHeader("Proxy-Authorization"));
+        assertNull("Proxy-Authorization header should be absent from initial request",
+                initialRequest.getHeader("Proxy-Authorization"));
+        assertNotNull("Proxy-Authorization header should exist in the subsequent request",
+                proxyAuthorizationRequest.getHeader("Proxy-Authorization"));
     }
 }
