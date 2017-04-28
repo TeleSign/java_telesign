@@ -63,9 +63,9 @@ public class RestClient {
     public RestClient(String customerId,
                       String apiKey,
                       String restEndpoint,
-                      Long connectTimeout,
-                      Long readTimeout,
-                      Long writeTimeout,
+                      Integer connectTimeout,
+                      Integer readTimeout,
+                      Integer writeTimeout,
                       Proxy proxy,
                       final String proxyUsername,
                       final String proxyPassword) {
@@ -80,15 +80,15 @@ public class RestClient {
         }
 
         if (connectTimeout == null) {
-            connectTimeout = 10L;
+            connectTimeout = 10;
         }
 
         if (readTimeout == null) {
-            readTimeout = 10L;
+            readTimeout = 10;
         }
 
         if (writeTimeout == null) {
-            writeTimeout = 10L;
+            writeTimeout = 10;
         }
 
         OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()

@@ -24,9 +24,9 @@ public class AutoVerifyClient extends RestClient {
     public AutoVerifyClient(String customerId,
                             String apiKey,
                             String restEndpoint,
-                            Long connectTimeout,
-                            Long readTimeout,
-                            Long writeTimeout,
+                            Integer connectTimeout,
+                            Integer readTimeout,
+                            Integer writeTimeout,
                             Proxy proxy,
                             final String proxyUsername,
                             final String proxyPassword) {
