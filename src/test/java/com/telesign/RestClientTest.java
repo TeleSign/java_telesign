@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class RestClientTest extends TestCase {
 
@@ -110,7 +111,7 @@ public class RestClientTest extends TestCase {
         assertEquals(expectedAuthorizationHeader, actualHeaders.get("Authorization"));
     }
 
-    public void testGenerateTelesignHeadersDefaultDateAndNonce() throws GeneralSecurityException {
+    public void testGenerateTelesignHeadersDefaultValues() throws GeneralSecurityException {
 
         String methodName = "GET";
         String resource = "/v1/resource";
@@ -125,7 +126,7 @@ public class RestClientTest extends TestCase {
                 "",
                 null,
                 null,
-                "unitTest");
+                null);
 
         try {
             UUID uuid = UUID.fromString(actualHeaders.get("x-ts-nonce"));
@@ -154,7 +155,7 @@ public class RestClientTest extends TestCase {
 
         client.post(test_resource, test_params);
 
-        RecordedRequest request = this.mockServer.takeRequest();
+        RecordedRequest request = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
 
         assertEquals("POST", request.getMethod());
         assertEquals("/test/resource", request.getPath());
@@ -191,7 +192,7 @@ public class RestClientTest extends TestCase {
 
         client.get(test_resource, test_params);
 
-        RecordedRequest request = this.mockServer.takeRequest();
+        RecordedRequest request = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
 
         assertEquals("GET", request.getMethod());
         assertEquals("/test/resource?test=123_%CF%BF_test", request.getPath());
@@ -228,7 +229,7 @@ public class RestClientTest extends TestCase {
 
         client.put(test_resource, test_params);
 
-        RecordedRequest request = this.mockServer.takeRequest();
+        RecordedRequest request = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
 
         assertEquals("PUT", request.getMethod());
         assertEquals("/test/resource", request.getPath());
@@ -265,7 +266,7 @@ public class RestClientTest extends TestCase {
 
         client.delete(test_resource, test_params);
 
-        RecordedRequest request = this.mockServer.takeRequest();
+        RecordedRequest request = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
 
         assertEquals("DELETE", request.getMethod());
         assertEquals("/test/resource?test=123_%CF%BF_test", request.getPath());
@@ -286,5 +287,35 @@ public class RestClientTest extends TestCase {
         }
 
         assertNotNull(request.getHeader("Authorization"));
+    }
+
+    public void testRestClientProxyAuthentication() throws Exception {
+
+        String test_resource = "/test/resource";
+        Map<String, String> test_params = new HashMap<>();
+        test_params.put("test", "123_\u03ff_test");
+
+        this.mockServer.enqueue(new MockResponse().setBody("{}").setResponseCode(407));
+        this.mockServer.enqueue(new MockResponse().setBody("{}"));
+
+        RestClient client = new RestClient(this.customerId,
+                this.apiKey,
+                this.mockServer.url("").toString().replaceAll("/$", ""),
+                1,
+                1,
+                1,
+                this.mockServer.toProxyAddress(),
+                "proxyUsername",
+                "proxyPassword");
+
+        client.get(test_resource, test_params);
+
+        assertEquals(2, this.mockServer.getRequestCount());
+
+        RecordedRequest initialRequest = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
+        RecordedRequest proxyAuthorizationRequest = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
+
+        assertNull(initialRequest.getHeader("Proxy-Authorization"));
+        assertNotNull(proxyAuthorizationRequest.getHeader("Proxy-Authorization"));
     }
 }
