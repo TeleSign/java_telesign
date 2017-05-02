@@ -53,8 +53,8 @@ Authentication
 --------------
 
 You will need a Customer ID and API Key in order to use TeleSign’s API. If you already have an account you can retrieve
-them from your account dashboard within the `Portal <https://portal.telesign.com>`_. If you have not signed up yet, sign
-up `here <https://portal.telesign.com/signup>`_.
+them from your account dashboard within the `Portal <https://portal.telesign.com/login>`_. If you have not signed up
+yet, sign up `here <https://portal.telesign.com/signup>`_.
 
 Dependencies
 ------------
@@ -89,4 +89,6 @@ Here is a basic code example with JSON response.
         'description': 'Call in progress',
         'updated_on': '2016-12-12T00:39:58.325559Z'}}
 
-For more examples, see the examples folder or visit `TeleSign Developer Portal <https://developer.telesign.com/>`_.
+For more examples, see the
+`examples <https://github.com/TeleSign/java_telesign/tree/master/src/test/java/com/telesign/example>`_ folder or visit
+the `TeleSign Developer Portal <https://developer.telesign.com/>`_.
