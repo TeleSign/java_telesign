@@ -1,4 +1,4 @@
-.. image:: https://raw.github.com/TeleSign/java_telesign/master/sdk_banner.png
+.. image:: https://raw.github.com/TeleSign/java_telesign/master/java_banner.jpg
     :target: https://developer.telesign.com
 
 .. image:: https://img.shields.io/travis/TeleSign/java_telesign.svg?branch=master
