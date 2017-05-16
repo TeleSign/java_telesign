@@ -1,3 +1,7 @@
+## [2.1.1](http://central.maven.org/maven2/com/telesign/telesign/2.1.1/) - 2017-05-16
+- 2017-05-16
+  - dateRfc2616 is now fixed to Locale.US to avoid unnecessary localization issues
+
 ## [2.1.0](http://central.maven.org/maven2/com/telesign/telesign/2.1.0/) - 2017-04-26
 - 2016-04-26
   - updated and improved README
@@ -9,7 +13,7 @@
 ## [2.0.0](http://central.maven.org/maven2/com/telesign/telesign/2.0.0/) - 2017-04-10
 - 2016-04-10
   - Major refactor and simplification into generic REST client.
-  - API parameters are now passed as parans to endpoint handlers.
+  - API parameters are now passed as params to endpoint handlers.
   - Now using OkHttp as a web client internally which avoids a lot of redundant code.
   - UserAgent is now set to track client usage and help debug issues.
   - generateTelesignHeaders is a static and easily extracted from the SDK if
@@ -156,7 +160,7 @@ Removed special characters as it was giving errors while running Junit test
   - Merge pull request #15 from Manmohan-TechM/July_2015
 Adding pom.xml used while migrating to Maven central 
 - 2015-08-13 
-  - Merge pull request #14 from daplay/master
+  - Merge pull request #14 from deploy/master
 use Locale.US for date header 
 - 2015-08-03 
   - Added Originating_ip & Session_id to PhoneId & Verify calls. Changes done as part of PD-14562.

@@ -179,7 +179,7 @@ public class RestClient {
                                                               String userAgent) throws NoSuchAlgorithmException, InvalidKeyException {
 
         if (dateRfc2616 == null) {
-            SimpleDateFormat rfc2616 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
+            SimpleDateFormat rfc2616 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
             rfc2616.setTimeZone(TimeZone.getTimeZone("GMT"));
             dateRfc2616 = rfc2616.format(new Date());
         }
