@@ -76,8 +76,8 @@ if (System.getenv('TRAVIS') == null) {
                     url 'https://github.com/TeleSign/java_telesign'
 
                     scm {
-                        connection 'scm:git@github.com:TeleSign/java_telesign.git'
-                        developerConnection 'scm:git@github.com:TeleSign/java_telesign.git'
+                        connection 'scm:git:https://github.com/TeleSign/java_telesign.git'
+                        developerConnection 'scm:git:git@github.com:TeleSign/java_telesign.git'
                         url 'https://github.com/TeleSign/java_telesign'
                     }
 
