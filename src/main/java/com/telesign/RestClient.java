@@ -241,7 +241,7 @@ public class RestClient {
      * Generic TeleSign REST API POST handler.
      *
      * @param resource The partial resource URI to perform the request against.
-     * @param params   Body params to perform the POST request with.
+     * @param params   Params to perform the POST request with.
      * @return The TelesignResponse for the request.
      */
     public TelesignResponse post(String resource, Map<String, String> params) throws IOException, GeneralSecurityException {
@@ -253,7 +253,7 @@ public class RestClient {
      * Generic TeleSign REST API GET handler.
      *
      * @param resource The partial resource URI to perform the request against.
-     * @param params   Body params to perform the POST request with.
+     * @param params   Params to perform the GET request with.
      * @return The TelesignResponse for the request.
      */
     public TelesignResponse get(String resource, Map<String, String> params) throws IOException, GeneralSecurityException {
@@ -265,7 +265,7 @@ public class RestClient {
      * Generic TeleSign REST API PUT handler.
      *
      * @param resource The partial resource URI to perform the request against.
-     * @param params   Body params to perform the POST request with.
+     * @param params   Params to perform the PUT request with.
      * @return The TelesignResponse for the request.
      */
     public TelesignResponse put(String resource, Map<String, String> params) throws IOException, GeneralSecurityException {
@@ -277,7 +277,7 @@ public class RestClient {
      * Generic TeleSign REST API DELETE handler.
      *
      * @param resource The partial resource URI to perform the request against.
-     * @param params   Body params to perform the POST request with.
+     * @param params   Params to perform the DELETE request with.
      * @return The TelesignResponse for the request.
      */
     public TelesignResponse delete(String resource, Map<String, String> params) throws IOException, GeneralSecurityException {
@@ -290,7 +290,7 @@ public class RestClient {
      *
      * @param methodName The HTTP method name, as an upper case string.
      * @param resource   The partial resource URI to perform the request against.
-     * @param params     Body params to perform the POST request with.
+     * @param params     Params to perform the request with.
      * @return The TelesignResponse for the request.
      */
     private TelesignResponse execute(String methodName, String resource, Map<String, String> params) throws IOException, GeneralSecurityException {
