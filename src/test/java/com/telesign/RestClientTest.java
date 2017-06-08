@@ -119,9 +119,6 @@ public class RestClientTest extends TestCase {
         String methodName = "GET";
         String resource = "/v1/resource";
 
-        String expectedAuthorizationHeader = "TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:" +
-                "aUm7I+9GKl3ww7PNeeJntCT0iS7b+EmRKEE4LnRzChQ=";
-
         Map<String, String> actualHeaders = RestClient.generateTelesignHeaders(this.customerId,
                 this.apiKey,
                 methodName,
