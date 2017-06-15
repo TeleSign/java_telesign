@@ -1,3 +1,7 @@
+## [2.2.0](http://central.maven.org/maven2/com/telesign/telesign/2.2.0/) - 2017-06-15
+- 2017-06-15
+  - AutoVerify rebranded to AppVerify, please update your integration
+
 ## [2.1.1](http://central.maven.org/maven2/com/telesign/telesign/2.1.1/) - 2017-05-16
 - 2017-05-16
   - dateRfc2616 is now fixed to Locale.US to avoid unnecessary localization issues

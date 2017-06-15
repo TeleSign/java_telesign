@@ -1,6 +1,6 @@
-package com.telesign.example.autoverify;
+package com.telesign.example.appverify;
 
-import com.telesign.AutoVerifyClient;
+import com.telesign.AppVerifyClient;
 import com.telesign.RestClient;
 
 public class GetStatusByExternalId {
@@ -13,11 +13,11 @@ public class GetStatusByExternalId {
         String externalId = "external_id";
 
         try {
-            AutoVerifyClient autoverifyClient = new AutoVerifyClient(customerId, apiKey);
-            RestClient.TelesignResponse telesignResponse = autoverifyClient.status(externalId, null);
+            AppVerifyClient appVerifyClient = new AppVerifyClient(customerId, apiKey);
+            RestClient.TelesignResponse telesignResponse = appVerifyClient.status(externalId, null);
 
             if (telesignResponse.ok) {
-                System.out.println(String.format("AutoVerify transaction with external_id %s has status code %s and status description %s.",
+                System.out.println(String.format("AppVerify transaction with external_id %s has status code %s and status description %s.",
                         externalId,
                         telesignResponse.json.getAsJsonObject("status").get("code").getAsString(),
                         telesignResponse.json.getAsJsonObject("status").get("description").getAsString()));
