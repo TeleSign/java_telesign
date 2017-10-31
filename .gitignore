@@ -7,7 +7,6 @@ build/
 .classpath
 .project
 .settings/
-bin/
 
 # IntelliJ IDEA
 .idea/

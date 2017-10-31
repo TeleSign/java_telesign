@@ -47,6 +47,21 @@ if (System.getenv('TRAVIS') == null) {
         from sourceSets.main.allSource
     }
 
+    task fatJar(type: Jar) {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
+
+    task clearOldJar(type: Delete) {
+        delete "bin"
+    }
+
+    task copyJar(type: Copy) {
+      dependsOn clearOldJar
+      from fatJar
+      into('bin')
+    }
+
     artifacts {
         archives jar
         archives javadocJar
