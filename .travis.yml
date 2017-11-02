@@ -4,8 +4,6 @@ matrix:
   include:
     - dist: trusty
       jdk: oraclejdk8
-    - dist: trusty
-      jdk: oraclejdk9
     - dist: precise
       sudo: false
       jdk: oraclejdk7
