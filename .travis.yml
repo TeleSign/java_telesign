@@ -6,9 +6,10 @@ matrix:
       jdk: oraclejdk8
     - dist: precise
       sudo: false
-      jdk:
-        - oraclejdk7
-        - openjdk7
+      jdk: oraclejdk7
+    - dist: precise
+      sudo: false
+      jdk: openjdk7
 before_script:
   - chmod +x gradlew
 script:
