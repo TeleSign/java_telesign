@@ -1,3 +1,7 @@
+## [2.2.1](http://central.maven.org/maven2/com/telesign/telesign/2.2.1/) - 2018-03-09
+- 2018-03-09
+  - Added support for application/json content-type
+
 ## [2.2.0](http://central.maven.org/maven2/com/telesign/telesign/2.2.0/) - 2017-06-15
 - 2017-06-15
   - AutoVerify rebranded to AppVerify, please update your integration
