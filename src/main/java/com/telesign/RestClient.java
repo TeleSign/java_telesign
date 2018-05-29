@@ -30,6 +30,9 @@ public class RestClient {
 	private static final String userAgent = String.format("TeleSignSDK/java-%s Java/%s %s", BuildConfig.VERSION,
 			System.getProperty("java.version"), Version.userAgent());
 
+	public static final String URL_FORM_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded";
+	public static final String JSON_CONTENT_TYPE = "application/json";
+
 	private String customerId;
 	private String apiKey;
 	private String restEndpoint;
@@ -171,7 +174,7 @@ public class RestClient {
 	 *            be one of 'POST', 'GET', 'PUT' or 'DELETE'.
 	 * @param resource
 	 *            The partial resource URI to perform the request against.
-	 * @param urlEncodedFields
+	 * @param requestParams
 	 *            URL encoded HTTP body to perform the HTTP request with.
 	 * @param dateRfc2616
 	 *            (optional) The date and time of the request formatted in rfc 2616.
@@ -247,15 +250,6 @@ public class RestClient {
 
 		return headers;
 	}
-	
-	/**
-	 * Returns specific content type for request execution execution
-	 *  
-	 * @return
-	 */
-	protected String getContentType() {
-		return "application/x-www-form-urlencoded";
-	}
 
 	/**
 	 * Generic TeleSign REST API POST handler.
@@ -268,8 +262,22 @@ public class RestClient {
 	 */
 	public TelesignResponse post(String resource, Map<String, ? extends Object> params)
 			throws IOException, GeneralSecurityException {
+		return this.execute("POST", resource, params, URL_FORM_ENCODED_CONTENT_TYPE);
+	}
 
-		return this.execute("POST", resource, params);
+	/**
+	 * Generic TeleSign REST API POST handler.
+	 *
+	 * @param resource
+	 *            The partial resource URI to perform the request against.
+	 * @param params
+	 *            Params to perform the POST request with.
+	 * @return The TelesignResponse for the request.
+	 */
+	public TelesignResponse post(String resource, Map<String, ? extends Object> params, String contentType)
+			throws IOException, GeneralSecurityException {
+
+		return this.execute("POST", resource, params, contentType);
 	}
 
 	/**
@@ -299,7 +307,7 @@ public class RestClient {
 	public TelesignResponse put(String resource, Map<String, String> params)
 			throws IOException, GeneralSecurityException {
 
-		return this.execute("PUT", resource, params);
+		return this.execute("PUT", resource, params, URL_FORM_ENCODED_CONTENT_TYPE);
 	}
 
 	/**
@@ -320,17 +328,13 @@ public class RestClient {
 	/**
 	 * Generic TeleSign REST API request handler.
 	 *
-	 * @param methodName
-	 *            The HTTP method name, as an upper case string.
-	 * @param resource
-	 *            The partial resource URI to perform the request against.
 	 * @param params
 	 *            Params to perform the request with.
-	 * @return The TelesignResponse for the request.
+	 * @return The RequestBody for the request.
 	 * @throws IOException
 	 */
 
-	public RequestBody createRequestBody(Map<String, ? extends Object> params) throws IOException {
+	public RequestBody createRequestBody(Map<String, ? extends Object> params, String contentType) throws IOException {
 		FormBody.Builder formBodyBuilder = new FormBody.Builder();
 		for (Map.Entry<String, ? extends Object> entry : params.entrySet()) {
 			formBodyBuilder.add(entry.getKey(), (String) entry.getValue());
@@ -340,7 +344,22 @@ public class RestClient {
 		return formBody;
 
 	}
-	
+
+	/**
+	 * Generic TeleSign method for request execution,
+	 *
+	 * @param methodName
+	 * @param resource
+	 * @param params
+	 * @return The TelesignResponse for the request
+	 * @throws IOException
+	 * @throws GeneralSecurityException
+	 */
+	private TelesignResponse execute(String methodName, String resource, Map<String, ? extends Object> params)
+			throws IOException, GeneralSecurityException {
+		return execute(methodName, resource, params, "");
+	}
+
 	/**
 	 * Generic TeleSign method for request execution,
 	 * 
@@ -351,7 +370,7 @@ public class RestClient {
 	 * @throws IOException
 	 * @throws GeneralSecurityException
 	 */
-	private TelesignResponse execute(String methodName, String resource, Map<String, ? extends Object> params)
+	private TelesignResponse execute(String methodName, String resource, Map<String, ? extends Object> params, String contentType)
 			throws IOException, GeneralSecurityException {
 
 		if (params == null) {
@@ -363,7 +382,7 @@ public class RestClient {
 		RequestBody requestBody = null;
 		String requestParams = "";
 		if (methodName.equals("POST") || methodName.equals("PUT")) {
-			requestBody = this.createRequestBody(params);
+			requestBody = this.createRequestBody(params, contentType);
 			if (requestBody != null) {
 				Buffer buffer = new Buffer();
 				requestBody.writeTo(buffer);
@@ -378,7 +397,7 @@ public class RestClient {
 		}
 
 		Map<String, String> headers = RestClient.generateTelesignHeaders(this.customerId, this.apiKey,
-				methodName, resource, requestParams, null, null, RestClient.userAgent, this.getContentType());
+				methodName, resource, requestParams, null, null, RestClient.userAgent, contentType);
 
 		Request.Builder requestBuilder = new Request.Builder().url(httpUrl).method(methodName, requestBody);
 		for (Map.Entry<String, String> entry : headers.entrySet()) {

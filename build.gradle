@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.telesign'
-version '2.2.1'
+version '2.2.2'
 
 apply plugin: 'idea'
 apply plugin: 'java'
