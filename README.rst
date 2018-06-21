@@ -1,5 +1,5 @@
 .. image:: https://raw.github.com/TeleSign/java_telesign/master/java_banner.jpg
-    :target: https://developer.telesign.com
+    :target: https://standard.telesign.com
 
 .. image:: https://img.shields.io/travis/TeleSign/java_telesign.svg?branch=master
     :target: https://travis-ci.org/TeleSign/java_telesign
@@ -28,7 +28,7 @@ Documentation
 -------------
 
 Code documentation is included in the SDK. Complete documentation, quick start guides and reference material
-for the TeleSign API is available within the `TeleSign Developer Center <https://developer.telesign.com/>`_.
+for the TeleSign API is available within the `TeleSign Standard Documentation <https://standard.telesign.com/>`_.
 
 Installation
 ------------
@@ -93,4 +93,4 @@ Here is a basic code example with JSON response.
 
 For more examples, see the
 `examples <https://github.com/TeleSign/java_telesign/tree/master/src/test/java/com/telesign/example>`_ folder or visit
-the `TeleSign Developer Portal <https://developer.telesign.com/>`_.
+the `TeleSign Standard Documentation <https://standard.telesign.com/>`_.
