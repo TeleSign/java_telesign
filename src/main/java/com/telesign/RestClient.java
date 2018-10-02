@@ -226,8 +226,6 @@ public class RestClient {
 		stringToSignBuilder.append(String.format("\n%s", resource));
 
 		String stringToSign = stringToSignBuilder.toString();
-		System.out.println(stringToSign);
-		System.out.println("End of writes");
 
 		String signature;
 		Mac sha256HMAC = Mac.getInstance("HmacSHA256");

@@ -1,5 +1,9 @@
-## [2.2.2]((http://central.maven.org/maven2/com/telesign/telesign/2.2.2/) - 2018-05-25
-- 2019-05-20
+## [2.2.3](http://central.maven.org/maven2/com/telesign/telesign/2.2.3/) - 2018-10-02
+- 2018-10-02
+  - Removed log messages.
+  
+## [2.2.2](http://central.maven.org/maven2/com/telesign/telesign/2.2.2/) - 2018-05-25
+- 2018-05-20
   - Fixed support for application/json content-type
 
 ## [2.2.1](http://central.maven.org/maven2/com/telesign/telesign/2.2.1/) - 2018-03-09
