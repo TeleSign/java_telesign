@@ -1,3 +1,7 @@
+## [2.2.4](http://central.maven.org/maven2/com/telesign/telesign/2.2.4/) - 2018-10-02
+- 2019-05-28
+  - Update dependency version specifications
+
 ## [2.2.3](http://central.maven.org/maven2/com/telesign/telesign/2.2.3/) - 2018-10-02
 - 2018-10-02
   - Removed log messages.
