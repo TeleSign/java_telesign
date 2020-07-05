@@ -4,12 +4,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import okhttp3.*;
-import okhttp3.internal.Version;
 import okio.Buffer;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.net.Proxy;
 import java.security.GeneralSecurityException;
@@ -27,8 +25,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class RestClient {
 
-	private static final String userAgent = String.format("TeleSignSDK/java-%s Java/%s %s", BuildConfig.VERSION,
-			System.getProperty("java.version"), Version.userAgent());
+	private static final String userAgent = String.format("TeleSignSDK/java-%s Java/%s OkHttp/%s", BuildConfig.VERSION,
+			System.getProperty("java.version"), OkHttp.VERSION);
 
 	public static final String URL_FORM_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded";
 	public static final String JSON_CONTENT_TYPE = "application/json";
@@ -120,6 +118,27 @@ public class RestClient {
 		}
 
 		this.client = okHttpClientBuilder.build();
+	}
+
+	static byte[] parseBase64(String encoded) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < encoded.length(); i++) {
+			char ch = encoded.charAt(i);
+			if (
+					(ch >= 'A' && ch <= 'Z') ||
+							(ch >= 'a' && ch <= 'z') ||
+							(ch >= '0' && ch <= '9') ||
+							(ch == '+') ||
+							(ch == '/')
+			) {
+				sb.append(ch);
+			}
+		}
+		return Base64.getDecoder().decode(sb.toString());
+	}
+
+	static String encodeBase64(byte[] data) {
+		return Base64.getEncoder().encodeToString(data);
 	}
 
 	/**
@@ -229,9 +248,9 @@ public class RestClient {
 
 		String signature;
 		Mac sha256HMAC = Mac.getInstance("HmacSHA256");
-		SecretKeySpec secretKeySpec = new SecretKeySpec(DatatypeConverter.parseBase64Binary(apiKey), "HmacSHA256");
+		SecretKeySpec secretKeySpec = new SecretKeySpec(parseBase64(apiKey), "HmacSHA256");
 		sha256HMAC.init(secretKeySpec);
-		signature = DatatypeConverter.printBase64Binary(sha256HMAC.doFinal(stringToSign.getBytes()));
+		signature = encodeBase64(sha256HMAC.doFinal(stringToSign.getBytes()));
 
 		String authorization = String.format("TSA %s:%s", customerId, signature);
 

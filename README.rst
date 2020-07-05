@@ -54,7 +54,7 @@ To add the TeleSign Java SDK to your Maven project:
         <version>(insert prefered 3.X version)</version>
     </dependency>
 
-JDK **7+** is required for the TeleSign Java SDK.
+JDK **8+** is required for the TeleSign Java SDK.
 
 Authentication
 --------------

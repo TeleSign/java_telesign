@@ -5,6 +5,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -330,5 +331,33 @@ public class RestClientTest extends TestCase {
                 initialRequest.getHeader("Proxy-Authorization"));
         assertNotNull("Proxy-Authorization header should exist in the subsequent request",
                 proxyAuthorizationRequest.getHeader("Proxy-Authorization"));
+    }
+
+    public void testHttpInternalServerErrorResponse() {
+        String test_resource = "/resource";
+
+        this.mockServer.enqueue(new MockResponse().setBody("").setResponseCode(503));
+
+        RestClient client = new RestClient(this.customerId,
+                this.apiKey,
+                this.mockServer.url("").toString().replaceAll("/$", "")
+        );
+
+        RestClient.TelesignResponse resp = null;
+        try {
+            resp = client.get(test_resource, null);
+        } catch (GeneralSecurityException e) {
+            fail("GeneralSecurityException thrown");
+        } catch (IOException e) {
+            fail("IOException thrown");
+        } catch (Exception e) {
+            fail("Unhandled exception thrown.");
+        }
+        assertNotNull(resp);
+        assertEquals("Expected empty string", "", resp.body);
+        assertEquals("HTTP Status code mismatch", 503, resp.statusCode);
+        assertNotNull(resp.headers);
+        assertFalse(resp.ok);
+        assertNotNull(resp.json);
     }
 }

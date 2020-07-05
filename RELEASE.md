@@ -1,4 +1,11 @@
-## [2.2.4](http://central.maven.org/maven2/com/telesign/telesign/2.2.4/) - 2018-10-02
+## [2.3.0](http://central.maven.org/maven2/com/telesign/telesign/2.3.0/) - 2020-07-05
+- 2020-07-05
+  - Upgraded Okhttp3 dependency to 4.7.0 minimum to support new okhttp3.OkHttp.VERSION constant for use in User-Agent strings
+  - Updated minimum java compatibility to JDK8
+  - Removed use of deprecated class javax.xml.bind.DatatypeConverter to support JDK9+
+  - Improved unit test coverage
+
+## [2.2.4](http://central.maven.org/maven2/com/telesign/telesign/2.2.4/) - 2019-05-28
 - 2019-05-28
   - Update dependency version specifications
 
