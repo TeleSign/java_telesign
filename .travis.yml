@@ -1,24 +1,20 @@
 language: java
-
-matrix:
-  include:
-    - dist: trusty
-      jdk: oraclejdk8
-    - dist: precise
-      sudo: false
-      jdk: oraclejdk7
-    - dist: precise
-      sudo: false
-      jdk: openjdk7
-      # Workaround for Travis CI issue 5227, which results in a buffer overflow
-      # caused by Java when running the build on OpenJDK.
-      # https://github.com/travis-ci/travis-ci/issues/5227
-      before_install:
-        - cat /etc/hosts # optionally check the content *before*
-        - sudo hostname "$(hostname | cut -c1-63)"
-        - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts > /tmp/hosts
-        - sudo mv /tmp/hosts /etc/hosts
-        - cat /etc/hosts # optionally check the content *after*
+jdk:
+  - oraclejdk8
+  - oraclejdk11
+  - openjdk8
+  - openjdk9
+  - openjdk10
+  - openjdk11
+  - openjdk12
+  - openjdk13
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 
 before_script:
   - chmod +x gradlew
