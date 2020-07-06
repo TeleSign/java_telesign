@@ -1,13 +1,27 @@
 language: java
+dist: xenial
+sudo: false
 jdk:
-  - oraclejdk8
   - oraclejdk11
-  - openjdk8
   - openjdk9
   - openjdk10
   - openjdk11
   - openjdk12
   - openjdk13
+
+jobs:
+  include:
+    - jdk: oraclejdk8
+      dist: trusty # oraclejdk8 install fails on Xenial
+    - name: Reference Build
+      jdk: openjdk8
+      script:
+        - ./gradlew check
+        - ./gradlew jacocoTestReport
+        - ./gradlew cleanJar
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -18,9 +32,3 @@ cache:
 
 before_script:
   - chmod +x gradlew
-script:
-  - ./gradlew check
-  - ./gradlew jacocoTestReport
-  - ./gradlew cleanJar
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
