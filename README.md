@@ -42,7 +42,7 @@ Follow these steps to add this SDK as a dependency to your project.
 
 4. Create a new Gradle project.
 
-`gradle init`
+   `gradle init`
 
 5. Select the following options at each of the prompts that appear at the command line.
 
