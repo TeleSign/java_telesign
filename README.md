@@ -18,57 +18,42 @@
 
 Follow these steps to add this SDK as a dependency to your project.
 
-1. Create a new directory to download the Telesign SDK. This should not be in the same directory as where you build your integration.
-
-```
-    cd ~/code/local
-    mkdir telesign_sdks
-    cd telesign_sdks
-```
-
-2. Clone this repo. A new directory should appear called `java_telesign`:
-
-   `git clone https://github.com/TeleSign/java_telesign.git`
-
-3. Create another directory (this must be outside of the SDK directory you just created) where you want to create your Telesign integration. Skip this step if you already have created a project. If you plan to create multiple Java projects that use Telesign, we recommend that you group them within a `telesign_integrations` directory.
+1. Create a directory where you want to create your Telesign integration. Skip this step if you already have created a project. If you plan to create multiple Java projects that use Telesign, we recommend that you group them within a `telesign_integrations` directory.
 
 ```
     cd ~/code/local
     mkdir telesign_integrations
     cd telesign_integrations
-    mkdir {your project name}
-    cd {your project name}
+    mkdir {your project directory name}
+    cd {your project directory name}
 ```
 
-4. Create a new Gradle project.
+3. Create a new Gradle project.
 
    `gradle init`
 
-5. Select the following options at each of the prompts that appear at the command line.
+4. Select the following options at each of the prompts that appear at the command line.
 
-* **Select type of project to generate:** `2: application`
-* **Select implementation language:** `3: Java`
-* **Select build script DSL:** `2: Kotlin`
-* **Select test framework:** `1: JUnit 4`
-* **Project name (default: sms):** `sendSMS`
-* **Source package (default: sendSMS):** Hit Enter to use the default.
+* **Select type of project to generate:** application
+* **Select implementation language:** Java
+* **Split functionality across multiple subprojects?:** no
+* **Select build script DSL:** Kotlin
+* **Generate build using new APIs and behavior (some features may change in the next minor release)?:** yes
+* **Select test framework:** {your preferred test framework}
+* **Project name (default: {default project name}):** {your project name}
+* **Source package (default: {default source package name}):** {your source package name}
 
 You should then see a message that indicates the build was successful.
 
-6. Copy all the .java source files from the Telesign Self-service Java SDK into your project:
-
-   `cp -r ~/code/local/telesign_sdks/java_telesign/src/main/java/com ./src/main/java/`
-
-7. Open the build.gradle.kts file in your project and add `mavenCentral()` to the `repositories` block right below `jcenter()`.
-
-8. Add the following dependencies to the `dependencies` block:
+5. Add the following dependencies to the `dependencies` block in the file "app/build.gradle.kts" in your project:
 
    ```
-   implementation("com.google.guava:guava:29.0-jre")
    implementation("com.google.code.gson:gson:2.2.+")
    implementation ("com.squareup.okio:okio:2.9.0")
    implementation("com.telesign:telesign:2.3.0")
    ```
+   
+That last dependency pulls in the Telesign Self-service Java SDK.
 
 ## Authentication
 
