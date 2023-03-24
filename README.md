@@ -20,13 +20,13 @@ Follow these steps to add this SDK as a dependency to your project.
 
 1. Create a directory where you want to create your Telesign integration. Skip this step if you already have created a project. If you plan to create multiple Java projects that use Telesign, we recommend that you group them within a `telesign_integrations` directory.
 
-```
-    cd ~/code/local
-    mkdir telesign_integrations
-    cd telesign_integrations
-    mkdir {your project directory name}
-    cd {your project directory name}
-```
+   ```
+      cd ~/code/local
+      mkdir telesign_integrations
+      cd telesign_integrations
+      mkdir {your project directory name}
+      cd {your project directory name}
+   ```
 
 3. Create a new Gradle project.
 
@@ -34,16 +34,16 @@ Follow these steps to add this SDK as a dependency to your project.
 
 4. Select the following options at each of the prompts that appear at the command line.
 
-* **Select type of project to generate:** application
-* **Select implementation language:** Java
-* **Split functionality across multiple subprojects?:** no
-* **Select build script DSL:** Kotlin
-* **Generate build using new APIs and behavior (some features may change in the next minor release)?:** yes
-* **Select test framework:** {your preferred test framework}
-* **Project name (default: {default project name}):** {your project name}
-* **Source package (default: {default source package name}):** {your source package name}
+   * **Select type of project to generate:** application
+   * **Select implementation language:** Java
+   * **Split functionality across multiple subprojects?:** no
+   * **Select build script DSL:** Kotlin
+   * **Generate build using new APIs and behavior (some features may change in the next minor release)?:** yes
+   * **Select test framework:** {your preferred test framework}
+   * **Project name (default: {default project name}):** {your project name}
+   * **Source package (default: {default source package name}):** {your source package name}
 
-You should then see a message that indicates the build was successful.
+   You should then see a message that indicates the build was successful.
 
 5. Add the following dependencies to the `dependencies` block in the file "app/build.gradle.kts" in your project:
 
@@ -53,7 +53,7 @@ You should then see a message that indicates the build was successful.
    implementation("com.telesign:telesign:2.3.0")
    ```
    
-That last dependency pulls in the Telesign Self-service Java SDK.
+   That last dependency pulls in the Telesign Self-service Java SDK.
 
 ## Authentication
 
