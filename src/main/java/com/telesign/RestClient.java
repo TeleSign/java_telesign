@@ -1,6 +1,7 @@
 package com.telesign;
 
 import com.google.gson.JsonObject;
+import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import okhttp3.*;
@@ -137,6 +138,10 @@ public class RestClient {
 		return Base64.getDecoder().decode(sb.toString());
 	}
 
+	public void setRestEndpoint(String baseUrl) {
+		this.restEndpoint = baseUrl;
+	}
+
 	static String encodeBase64(byte[] data) {
 		return Base64.getEncoder().encodeToString(data);
 	}
@@ -208,7 +213,7 @@ public class RestClient {
 	 */
 	public static Map<String, String> generateTelesignHeaders(String customerId, String apiKey, 
 			String methodName, String resource, String requestParams,
-			String dateRfc2616, String nonce, String userAgent, String contentType) throws NoSuchAlgorithmException, InvalidKeyException {
+			String dateRfc2616, String nonce, String userAgent, String contentType, String authMethod) throws NoSuchAlgorithmException, InvalidKeyException {
 
 		if (dateRfc2616 == null) {
 			SimpleDateFormat rfc2616 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
@@ -224,42 +229,52 @@ public class RestClient {
 			contentType = "";
 		}
 
-		String authMethod = "HMAC-SHA256";
+		String authorization = "";
+		Map<String, String> headers = new HashMap<>();
 
-		StringBuilder stringToSignBuilder = new StringBuilder();
+		if (Objects.equals(authMethod, "Basic")) {
 
-		stringToSignBuilder.append(String.format("%s", methodName));
+			String credentials = customerId + ":" + apiKey;
 
-		stringToSignBuilder.append(String.format("\n%s", contentType));
+			String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());
 
-		stringToSignBuilder.append(String.format("\n%s", dateRfc2616));
+			authorization = authMethod + " " + encodedCredentials;
+		} else {
 
-		stringToSignBuilder.append(String.format("\nx-ts-auth-method:%s", authMethod));
+			StringBuilder stringToSignBuilder = new StringBuilder();
 
-		stringToSignBuilder.append(String.format("\nx-ts-nonce:%s", nonce));
+			stringToSignBuilder.append(String.format("%s", methodName));
 
-		if (!contentType.isEmpty() && !requestParams.isEmpty()) {
-			stringToSignBuilder.append(String.format("\n%s", requestParams));
+			stringToSignBuilder.append(String.format("\n%s", contentType));
+
+			stringToSignBuilder.append(String.format("\n%s", dateRfc2616));
+
+			stringToSignBuilder.append(String.format("\nx-ts-auth-method:%s", "HMAC-SHA256"));
+
+			stringToSignBuilder.append(String.format("\nx-ts-nonce:%s", nonce));
+
+			if (!contentType.isEmpty() && !requestParams.isEmpty()) {
+				stringToSignBuilder.append(String.format("\n%s", requestParams));
+			}
+
+			stringToSignBuilder.append(String.format("\n%s", resource));
+
+			String stringToSign = stringToSignBuilder.toString();
+
+			String signature;
+			Mac sha256HMAC = Mac.getInstance("HmacSHA256");
+			SecretKeySpec secretKeySpec = new SecretKeySpec(parseBase64(apiKey), "HmacSHA256");
+			sha256HMAC.init(secretKeySpec);
+			signature = encodeBase64(sha256HMAC.doFinal(stringToSign.getBytes()));
+
+			authorization = String.format("TSA %s:%s", customerId, signature);
+			headers.put("Date", dateRfc2616);
+			headers.put("Content-Type", contentType);
+			headers.put("x-ts-auth-method", authMethod);
+			headers.put("x-ts-nonce", nonce);
 		}
 
-		stringToSignBuilder.append(String.format("\n%s", resource));
-
-		String stringToSign = stringToSignBuilder.toString();
-
-		String signature;
-		Mac sha256HMAC = Mac.getInstance("HmacSHA256");
-		SecretKeySpec secretKeySpec = new SecretKeySpec(parseBase64(apiKey), "HmacSHA256");
-		sha256HMAC.init(secretKeySpec);
-		signature = encodeBase64(sha256HMAC.doFinal(stringToSign.getBytes()));
-
-		String authorization = String.format("TSA %s:%s", customerId, signature);
-
-		Map<String, String> headers = new HashMap<>();
 		headers.put("Authorization", authorization);
-		headers.put("Date", dateRfc2616);
-		headers.put("Content-Type", contentType);
-		headers.put("x-ts-auth-method", authMethod);
-		headers.put("x-ts-nonce", nonce);
 
 		if (userAgent != null) {
 			headers.put("User-Agent", userAgent);
@@ -279,7 +294,7 @@ public class RestClient {
 	 */
 	public TelesignResponse post(String resource, Map<String, ? extends Object> params)
 			throws IOException, GeneralSecurityException {
-		return this.execute("POST", resource, params, URL_FORM_ENCODED_CONTENT_TYPE);
+		return this.execute("POST", resource, params, URL_FORM_ENCODED_CONTENT_TYPE, null);
 	}
 
 	/**
@@ -294,7 +309,26 @@ public class RestClient {
 	public TelesignResponse post(String resource, Map<String, ? extends Object> params, String contentType)
 			throws IOException, GeneralSecurityException {
 
-		return this.execute("POST", resource, params, contentType);
+		return this.execute("POST", resource, params, contentType, null);
+	}
+
+	/**
+	 * Generic TeleSign REST API POST handler.
+	 *
+	 * @param resource
+	 *            The partial resource URI to perform the request against.
+	 * @param params
+	 *            Params to perform the POST request with.
+	 * @param contentType
+	 *            Appication/json, www-url ....
+	 * @param authMethod
+	 *            Basic, Diggest ...
+	 * @return The TelesignResponse for the request.
+	 */
+	public TelesignResponse post(String resource, Map<String, ? extends Object> params, String contentType, String authMethod)
+			throws IOException, GeneralSecurityException {
+
+		return this.execute("POST", resource, params, contentType, authMethod);
 	}
 
 	/**
@@ -324,7 +358,7 @@ public class RestClient {
 	public TelesignResponse put(String resource, Map<String, String> params)
 			throws IOException, GeneralSecurityException {
 
-		return this.execute("PUT", resource, params, URL_FORM_ENCODED_CONTENT_TYPE);
+		return this.execute("PUT", resource, params, URL_FORM_ENCODED_CONTENT_TYPE, null);
 	}
 
 	/**
@@ -352,14 +386,21 @@ public class RestClient {
 	 */
 
 	public RequestBody createRequestBody(Map<String, ? extends Object> params, String contentType) throws IOException {
-		FormBody.Builder formBodyBuilder = new FormBody.Builder();
-		for (Map.Entry<String, ? extends Object> entry : params.entrySet()) {
-			formBodyBuilder.add(entry.getKey(), (String) entry.getValue());
+		if (Objects.equals(contentType, "application/json")) {
+			Gson gson = new Gson();
+			String json = gson.toJson(params);
+			MediaType mediaType = MediaType.parse("application/json");
+			RequestBody body = RequestBody.create(mediaType, json);
+			return body;
+		} else {
+			FormBody.Builder formBodyBuilder = new FormBody.Builder();
+			for (Map.Entry<String, ? extends Object> entry : params.entrySet()) {
+				formBodyBuilder.add(entry.getKey(), (String) entry.getValue());
+			}
+			FormBody formBody = formBodyBuilder.build();
+
+			return formBody;
 		}
-		FormBody formBody = formBodyBuilder.build();
-
-		return formBody;
-
 	}
 
 	/**
@@ -374,7 +415,7 @@ public class RestClient {
 	 */
 	private TelesignResponse execute(String methodName, String resource, Map<String, ? extends Object> params)
 			throws IOException, GeneralSecurityException {
-		return execute(methodName, resource, params, "");
+		return execute(methodName, resource, params, "", null);
 	}
 
 	/**
@@ -387,8 +428,12 @@ public class RestClient {
 	 * @throws IOException
 	 * @throws GeneralSecurityException
 	 */
-	private TelesignResponse execute(String methodName, String resource, Map<String, ? extends Object> params, String contentType)
+	private TelesignResponse execute(String methodName, String resource, Map<String, ? extends Object> params, String contentType, String authMethod)
 			throws IOException, GeneralSecurityException {
+
+		if (authMethod == null) {
+			authMethod = "HMAC-SHA256";
+		}
 
 		if (params == null) {
 			params = new HashMap<>();
@@ -414,7 +459,7 @@ public class RestClient {
 		}
 
 		Map<String, String> headers = RestClient.generateTelesignHeaders(this.customerId, this.apiKey,
-				methodName, resource, requestParams, null, null, RestClient.userAgent, contentType);
+				methodName, resource, requestParams, null, null, RestClient.userAgent, contentType, authMethod);
 
 		Request.Builder requestBuilder = new Request.Builder().url(httpUrl).method(methodName, requestBody);
 		for (Map.Entry<String, String> entry : headers.entrySet()) {

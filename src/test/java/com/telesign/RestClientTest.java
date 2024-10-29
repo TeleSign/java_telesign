@@ -61,7 +61,8 @@ public class RestClientTest extends TestCase {
                 dateRfc2616,
                 nonce,
                 "unitTest",
-                "application/x-www-form-urlencoded"
+                "application/x-www-form-urlencoded",
+                ""
                 );
 
         assertEquals("Authorization header is not as expected", expectedAuthorizationHeader,
@@ -86,7 +87,8 @@ public class RestClientTest extends TestCase {
                 dateRfc2616,
                 nonce,
                 "unitTest",
-                "application/x-www-form-urlencoded");
+                "application/x-www-form-urlencoded",
+                "");
 
         assertEquals("Authorization header is not as expected", expectedAuthorizationHeader,
                 actualHeaders.get("Authorization"));
@@ -108,7 +110,8 @@ public class RestClientTest extends TestCase {
                 "",
                 dateRfc2616,
                 nonce,
-                "unitTest", "application/x-www-form-urlencoded");
+                "unitTest", "application/x-www-form-urlencoded",
+                "");
 
         assertEquals("Authorization header is not as expected", expectedAuthorizationHeader,
                 actualHeaders.get("Authorization"));
@@ -126,6 +129,7 @@ public class RestClientTest extends TestCase {
                 null,
                 null,
                 null,
+                "",
                 "");
 
         try {
