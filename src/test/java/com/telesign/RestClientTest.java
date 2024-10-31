@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -65,6 +66,54 @@ public class RestClientTest extends TestCase {
                 ""
                 );
 
+        assertEquals("Authorization header is not as expected", expectedAuthorizationHeader,
+                actualHeaders.get("Authorization"));
+    }
+
+    public void testGenerateTelesignHeadersWithNullAuth() throws GeneralSecurityException {
+
+        String methodName = "POST";
+        String dateRfc2616 = "Wed, 14 Dec 2016 18:20:12 GMT";
+        String nonce = "A1592C6F-E384-4CDB-BC42-C3AB970369E9";
+        String resource = "/v1/resource";
+        String bodyParamsUrlEncoded = "test=param";
+
+        String expectedAuthorizationHeader = "TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:" +
+                "2xVlmbrxLjYrrPun3G3WMNG6Jon4yKcTeOoK9DjXJ/Q=";
+        Map<String, String> actualHeaders = RestClient.generateTelesignHeaders(this.customerId, this.apiKey,
+                methodName,
+                resource,
+                bodyParamsUrlEncoded,
+                dateRfc2616,
+                nonce,
+                "unitTest",
+                "application/x-www-form-urlencoded",
+                null
+        );
+
+        assertEquals("Authorization header is not as expected", expectedAuthorizationHeader,
+                actualHeaders.get("Authorization"));
+    }
+
+    public void testGenerateTelesignHeadersWithBasicAuth() throws GeneralSecurityException {
+
+        String methodName = "POST";
+        String resource = "/v1/resource";
+
+        String credentials = this.customerId + ":" + this.apiKey;
+        String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());
+
+        String expectedAuthorizationHeader = "Basic " + encodedCredentials;
+        Map<String, String> actualHeaders = RestClient.generateTelesignHeaders(this.customerId, this.apiKey,
+                methodName,
+                resource,
+                "",
+                "",
+                "",
+                "unitTest",
+                "application/x-www-form-urlencoded",
+                "Basic"
+        );
         assertEquals("Authorization header is not as expected", expectedAuthorizationHeader,
                 actualHeaders.get("Authorization"));
     }
