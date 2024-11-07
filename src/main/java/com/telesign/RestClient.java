@@ -390,7 +390,7 @@ public class RestClient {
 			Gson gson = new Gson();
 			String json = gson.toJson(params);
 			MediaType mediaType = MediaType.parse("application/json");
-			RequestBody body = RequestBody.create(mediaType, json);
+			RequestBody body = RequestBody.create(mediaType, json.getBytes());
 			return body;
 		} else {
 			FormBody.Builder formBodyBuilder = new FormBody.Builder();
