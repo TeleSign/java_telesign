@@ -3,10 +3,12 @@ plugins {
     id 'java'
     id 'idea'
     id 'jacoco'
+    id 'maven-publish'
+    id 'signing'
 }
 
 group 'com.telesign'
-version '2.3.0'
+version '2.3.1'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -16,49 +18,53 @@ repositories {
 }
 
 dependencies {
-    compile 'com.squareup.okhttp3:okhttp:[4.7.0,)'
-    compile 'com.google.code.gson:gson:[2.7,3.0)'
+    implementation 'com.squareup.okhttp3:okhttp:[4.7.0,)'
+    implementation 'com.google.code.gson:gson:[2.7,3.0)'
 
-    testCompile group: 'junit', name: 'junit', version: '[4.1,)'
-    testCompile group: 'com.squareup.okhttp3', name: 'mockwebserver', version: '[4.7.0,)'
+    testImplementation group: 'junit', name: 'junit', version: '[4.1,)'
+    testImplementation group: 'com.squareup.okhttp3', name: 'mockwebserver', version: '[4.7.0,)'
 }
 
 jacocoTestReport {
     reports {
-        csv.enabled false
-        html.enabled true
-        xml.enabled true
-        xml.destination file("${buildDir}/reports/jacoco/report.xml")
+        csv.required = false
+        html.required = true
+        xml.required = true
+        xml.destination = file("${buildDir}/reports/jacoco/report.xml")
     }
 }
 
 if (System.getenv('TRAVIS') == null) {
-    apply plugin: 'maven'
-    apply plugin: 'signing'
 
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc
+    tasks.register('javadocJar', Jar) {
+        from tasks.javadoc
+        archiveClassifier.set('javadoc')
     }
 
-    task sourcesJar(type: Jar) {
-        classifier = 'sources'
+    tasks.register('sourcesJar', Jar) {
         from sourceSets.main.allSource
+        archiveClassifier.set('sources')
     }
 
-    task fatJar(type: Jar) {
-        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-        with jar
+    tasks.register("fatJar", Jar) {
+        archiveClassifier.set("all")
+        from sourceSets.main.output
+
+        dependsOn configurations.runtimeClasspath
+        from {
+            configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        }
     }
 
-    task clearOldJar(type: Delete) {
-        delete "bin"
+    tasks.register('clearOldJar', Delete) {
+        delete fileTree(dir: "build/libs", includes: [".bin"])
     }
 
-    task copyJar(type: Copy) {
-      dependsOn clearOldJar
-      from fatJar
-      into('bin')
+
+    tasks.register('copyJar', Delete) {
+        dependsOn("clearOldJar")
+        from('fatJar')
+        into('bin')
     }
 
     artifacts {
@@ -68,50 +74,62 @@ if (System.getenv('TRAVIS') == null) {
     }
 
     signing {
-        sign configurations.archives
+        sign(publishing.publications)
     }
 
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact javadocJar
+                artifact sourcesJar
+                artifact fatJar
 
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: project.findProperty('ossrhUsername'), password: project.findProperty('ossrhPassword'))
-                }
+                groupId = 'com.telesign'
+                artifactId = 'telesign'
+                version = '2.3.1'
 
-                pom.project {
-                    name 'TeleSign SDK'
-                    packaging 'jar'
-                    description 'The TeleSign Java SDK is a Java library that provides an interface to TeleSign Web ' +
+                pom {
+                    name = 'TeleSign SDK'
+                    description = 'The TeleSign Java SDK is a Java library that provides an interface to TeleSign Web ' +
                             'Services. TeleSign Web Services conform to the REST Web Service Design Model. Services are ' +
                             'exposed as URI-addressable resources through the set of RESTful procedures in our TeleSign ' +
                             'REST API.'
-                    url 'https://github.com/TeleSign/java_telesign'
+                    url = 'https://github.com/TeleSign/java_telesign'
 
                     scm {
-                        connection 'scm:git:https://github.com/TeleSign/java_telesign.git'
-                        developerConnection 'scm:git:git@github.com:TeleSign/java_telesign.git'
-                        url 'https://github.com/TeleSign/java_telesign'
+                        connection = 'scm:git:https://github.com/TeleSign/java_telesign.git'
+                        developerConnection = 'scm:git:git@github.com:TeleSign/java_telesign.git'
+                        url = 'https://github.com/TeleSign/java_telesign'
                     }
 
                     licenses {
                         license {
-                            name 'MIT License'
-                            url 'http://www.opensource.org/licenses/mit-license.php'
+                            name = 'MIT License'
+                            url = 'http://www.opensource.org/licenses/mit-license.php'
                         }
                         license {
-                            name 'Apache Software License (ASL) version 2.0'
-                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            name = 'Apache Software License (ASL) version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                         }
                     }
 
                     developers {
                         developer {
-                            name 'TeleSign Corp.'
-                            organizationUrl 'https://www.telesign.com'
+                            name = 'TeleSign Corp.'
+                            organizationUrl = 'https://www.telesign.com'
                         }
                     }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
+                credentials {
+                    username = project.findProperty('ossrhUsername')
+                    password = project.findProperty('ossrhPassword')
                 }
             }
         }
