@@ -1,3 +1,7 @@
+## [2.3.1](http://central.maven.org/maven2/com/telesign/telesign/2.3.1/) - 2024-11-19
+- 2024-11-19
+  - Added support for request bodies with application/json content type.
+
 ## [2.3.0](http://central.maven.org/maven2/com/telesign/telesign/2.3.0/) - 2020-07-05
 - 2020-07-05
   - Upgraded Okhttp3 dependency to 4.7.0 minimum to support new okhttp3.OkHttp.VERSION constant for use in User-Agent strings
