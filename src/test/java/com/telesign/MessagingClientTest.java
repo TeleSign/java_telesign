@@ -50,7 +50,10 @@ public class MessagingClientTest extends TestCase {
                 0,
                 null,
                 "",
-                "");
+                "",
+                null,
+                null,
+                null);
         assertNotNull(client);
     }
 
@@ -65,7 +68,7 @@ public class MessagingClientTest extends TestCase {
 
         MessagingClient client = new MessagingClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.message("18005555555", "Test Message Content", "MKT", params);
 
@@ -75,7 +78,7 @@ public class MessagingClientTest extends TestCase {
         assertEquals("path is not as expected", "/v1/messaging", request.getPath());
         assertEquals("body is not as expected",
                 "originating_ip=127.0.0.1&account_lifecycle_event=create&phone_number=18005555555&" +
-                        "message_type=MKT&message=Test%20Message%20Content",
+                        "message_type=MKT&message=Test+Message+Content",
                 request.getBody().readUtf8());
         assertEquals("Content-Type header is not as expected", "application/x-www-form-urlencoded",
                 request.getHeader("Content-Type"));
@@ -89,7 +92,7 @@ public class MessagingClientTest extends TestCase {
 
         MessagingClient client = new MessagingClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.message("18005555555", "Test Message Content", "ARN", null);
 
@@ -97,7 +100,7 @@ public class MessagingClientTest extends TestCase {
 
         assertEquals("method is not as expected", "POST", request.getMethod());
         assertEquals("path is not as expected", "/v1/messaging", request.getPath());
-        assertEquals("body is not as expected", "phone_number=18005555555&message_type=ARN&message=Test%20Message%20Content",
+        assertEquals("body is not as expected", "phone_number=18005555555&message_type=ARN&message=Test+Message+Content",
                 request.getBody().readUtf8());
         assertEquals("Content-Type header is not as expected", "application/x-www-form-urlencoded",
                 request.getHeader("Content-Type"));
@@ -111,7 +114,7 @@ public class MessagingClientTest extends TestCase {
 
         MessagingClient client = new MessagingClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.status("FakeReferenceId", null);
 

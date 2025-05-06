@@ -1,3 +1,7 @@
+## [2.4.0](http://central.maven.org/maven2/com/telesign/telesign/2.4.0/) - 2025-05-06
+- 2025-05-06
+  - Added tracking to requests.
+
 ## [2.3.1](http://central.maven.org/maven2/com/telesign/telesign/2.3.1/) - 2024-11-19
 - 2024-11-19
   - Added support for request bodies with application/json content type.

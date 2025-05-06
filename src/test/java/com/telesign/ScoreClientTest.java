@@ -51,7 +51,10 @@ public class ScoreClientTest extends TestCase {
                 0,
                 null,
                 "",
-                "");
+                "",
+                null,
+                null,
+                null);
         assertNotNull(client);
     }
 
@@ -66,7 +69,7 @@ public class ScoreClientTest extends TestCase {
 
         ScoreClient client = new ScoreClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.score("18005555555", "create", params);
 
@@ -90,7 +93,7 @@ public class ScoreClientTest extends TestCase {
 
         ScoreClient client = new ScoreClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.score("18005555555", "create", null);
 

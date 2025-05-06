@@ -45,7 +45,10 @@ public class PhoneIdClientTest extends TestCase {
                 0,
                 null,
                 "",
-                ""
+                "",
+                null,
+                null,
+                null
                 );
         assertNotNull(client);
     }
@@ -67,7 +70,7 @@ public class PhoneIdClientTest extends TestCase {
 
         PhoneIdClient client = new PhoneIdClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.phoneid("18005555555", params);
 
@@ -91,7 +94,7 @@ public class PhoneIdClientTest extends TestCase {
 
         PhoneIdClient client = new PhoneIdClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.phoneid("18005555555", params);
 

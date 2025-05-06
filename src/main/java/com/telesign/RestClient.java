@@ -26,25 +26,25 @@ import java.util.concurrent.TimeUnit;
  */
 public class RestClient {
 
-	private static final String userAgent = String.format("TeleSignSDK/java-%s Java/%s OkHttp/%s", BuildConfig.VERSION,
-			System.getProperty("java.version"), OkHttp.VERSION);
+	private static final String sdkVersion = BuildConfig.VERSION;
 
 	public static final String URL_FORM_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded";
 	public static final String JSON_CONTENT_TYPE = "application/json";
 
-	private String customerId;
-	private String apiKey;
+	protected String customerId;
+	protected String apiKey;
 	private String restEndpoint;
 	private OkHttpClient client;
+	private String userAgent;
 
 	public RestClient(String customerId, String apiKey) {
 
-		this(customerId, apiKey, null, null, null, null, null, null, null);
+		this(customerId, apiKey, null, null, null, null, null, null, null, null, null, null);
 	}
 
-	public RestClient(String customerId, String apiKey, String restEndpoint) {
+	public RestClient(String customerId, String apiKey, String restEndpoint, String source, String sdkVersionOrigin, String sdkVersionDependency) {
 
-		this(customerId, apiKey, restEndpoint, null, null, null, null, null, null);
+		this(customerId, apiKey, restEndpoint, null, null, null, null, null, null, source, sdkVersionOrigin, sdkVersionDependency);
 	}
 
 	/**
@@ -75,10 +75,16 @@ public class RestClient {
 	 */
 	public RestClient(String customerId, String apiKey, String restEndpoint, Integer connectTimeout,
 			Integer readTimeout, Integer writeTimeout, Proxy proxy, final String proxyUsername,
-			final String proxyPassword) {
+			final String proxyPassword, final String source, final String sdkVersionOrigin, final String sdkVersionDependency) {
 
 		this.customerId = customerId;
 		this.apiKey = apiKey;
+
+		this.userAgent = String.format("TeleSignSDK/java Java/%s OkHttp/%s OriginatingSDK/%s SDKVersion/%s",
+				System.getProperty("java.version"), OkHttp.VERSION, (source == null ? "java_telesign" : source), (sdkVersionOrigin == null ? sdkVersion : sdkVersionOrigin));
+
+		if (!Objects.equals(source, "java_telesign") && sdkVersionDependency != null)
+			this.userAgent += String.format(" DependencySDKVersion/%s", sdkVersionDependency);
 
 		if (restEndpoint == null) {
 			this.restEndpoint = "https://rest-api.telesign.com";
@@ -136,10 +142,6 @@ public class RestClient {
 			}
 		}
 		return Base64.getDecoder().decode(sb.toString());
-	}
-
-	public void setRestEndpoint(String baseUrl) {
-		this.restEndpoint = baseUrl;
 	}
 
 	static String encodeBase64(byte[] data) {
@@ -459,7 +461,7 @@ public class RestClient {
 		}
 
 		Map<String, String> headers = RestClient.generateTelesignHeaders(this.customerId, this.apiKey,
-				methodName, resource, requestParams, null, null, RestClient.userAgent, contentType, authMethod);
+				methodName, resource, requestParams, null, null, this.userAgent, contentType, authMethod);
 
 		Request.Builder requestBuilder = new Request.Builder().url(httpUrl).method(methodName, requestBody);
 		for (Map.Entry<String, String> entry : headers.entrySet()) {
