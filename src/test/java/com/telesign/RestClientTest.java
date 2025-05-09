@@ -204,7 +204,7 @@ public class RestClientTest extends TestCase {
 
         RestClient client = new RestClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.post(test_resource, test_params);
 
@@ -244,7 +244,7 @@ public class RestClientTest extends TestCase {
 
         RestClient client = new RestClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.get(test_resource, test_params);
 
@@ -284,7 +284,7 @@ public class RestClientTest extends TestCase {
 
         RestClient client = new RestClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.put(test_resource, test_params);
 
@@ -324,7 +324,7 @@ public class RestClientTest extends TestCase {
 
         RestClient client = new RestClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.delete(test_resource, test_params);
 
@@ -371,7 +371,10 @@ public class RestClientTest extends TestCase {
                 1,
                 this.mockServer.toProxyAddress(),
                 "proxyUsername",
-                "proxyPassword");
+                "proxyPassword",
+                null,
+                null,
+                null);
 
         client.get(test_resource, test_params);
 
@@ -393,7 +396,7 @@ public class RestClientTest extends TestCase {
 
         RestClient client = new RestClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", "")
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null
         );
 
         RestClient.TelesignResponse resp = null;

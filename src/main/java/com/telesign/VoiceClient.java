@@ -19,8 +19,8 @@ public class VoiceClient extends RestClient {
         super(customerId, apiKey);
     }
 
-    public VoiceClient(String customerId, String apiKey, String restEndpoint) {
-        super(customerId, apiKey, restEndpoint);
+    public VoiceClient(String customerId, String apiKey, String restEndpoint, String source, String sdkVersionOrigin, String sdkVersionDependency) {
+        super(customerId, apiKey, restEndpoint, source, sdkVersionOrigin, sdkVersionDependency);
     }
 
     public VoiceClient(String customerId,
@@ -31,8 +31,11 @@ public class VoiceClient extends RestClient {
                        Integer writeTimeout,
                        Proxy proxy,
                        final String proxyUsername,
-                       final String proxyPassword) {
-        super(customerId, apiKey, restEndpoint, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
+                       final String proxyPassword,
+                       final String source,
+                       final String sdkVersionOrigin,
+                       final String sdkVersionDependency) {
+        super(customerId, apiKey, restEndpoint, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword, source, sdkVersionOrigin, sdkVersionDependency);
     }
 
     /**

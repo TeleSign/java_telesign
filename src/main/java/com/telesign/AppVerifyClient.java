@@ -17,8 +17,8 @@ public class AppVerifyClient extends RestClient {
         super(customerId, apiKey);
     }
 
-    public AppVerifyClient(String customerId, String apiKey, String restEndpoint) {
-        super(customerId, apiKey, restEndpoint);
+    public AppVerifyClient(String customerId, String apiKey, String restEndpoint, String source, String sdkVersionOrigin, String sdkVersionDependency) {
+        super(customerId, apiKey, restEndpoint, source, sdkVersionOrigin, sdkVersionDependency);
     }
 
     public AppVerifyClient(String customerId,
@@ -29,8 +29,11 @@ public class AppVerifyClient extends RestClient {
                            Integer writeTimeout,
                            Proxy proxy,
                            final String proxyUsername,
-                           final String proxyPassword) {
-        super(customerId, apiKey, restEndpoint, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword);
+                           final String proxyPassword,
+                           final String source,
+                           final String sdkVersionOrigin,
+                           final String sdkVersionDependency) {
+        super(customerId, apiKey, restEndpoint, connectTimeout, readTimeout, writeTimeout, proxy, proxyUsername, proxyPassword, source, sdkVersionOrigin, sdkVersionDependency);
     }
 
     /**
