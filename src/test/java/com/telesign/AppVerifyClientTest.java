@@ -50,7 +50,10 @@ public class AppVerifyClientTest extends TestCase {
                 0,
                 null,
                 "",
-                "");
+                "",
+                null,
+                null,
+                null);
         assertNotNull(client);
     }
 
@@ -60,7 +63,7 @@ public class AppVerifyClientTest extends TestCase {
 
         AppVerifyClient client = new AppVerifyClient(this.customerId,
                 this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""));
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
 
         client.status("FakeExternalId", null);
 
