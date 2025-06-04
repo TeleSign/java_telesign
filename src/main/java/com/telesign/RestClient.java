@@ -30,6 +30,7 @@ public class RestClient {
 
 	public static final String URL_FORM_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded";
 	public static final String JSON_CONTENT_TYPE = "application/json";
+	public static final String AUTH_BASIC = "Basic";
 
 	protected String customerId;
 	protected String apiKey;
@@ -364,6 +365,21 @@ public class RestClient {
 	}
 
 	/**
+	 * Generic TeleSign REST API PATCH handler.
+	 *
+	 * @param resource
+	 *            The partial resource URI to perform the request against.
+	 * @param params
+	 *            Params to perform the PUT request with.
+	 * @return The TelesignResponse for the request.
+	 */
+	public TelesignResponse patch(String resource, Map<String, String> params, String contentType, String authMethod)
+			throws IOException, GeneralSecurityException {
+
+		return this.execute("PATCH", resource, params, contentType, authMethod);
+	}
+
+	/**
 	 * Generic TeleSign REST API DELETE handler.
 	 *
 	 * @param resource
@@ -445,7 +461,7 @@ public class RestClient {
 
 		RequestBody requestBody = null;
 		String requestParams = "";
-		if (methodName.equals("POST") || methodName.equals("PUT")) {
+		if (methodName.equals("POST") || methodName.equals("PUT") || methodName.equals("PATCH")) {
 			requestBody = this.createRequestBody(params, contentType);
 			if (requestBody != null) {
 				Buffer buffer = new Buffer();

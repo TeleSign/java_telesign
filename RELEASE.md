@@ -1,3 +1,7 @@
+## [2.5.0](http://central.maven.org/maven2/com/telesign/telesign/2.5.0/) - 2025-05-06
+- 2025-06-03
+  - Added patch method to RestClient.
+
 ## [2.4.0](http://central.maven.org/maven2/com/telesign/telesign/2.4.0/) - 2025-05-06
 - 2025-05-06
   - Added tracking to requests.
