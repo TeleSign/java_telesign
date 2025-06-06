@@ -370,7 +370,11 @@ public class RestClient {
 	 * @param resource
 	 *            The partial resource URI to perform the request against.
 	 * @param params
-	 *            Params to perform the PUT request with.
+	 *            Params to perform the PATCH request with.
+	 * @param contentType
+	 *            Appication/json, www-url ....
+	 * @param authMethod
+	 *            Basic, Digest ...
 	 * @return The TelesignResponse for the request.
 	 */
 	public TelesignResponse patch(String resource, Map<String, String> params, String contentType, String authMethod)
