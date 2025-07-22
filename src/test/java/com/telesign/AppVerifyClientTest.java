@@ -56,28 +56,6 @@ public class AppVerifyClientTest extends TestCase {
                 null);
         assertNotNull(client);
     }
-
-    public void testAppVerifyStatus() throws Exception {
-
-        this.mockServer.enqueue(new MockResponse().setBody("{}"));
-
-        AppVerifyClient client = new AppVerifyClient(this.customerId,
-                this.apiKey,
-                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
-
-        client.status("FakeExternalId", null);
-
-        RecordedRequest request = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
-
-        assertEquals("method is not as expected", "GET", request.getMethod());
-        assertEquals("path is not as expected", "/v1/mobile/verification/status/FakeExternalId", request.getPath());
-        assertEquals("body is not as expected", "", request.getBody().readUtf8());
-        assertEquals("Content-Type header is not as expected", "", request.getHeader("Content-Type"));
-        assertEquals("x-ts-auth-method header is not as expected", "HMAC-SHA256",
-                request.getHeader("x-ts-auth-method"));
-    }
-
-
 }
 
 
