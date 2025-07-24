@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class RestClient {
 
-	private static final String sdkVersion = BuildConfig.VERSION;
+	private static final String sdkVersion = RestClient.class.getPackage().getImplementationVersion();
 
 	public static final String URL_FORM_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded";
 	public static final String JSON_CONTENT_TYPE = "application/json";
@@ -41,6 +41,11 @@ public class RestClient {
 	public RestClient(String customerId, String apiKey) {
 
 		this(customerId, apiKey, null, null, null, null, null, null, null, null, null, null);
+	}
+
+	public RestClient(String customerId, String apiKey, String restEndpoint) {
+
+		this(customerId, apiKey, restEndpoint, null, null, null, null, null, null, null, null, null);
 	}
 
 	public RestClient(String customerId, String apiKey, String restEndpoint, String source, String sdkVersionOrigin, String sdkVersionDependency) {

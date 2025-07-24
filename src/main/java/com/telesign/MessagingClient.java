@@ -19,6 +19,10 @@ public class MessagingClient extends RestClient {
         super(customerId, apiKey);
     }
 
+    public MessagingClient(String customerId, String apiKey, String restEndpoint) {
+        super(customerId, apiKey, restEndpoint);
+    }
+
     public MessagingClient(String customerId, String apiKey, String restEndpoint, String source, String sdkVersionOrigin, String sdkVersionDependency) {
         super(customerId, apiKey, restEndpoint, source, sdkVersionOrigin, sdkVersionDependency);
     }

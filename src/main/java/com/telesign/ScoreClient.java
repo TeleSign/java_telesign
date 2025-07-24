@@ -21,6 +21,10 @@ public class ScoreClient extends RestClient {
         super(customerId, apiKey, restEndpoint, source, sdkVersionOrigin, sdkVersionDependency);
     }
 
+    public ScoreClient(String customerId, String apiKey, String restEndpoint) {
+        super(customerId, apiKey, restEndpoint);
+    }
+
     public ScoreClient(String customerId,
                        String apiKey,
                        String restEndpoint,

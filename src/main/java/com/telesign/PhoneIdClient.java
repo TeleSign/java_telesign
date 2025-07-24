@@ -27,6 +27,10 @@ public class PhoneIdClient extends RestClient {
         super(customerId, apiKey);
     }
 
+    public PhoneIdClient(String customerId, String apiKey, String restEndpoint) {
+        super(customerId, apiKey, restEndpoint);
+    }
+
     public PhoneIdClient(String customerId, String apiKey, String restEndpoint, String source, String sdkVersionOrigin, String sdkVersionDependency) {
         super(customerId, apiKey, restEndpoint, source, sdkVersionOrigin, sdkVersionDependency);
     }

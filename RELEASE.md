@@ -1,3 +1,8 @@
+## [3.0.0](http://central.maven.org/maven2/com/telesign/telesign/3.0.0) - 2025-07-18
+- 2025-07-18
+  - Removed Status method in AppVerify class.
+  - Adjust deployment process.
+
 ## [2.5.0](http://central.maven.org/maven2/com/telesign/telesign/2.5.0/) - 2025-05-06
 - 2025-06-03
   - Added patch method to RestClient.
