@@ -1,3 +1,7 @@
+## [3.0.1](http://central.maven.org/maven2/com/telesign/telesign/3.0.1) - 2025-09-18
+- 2025-09-18
+  - Updated SDK install instructions on GitHub to default to latest version for Telesign SDK
+
 ## [3.0.0](http://central.maven.org/maven2/com/telesign/telesign/3.0.0) - 2025-07-18
 - 2025-07-18
   - Removed Status method in AppVerify class.
