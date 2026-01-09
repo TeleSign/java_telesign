@@ -1,9 +1,6 @@
 package com.telesign;
 
-import java.io.IOException;
 import java.net.Proxy;
-import java.security.GeneralSecurityException;
-import java.util.Map;
 
 /**
  * AppVerify is a secure, lightweight SDK that integrates a frictionless user verification process into existing

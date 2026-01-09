@@ -55,6 +55,14 @@ Follow these steps to add this SDK as a dependency to your project.
    
    That last dependency pulls in the Telesign Self-service Java SDK.
 
+## Development tasks
+
+Use these Gradle tasks during development:
+
+- Run unit tests: `./gradlew test`
+- Run linter checks: `./gradlew lint`
+- Run CI validation (tests + linter): `./gradlew ciTest`
+
 ## Authentication
 
 If you use a Telesign SDK to make your request, authentication is handled behind-the-scenes for you. All you need to provide is your Customer ID and API Key. The SDKs apply Digest authentication whenever they make a request to a Telesign service where it is supported. When Digest authentication is not supported, the SDKs apply Basic authentication.

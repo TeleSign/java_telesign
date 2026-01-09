@@ -1,7 +1,6 @@
 package com.telesign;
 
 import junit.framework.TestCase;
-import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
