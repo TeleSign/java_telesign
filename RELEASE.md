@@ -1,3 +1,7 @@
+## [4.0.0](http://central.maven.org/maven2/com/telesign/telesign/4.0.0) - 2025-11-4
+- 2025-11-4
+  - Added support for Intelligence Cloud to use new endpoint.
+
 ## [3.0.1](http://central.maven.org/maven2/com/telesign/telesign/3.0.1) - 2025-09-18
 - 2025-09-18
   - Updated SDK install instructions on GitHub to default to latest version for Telesign SDK
