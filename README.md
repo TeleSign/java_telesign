@@ -50,7 +50,7 @@ Follow these steps to add this SDK as a dependency to your project.
    ```
    implementation("com.google.code.gson:gson:2.+")
    implementation ("com.squareup.okio:okio:2.+")
-   implementation("com.telesign:telesign:3.+")
+   implementation("com.telesign:telesign:4.+")
    ```
    
    That last dependency pulls in the Telesign Self-service Java SDK.

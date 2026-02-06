@@ -1,5 +1,5 @@
-## [4.0.0](http://central.maven.org/maven2/com/telesign/telesign/4.0.0) - 2025-11-4
-- 2025-11-4
+## [4.0.0](http://central.maven.org/maven2/com/telesign/telesign/4.0.0) - 2026-02-06
+- 2026-02-06
   - Added support for Intelligence Cloud to use new endpoint.
 
 ## [3.0.1](http://central.maven.org/maven2/com/telesign/telesign/3.0.1) - 2025-09-18
