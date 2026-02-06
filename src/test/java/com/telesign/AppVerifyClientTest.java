@@ -1,13 +1,9 @@
 package com.telesign;
 
 import junit.framework.TestCase;
-import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
 
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 public class AppVerifyClientTest extends TestCase {
 

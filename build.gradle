@@ -5,16 +5,57 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
+    id 'checkstyle'
 }
 
 group 'com.telesign'
-version '3.0.1'
+version '4.0.0'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
+}
+
+checkstyle {
+    toolVersion = '10.12.5'
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    ignoreFailures = true
+}
+
+// Test configuration
+test {
+    useJUnit()
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+        showStandardStreams = false
+    }
+}
+
+// Task for linting
+tasks.register('lint') {
+    group = 'verification'
+    description = 'Runs checkstyle linter'
+    dependsOn 'checkstyleMain', 'checkstyleTest'
+}
+
+// Task for CI pipeline
+tasks.register('ciTest') {
+    group = 'verification'
+    description = 'Runs tests and linter for CI/CD pipeline'
+    dependsOn 'clean', 'test', 'lint'
+}
+
+// Task for release validation
+tasks.register('validateRelease') {
+    group = 'release'
+    description = 'Validates code is ready for release'
+    dependsOn 'ciTest', 'javadoc', 'sourcesJar', 'javadocJar'
+    doLast {
+        println "✓ Release validation completed successfully"
+    }
 }
 
 jar {
@@ -97,7 +138,7 @@ if (System.getenv('TRAVIS') == null) {
 
                 groupId = 'com.telesign'
                 artifactId = 'telesign'
-                version = '3.0.1'
+                version = '4.0.0'
 
                 pom {
                     name = 'Telesign SDK'
