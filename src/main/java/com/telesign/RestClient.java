@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class RestClient {
 
-	private static final String sdkVersion = RestClient.class.getPackage().getImplementationVersion();
+	private static final String SDK_VERSION = RestClient.class.getPackage().getImplementationVersion();
 
 	public static final String URL_FORM_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded";
 	public static final String JSON_CONTENT_TYPE = "application/json";
@@ -105,10 +105,11 @@ public class RestClient {
 		this.apiKey = apiKey;
 
 		this.userAgent = String.format("TeleSignSDK/java Java/%s OkHttp/%s OriginatingSDK/%s SDKVersion/%s",
-				System.getProperty("java.version"), OkHttp.VERSION, (source == null ? "java_telesign" : source), (sdkVersionOrigin == null ? sdkVersion : sdkVersionOrigin));
+				System.getProperty("java.version"), OkHttp.VERSION, (source == null ? "java_telesign" : source), (sdkVersionOrigin == null ? SDK_VERSION : sdkVersionOrigin));
 
-		if (!Objects.equals(source, "java_telesign") && sdkVersionDependency != null)
-			this.userAgent += String.format(" DependencySDKVersion/%s", sdkVersionDependency);
+		if (!Objects.equals(source, "java_telesign") && sdkVersionDependency != null) {
+            this.userAgent += String.format(" DependencySDKVersion/%s", sdkVersionDependency);
+        }
 
 		if (restEndpoint == null) {
 			this.restEndpoint = "https://rest-api.telesign.com";
