@@ -1,3 +1,7 @@
+## [4.0.1](http://central.maven.org/maven2/com/telesign/telesign/4.0.1) - 2026-04-22
+- 2026-04-22
+    - Fix style for linting.
+
 ## [4.0.0](http://central.maven.org/maven2/com/telesign/telesign/4.0.0) - 2026-02-06
 - 2026-02-06
   - Added support for Intelligence Cloud to use new endpoint.
