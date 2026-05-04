@@ -7,11 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Score provides risk information about a specified phone number.
+ * Score provides risk information about a specified phone number or email address.
  */
 public class ScoreClient extends RestClient {
 
     private static final String INTELLIGENCE_SCORE_RESOURCE = "/intelligence/phone";
+    private static final String EMAIL_INTELLIGENCE_RESOURCE = "/intelligence/email";
 
     private static final String DETECT_REST_ENDPOINT = "https://detect.telesign.com";
 
@@ -56,5 +57,21 @@ public class ScoreClient extends RestClient {
         params.put("account_lifecycle_event", accountLifecycleEvent);
 
         return this.post(INTELLIGENCE_SCORE_RESOURCE, params);
+    }
+
+    /**
+     * Obtain a risk recommendation for this email address, as well as other relevant information using Telesign Cloud API.
+     * <p>
+     * See https://developer.telesign.com/enterprise/reference/submitemailaddressforemailintelligence for detailed API documentation.
+     */
+    public TelesignResponse emailIntelligence(String emailAddress, String accountLifecycleEvent, Map<String, String> params) throws GeneralSecurityException, IOException {
+        if (params == null) {
+            params = new HashMap<>();
+        }
+        
+        params.put("email_address", emailAddress);
+        params.put("account_lifecycle_event", accountLifecycleEvent);
+
+        return this.post(EMAIL_INTELLIGENCE_RESOURCE, params);
     }
 }

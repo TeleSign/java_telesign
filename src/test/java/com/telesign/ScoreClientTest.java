@@ -105,4 +105,57 @@ public class ScoreClientTest extends TestCase {
         assertEquals("x-ts-auth-method header is not as expected", "HMAC-SHA256",
                 request.getHeader("x-ts-auth-method"));
     }
+
+    public void testEmailIntelligenceWithParams() throws Exception {
+        HashMap<String, String> params = new HashMap<String, String>() {{
+            put("originating_ip", "127.0.0.1");
+        }};
+
+        this.mockServer.enqueue(new MockResponse().setBody("{}"));
+
+        ScoreClient client = new ScoreClient(this.customerId,
+                this.apiKey,
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
+
+        client.emailIntelligence("support@vero-finto.com", "sign-in", params);
+
+        RecordedRequest request = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
+
+        assertEquals("method is not as expected", "POST", request.getMethod());
+        assertEquals("path is not as expected", "/intelligence/email", request.getPath());
+
+        String body = request.getBody().readUtf8();
+        assertTrue("body does not contain email_address", body.contains("email_address=support%40vero-finto.com"));
+        assertTrue("body does not contain originating_ip", body.contains("originating_ip=127.0.0.1"));
+        assertTrue("body does not contain account_lifecycle_event", body.contains("account_lifecycle_event=sign-in"));
+
+        assertEquals("Content-Type header is not as expected", "application/x-www-form-urlencoded",
+                request.getHeader("Content-Type"));
+        assertEquals("x-ts-auth-method header is not as expected", "HMAC-SHA256",
+                request.getHeader("x-ts-auth-method"));
+    }
+
+    public void testEmailIntelligence() throws Exception {
+        this.mockServer.enqueue(new MockResponse().setBody("{}"));
+
+        ScoreClient client = new ScoreClient(this.customerId,
+                this.apiKey,
+                this.mockServer.url("").toString().replaceAll("/$", ""), null, null, null);
+
+        client.emailIntelligence("support@vero-finto.com", "create", null);
+
+        RecordedRequest request = this.mockServer.takeRequest(1, TimeUnit.SECONDS);
+
+        assertEquals("method is not as expected", "POST", request.getMethod());
+        assertEquals("path is not as expected", "/intelligence/email", request.getPath());
+
+        String body = request.getBody().readUtf8();
+        assertTrue("body does not contain email_address", body.contains("email_address=support%40vero-finto.com"));
+        assertTrue("body contains account_lifecycle_event", body.contains("account_lifecycle_event=create"));
+
+        assertEquals("Content-Type header is not as expected", "application/x-www-form-urlencoded",
+                request.getHeader("Content-Type"));
+        assertEquals("x-ts-auth-method header is not as expected", "HMAC-SHA256",
+                request.getHeader("x-ts-auth-method"));
+    }
 }
