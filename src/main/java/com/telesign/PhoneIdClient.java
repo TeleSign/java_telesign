@@ -21,20 +21,89 @@ public class PhoneIdClient extends RestClient {
 
     private static final String PHONEID_RESOURCE = "/v1/phoneid/%s";
     
-    public static final MediaType JSON = MediaType.parse("application/json"); // ; charset=utf-8 
-
+    /**
+     * ; charset=utf-8 
+     */
+    public static final MediaType JSON = MediaType.parse("application/json");
+    
+    /**
+     * Constructor for PhoneIdClient.
+     * @param customerId
+     *          Your customer_id string associated with your account.
+      * @param apiKey
+      *        Your api_key string associated with your account.
+      */
     public PhoneIdClient(String customerId, String apiKey) {
         super(customerId, apiKey);
     }
 
+    /**
+     * Constructor for PhoneIdClient.
+     * @param customerId
+     *         Your customer_id string associated with your account.
+      * @param apiKey
+      *        Your api_key string associated with your account.
+      * @param restEndpoint
+      *         (optional) Override the default restEndpoint to target another endpoint.
+     */
     public PhoneIdClient(String customerId, String apiKey, String restEndpoint) {
         super(customerId, apiKey, restEndpoint);
     }
 
+    /**
+     * Constructor for PhoneIdClient.
+     * @param customerId
+     *          Your customer_id string associated with your account.
+      * @param apiKey
+      *        Your api_key string associated with your account.
+      * @param restEndpoint
+      *         (optional) Override the default restEndpoint to target another endpoint.
+      * @param source
+      *         (optional) source string to be added to the User-Agent header of the request, should be the name of the originating SDK.
+      * @param sdkVersionOrigin
+      *         (optional) sdkVersionOrigin string to be added to the User-Agent header of the request, should be the version of the originating SDK.
+      * @param sdkVersionDependency
+      *         (optional) sdkVersionDependency string to be added to the User-Agent header of the request, should be the version of the dependency SDK.
+     */
     public PhoneIdClient(String customerId, String apiKey, String restEndpoint, String source, String sdkVersionOrigin, String sdkVersionDependency) {
         super(customerId, apiKey, restEndpoint, source, sdkVersionOrigin, sdkVersionDependency);
     }
 
+    /**
+	 * Telesign Phone ID allows you to get detailed and actionable global phone number and subscriber data
+     *  intelligence to strengthen authentications, evaluate fraud risks, and enhance the user experience.
+	 *
+	 * @param customerId
+	 *            Your customer_id string associated with your account.
+	 * @param apiKey
+	 *            Your api_key string associated with your account.
+	 * @param restEndpoint
+	 *            (optional) Override the default restEndpoint to target another
+	 *            endpoint.
+	 * @param connectTimeout
+	 *            (optional) connectTimeout passed into OkHttp.
+	 * @param readTimeout
+	 *            (optional) readTimeout passed into OkHttp.
+	 * @param writeTimeout
+	 *            (optional) writeTimeout passed into OkHttp.
+	 * @param proxy
+	 *            (optional) proxy passed into OkHttp.
+	 * @param proxyUsername
+	 *            (optional) proxyUserName used to create an Authenticator passed
+	 *            into OkHttp.
+	 * @param proxyPassword
+	 *            (optional) proxyPassword used to create an Authenticator passed
+	 *            into OkHttp.
+	 * @param source
+	 *            (optional) source string to be added to the User-Agent header of
+	 *            the request, should be the name of the originating SDK.
+	 * @param sdkVersionOrigin
+	 *            (optional) sdkVersionOrigin string to be added to the User-Agent header of
+	 *            the request, should be the version of the originating SDK.
+	 * @param sdkVersionDependency
+	 *            (optional) sdkVersionDependency string to be added to the User-Agent header of
+	 *            the request, should be the version of the dependency SDK.
+	 */
     public PhoneIdClient(String customerId,
                          String apiKey,
                          String restEndpoint,
@@ -54,14 +123,32 @@ public class PhoneIdClient extends RestClient {
      * The PhoneID API provides a cleansed phone number, phone type, and telecom carrier information to determine the
      * best communication method - SMS or voice.
      * <p>
-     * See https://developer.te
-     * lesign.com/docs/phoneid-api for detailed API documentation.
+     * See https://developer.telesign.com/docs/phoneid-api for detailed API documentation.
+     * 
+     * @param phoneNumber
+     *            The phone number to query.
+     * @param params
+     *            Additional parameters for the request.
+     * @return The TelesignResponse for the request.
+     * @throws IOException if the HTTP request fails.
+     * @throws GeneralSecurityException if there is a security exception.
      */
     public TelesignResponse phoneid(String phoneNumber, Map<String, ? extends Object> params) throws IOException, GeneralSecurityException {
 
         return this.post(String.format(PHONEID_RESOURCE, phoneNumber), params, JSON_CONTENT_TYPE);
     }
 
+    /**
+	 * Generic TeleSign REST API request handler.
+	 *
+	 * @param params
+	 *            Params to perform the request with.
+	 * @param contentType
+	 * 		  Application/json, www-url ....
+	 * @return The RequestBody for the request.
+	 * @throws UnsupportedEncodingException if the encoding is not supported.
+     * @throws IOException if something goes wrong during request body creation.
+	 */
     @Override
     public RequestBody createRequestBody(Map<String, ? extends Object> params, String contentType) throws UnsupportedEncodingException, IOException {
         if (contentType.equals(JSON_CONTENT_TYPE)) {
