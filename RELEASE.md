@@ -1,3 +1,7 @@
+## [4.1.1](http://central.maven.org/maven2/com/telesign/telesign/4.1.1) - 2026-05-15
+- 2026-05-15
+    - Completed Javadoc documentation
+
 ## [4.1.0](http://central.maven.org/maven2/com/telesign/telesign/4.1.0) - 2026-04-29
 - 2026-04-29
     - Added support for Email Intelligence API.

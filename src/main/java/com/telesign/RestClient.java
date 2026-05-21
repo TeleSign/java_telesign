@@ -46,26 +46,87 @@ public class RestClient {
 
 	private static final String SDK_VERSION = RestClient.class.getPackage().getImplementationVersion();
 
+	/**
+	 * Application/x-www-form-urlencoded content type.
+	 */
 	public static final String URL_FORM_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded";
+
+	/**
+	 * Application/json content type.
+	 */
 	public static final String JSON_CONTENT_TYPE = "application/json";
+
+	/**
+	 * Basic authentication method.
+	 */
 	public static final String AUTH_BASIC = "Basic";
 
+	/**
+	 * Your customer_id string associated with your account.
+	 */
 	protected String customerId;
+
+	/**
+	 * Your api_key string associated with your account.
+	 */
 	protected String apiKey;
+
+	/**
+	 * The restEndpoint string is the base URL for the REST API endpoint to send requests to.
+	 */
 	private String restEndpoint;
+
+	/**
+	 * The OkHttpClient instance used to make HTTP requests to the TeleSign REST API.
+	 */
 	private OkHttpClient client;
+
+	/**
+	 * 	User Agent string to be added to the User-Agent header of the request.
+	 */
 	private String userAgent;
 
+	/**
+	 * Constructor for RestClient.
+	 * @param customerId
+	 *            Your customer_id string associated with your account.
+	 * @param apiKey
+	 *            Your api_key string associated with your account.
+	 */
 	public RestClient(String customerId, String apiKey) {
 
 		this(customerId, apiKey, null, null, null, null, null, null, null, null, null, null);
 	}
 
+	/**
+	 * Constructor for RestClient.
+	 * @param customerId
+	 *            Your customer_id string associated with your account.
+	 * @param apiKey
+	 *            Your api_key string associated with your account.
+	 * @param restEndpoint
+	 *            (optional) Override the default restEndpoint to target another endpoint.
+	 */
 	public RestClient(String customerId, String apiKey, String restEndpoint) {
 
 		this(customerId, apiKey, restEndpoint, null, null, null, null, null, null, null, null, null);
 	}
 
+	/**
+	 * Constructor for RestClient.
+	 * @param customerId
+	 *            Your customer_id string associated with your account.
+	 * @param apiKey
+	 *            Your api_key string associated with your account.
+	 * @param restEndpoint
+	 *            (optional) Override the default restEndpoint to target another endpoint.
+	 * @param source
+	 *         (optional) source string to be added to the User-Agent header of the request, should be the name of the originating SDK.
+	 * @param sdkVersionOrigin
+	 *         (optional) sdkVersionOrigin string to be added to the User-Agent header of the request, should be the version of the originating SDK.
+	 * @param sdkVersionDependency
+	 *         (optional) sdkVersionDependency string to be added to the User-Agent header of the request, should be the version of the dependency SDK.
+	 */
 	public RestClient(String customerId, String apiKey, String restEndpoint, String source, String sdkVersionOrigin, String sdkVersionDependency) {
 
 		this(customerId, apiKey, restEndpoint, null, null, null, null, null, null, source, sdkVersionOrigin, sdkVersionDependency);
@@ -96,6 +157,15 @@ public class RestClient {
 	 * @param proxyPassword
 	 *            (optional) proxyPassword used to create an Authenticator passed
 	 *            into OkHttp.
+	 * @param source
+	 *            (optional) source string to be added to the User-Agent header of
+	 *            the request, should be the name of the originating SDK.
+	 * @param sdkVersionOrigin
+	 *            (optional) sdkVersionOrigin string to be added to the User-Agent header of
+	 *            the request, should be the version of the originating SDK.
+	 * @param sdkVersionDependency
+	 *            (optional) sdkVersionDependency string to be added to the User-Agent header of
+	 *            the request, should be the version of the dependency SDK.
 	 */
 	public RestClient(String customerId, String apiKey, String restEndpoint, Integer connectTimeout,
 			Integer readTimeout, Integer writeTimeout, Proxy proxy, final String proxyUsername,
@@ -179,12 +249,37 @@ public class RestClient {
 	 */
 	public static class TelesignResponse {
 
+		/**
+		 * The HTTP status code of the response.
+		 */
 		public int statusCode;
+
+		/**
+		 * The HTTP headers of the response.
+		 */
 		public Map<String, List<String>> headers;
+
+		/**
+		 * The body of the response.
+		 */
 		public String body;
+
+		/**
+		 * Indicates if the response was successful.
+		 */
 		public boolean ok;
+
+		/**
+		 * The JSON object representing the response body.
+		 */
 		public JsonObject json;
 
+		/**
+		 * Creates a new TelesignResponse instance from the given OkHttp response.
+		 *
+		 * @param okHttpResponse 
+		 * 			the OkHttp response to wrap
+		 */
 		public TelesignResponse(Response okHttpResponse) {
 
 			this.statusCode = okHttpResponse.code();
@@ -233,10 +328,13 @@ public class RestClient {
 	 *            (optional) A unique cryptographic nonce for the request.
 	 * @param userAgent
 	 *            (optional) User Agent associated with the request.
-	 * 
 	 * @param contentType
-	 *            (optional) will be sent only if post or put method is requested
+	 *            Application/json, www-url ....
+	 * @param authMethod
+	 *            Basic, Digest ...
 	 * @return Map of HTTP headers to be applied to the request.
+	 * @throws NoSuchAlgorithmException if the HMAC-SHA256 algorithm is not available.
+	 * @throws InvalidKeyException if the API key is invalid.
 	 */
 	public static Map<String, String> generateTelesignHeaders(String customerId, String apiKey, 
 			String methodName, String resource, String requestParams,
@@ -318,6 +416,8 @@ public class RestClient {
 	 * @param params
 	 *            Params to perform the POST request with.
 	 * @return The TelesignResponse for the request.
+	 * @throws IOException if the HTTP request fails.
+	 * @throws GeneralSecurityException if there is a security exception.
 	 */
 	public TelesignResponse post(String resource, Map<String, ? extends Object> params)
 			throws IOException, GeneralSecurityException {
@@ -331,7 +431,11 @@ public class RestClient {
 	 *            The partial resource URI to perform the request against.
 	 * @param params
 	 *            Params to perform the POST request with.
+	 * @param contentType
+	 * 		 Appication/json, www-url ....
 	 * @return The TelesignResponse for the request.
+	 * @throws IOException if the HTTP request fails.
+	 * @throws GeneralSecurityException if there is a security exception.
 	 */
 	public TelesignResponse post(String resource, Map<String, ? extends Object> params, String contentType)
 			throws IOException, GeneralSecurityException {
@@ -351,6 +455,8 @@ public class RestClient {
 	 * @param authMethod
 	 *            Basic, Diggest ...
 	 * @return The TelesignResponse for the request.
+	 * @throws IOException if the HTTP request fails.
+	 * @throws GeneralSecurityException if there is a security exception.
 	 */
 	public TelesignResponse post(String resource, Map<String, ? extends Object> params, String contentType, String authMethod)
 			throws IOException, GeneralSecurityException {
@@ -366,6 +472,8 @@ public class RestClient {
 	 * @param params
 	 *            Params to perform the GET request with.
 	 * @return The TelesignResponse for the request.
+	 * @throws IOException if the HTTP request fails.
+	 * @throws GeneralSecurityException if there is a security exception.
 	 */
 	public TelesignResponse get(String resource, Map<String, String> params)
 			throws IOException, GeneralSecurityException {
@@ -381,6 +489,8 @@ public class RestClient {
 	 * @param params
 	 *            Params to perform the PUT request with.
 	 * @return The TelesignResponse for the request.
+	 * @throws IOException if the HTTP request fails.
+	 * @throws GeneralSecurityException if there is a security exception.
 	 */
 	public TelesignResponse put(String resource, Map<String, String> params)
 			throws IOException, GeneralSecurityException {
@@ -400,6 +510,8 @@ public class RestClient {
 	 * @param authMethod
 	 *            Basic, Digest ...
 	 * @return The TelesignResponse for the request.
+	 * @throws IOException if the HTTP request fails.
+	 * @throws GeneralSecurityException if there is a security exception.
 	 */
 	public TelesignResponse patch(String resource, Map<String, String> params, String contentType, String authMethod)
 			throws IOException, GeneralSecurityException {
@@ -415,6 +527,8 @@ public class RestClient {
 	 * @param params
 	 *            Params to perform the DELETE request with.
 	 * @return The TelesignResponse for the request.
+	 * @throws IOException if the HTTP request fails.
+	 * @throws GeneralSecurityException if there is a security exception.
 	 */
 	public TelesignResponse delete(String resource, Map<String, String> params)
 			throws IOException, GeneralSecurityException {
@@ -427,8 +541,10 @@ public class RestClient {
 	 *
 	 * @param params
 	 *            Params to perform the request with.
+	 * @param contentType
+	 * 		  Application/json, www-url ....
 	 * @return The RequestBody for the request.
-	 * @throws IOException
+	 * @throws IOException if something goes wrong during request body creation.
 	 */
 
 	public RequestBody createRequestBody(Map<String, ? extends Object> params, String contentType) throws IOException {
@@ -470,6 +586,8 @@ public class RestClient {
 	 * @param methodName
 	 * @param resource
 	 * @param params
+	 * @param contentType
+	 * @param authMethod
 	 * @return The TelesignResponse for the request
 	 * @throws IOException
 	 * @throws GeneralSecurityException
